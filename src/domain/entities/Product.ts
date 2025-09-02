@@ -1,6 +1,7 @@
 export interface ProductProps {
   id?: string;
   name: string;
+  code: number;
   costPrice: number;
   salePrice: number;
   lastSalePrice?: number;
@@ -41,6 +42,12 @@ export class Product {
     if (this.salePrice < this.costPrice) {
       throw new Error("Sale price cannot be less than cost price.");
     }
+
+    if (!this.code || this.code <= 0 || this.code.toString().length < 2) {
+      throw new Error(
+        "Code cannot be empty, negative, and must have at least 2 digits."
+      );
+    }
   }
 
   public updateQuantity(amount: number) {
@@ -59,6 +66,9 @@ export class Product {
   }
   get name() {
     return this.props.name;
+  }
+  get code() {
+    return this.props.code;
   }
   get costPrice() {
     return this.props.costPrice;

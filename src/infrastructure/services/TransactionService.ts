@@ -1,7 +1,7 @@
 import { Transaction } from "../../domain/entities/Transaction";
 import type { ITransactionRepository } from "../../domain/interfaces/TransactionRepositoryInterface";
 
-export class TransactionServices {
+export class TransactionService {
   constructor(private readonly transactionRepository: ITransactionRepository) {}
 
   async save(transaction: Transaction) {

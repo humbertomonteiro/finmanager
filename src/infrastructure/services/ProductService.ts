@@ -1,7 +1,7 @@
 import { Product } from "../../domain/entities/Product";
 import type { IProductRepository } from "../../domain/interfaces/ProductReposiryInterface";
 
-export class ProductServices {
+export class ProductService {
   constructor(private readonly productRepository: IProductRepository) {}
 
   async save(product: Product) {
