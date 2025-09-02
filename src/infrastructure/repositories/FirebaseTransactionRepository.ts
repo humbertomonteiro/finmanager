@@ -70,6 +70,7 @@ export class TransactionRepository implements ITransactionRepository {
       });
     } catch (error) {
       console.log(`Erro so buscar transactions, erro: ${error}`);
+      throw new Error(`${error}`);
     }
   }
 

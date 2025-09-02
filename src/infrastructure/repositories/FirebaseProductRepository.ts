@@ -66,6 +66,7 @@ export class ProductRepository implements IProductRepository {
       });
     } catch (error) {
       console.log(`Erro so buscar produtos, erro: ${error}`);
+      throw new Error(`${error}`);
     }
   }
 

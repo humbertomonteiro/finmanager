@@ -36,6 +36,10 @@ export class Transaction {
     if (!["sale", "purchase", "aporte"].includes(this.props.type)) {
       throw new Error("Invalid transaction type. ");
     }
+
+    if (this.props.items.length <= 0) {
+      throw new Error("Transaction items cannot be empty");
+    }
   }
 
   get id() {
