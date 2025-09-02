@@ -8,6 +8,7 @@ export interface ProductProps {
   description?: string;
   quantity: number;
   createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export class Product {
@@ -18,6 +19,7 @@ export class Product {
       ...props,
       supplier: props.supplier || null,
       createdAt: props.createdAt || new Date(),
+      updatedAt: props.updatedAt || new Date(),
     };
 
     this.validate();
@@ -55,29 +57,26 @@ export class Product {
   get id() {
     return this.props.id;
   }
-
   get name() {
     return this.props.name;
   }
-
   get costPrice() {
     return this.props.costPrice;
   }
-
   get salePrice() {
     return this.props.salePrice;
   }
-
   get lastSalePrice() {
     return this.props.lastSalePrice;
   }
-
   get description() {
     return this.props.description;
   }
-
   get createdAt() {
     return this.props.createdAt;
+  }
+  get updateAt() {
+    return this.props.updatedAt;
   }
 
   public toDTO(): ProductProps {
