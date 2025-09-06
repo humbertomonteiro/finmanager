@@ -1,0 +1,140 @@
+/* src/components/sections/productCard.module.css */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-base);
+  border: 1px solid var(--color-border);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-sm);
+}
+
+.name {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0;
+  flex: 1;
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.editButton,
+.deleteButton {
+  background: none;
+  border: none;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-md);
+  transition: var(--transition-colors);
+}
+
+.editButton:hover {
+  background-color: rgba(37, 99, 235, 0.1);
+}
+
+.deleteButton:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.errorMessage {
+  grid-column: span 2;
+  padding: var(--spacing-md);
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-error);
+  margin-bottom: var(--spacing-md);
+}
+
+.description {
+  color: var(--color-on-surface-variant);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface-variant);
+  font-weight: 500;
+}
+
+.value {
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface);
+  font-weight: 500;
+}
+
+.costPrice {
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface);
+  font-weight: 500;
+}
+
+.salePrice {
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.profit {
+  font-size: var(--font-size-sm);
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.loss {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+.stockOk {
+  font-size: var(--font-size-sm);
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.stockLow {
+  font-size: var(--font-size-sm);
+  color: var(--color-warning);
+  font-weight: 600;
+}
+
+.supplier {
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface);
+  font-weight: 500;
+}

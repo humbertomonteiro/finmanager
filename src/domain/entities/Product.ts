@@ -7,7 +7,7 @@ export interface ProductProps {
   lastSalePrice?: number;
   supplier: string | null;
   description?: string;
-  quantity: number;
+  stock?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -18,7 +18,9 @@ export class Product {
   constructor(props: ProductProps) {
     this.props = {
       ...props,
-      supplier: props.supplier || null,
+      code: props.code || this.generateCode(),
+      stock: props.stock || 0,
+      supplier: props.supplier || "Desconhecido",
       createdAt: props.createdAt || new Date(),
       updatedAt: props.updatedAt || new Date(),
     };
@@ -43,16 +45,31 @@ export class Product {
       throw new Error("Sale price cannot be less than cost price.");
     }
 
-    if (!this.code || this.code <= 0 || this.code.toString().length < 2) {
-      throw new Error(
-        "Code cannot be empty, negative, and must have at least 2 digits."
-      );
+    if (this.stock && this.stock < 0) {
+      throw new Error("Stock cannot be negative.");
     }
   }
 
-  public updateQuantity(amount: number) {
-    if (amount < 0) throw new Error("Quantity cannot be negative.");
-    this.props.quantity = amount;
+  private generateCode() {
+    const randomNum = Math.floor(Math.random() * 100000) + 1;
+    const formattedCode = randomNum.toString().padStart(6, "0");
+    return parseInt(formattedCode, 10);
+  }
+
+  public updateStock(amount: number, type: "purchase" | "sale") {
+    if (type === "purchase") {
+      this.props.stock = (this.props.stock || 0) + amount;
+    } else if (type === "sale") {
+      const currentStock = this.props.stock || 0;
+      if (currentStock < amount) {
+        throw new Error(
+          `Larger quantity than is in stock, stock = ${this.props.stock}`
+        );
+      }
+      this.props.stock = currentStock - amount;
+    }
+
+    this.props.updatedAt = new Date();
   }
 
   public changeSalePrice(newPrice: number) {
@@ -81,6 +98,12 @@ export class Product {
   }
   get description() {
     return this.props.description;
+  }
+  get stock() {
+    return this.props.stock;
+  }
+  get supplier() {
+    return this.props.supplier;
   }
   get createdAt() {
     return this.props.createdAt;

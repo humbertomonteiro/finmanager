@@ -9,13 +9,13 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { db } from "../../infrastructure/config/firebaseConfig";
-import { Product, type ProductProps } from "../../domain/entities/Product";
-import type { IProductRepository } from "../../domain/interfaces/ProductReposiryInterface";
+import type { ICategoryRepository } from "../../domain/interfaces/CategoryRepositoryInterface";
+import { Category, type CategoryProps } from "../../domain/entities/Category";
 
-export class ProductRepository implements IProductRepository {
+export class CategoryRepository implements ICategoryRepository {
   private readonly collectionName: string;
   constructor() {
-    this.collectionName = "products";
+    this.collectionName = "categories";
   }
 
   cleanObject<T extends Record<string, any>>(obj: T): Partial<T> {
@@ -24,20 +24,21 @@ export class ProductRepository implements IProductRepository {
     ) as Partial<T>;
   }
 
-  async save(product: Product) {
+  async save(caegory: Category) {
     try {
-      const productDTO = product.toDTO();
+      const caegoryDTO = caegory.toDTO();
 
-      const docRef = product.id
-        ? doc(db, this.collectionName, product.id)
+      const docRef = caegory.id
+        ? doc(db, this.collectionName, caegory.id)
         : doc(collection(db, this.collectionName));
 
-      const cleanedDTO = this.cleanObject(productDTO);
-      await setDoc(docRef, cleanedDTO, { merge: true });
+      const cleanedcaegory = this.cleanObject(caegoryDTO);
+
+      await setDoc(docRef, cleanedcaegory, { merge: true });
       return docRef.id;
     } catch (error) {
-      console.error("Erro ao criar produto:", error);
-      throw new Error("Error creating produto");
+      console.error("Erro ao criar caegory:", error);
+      throw new Error("Error creating caegory");
     }
   }
 
@@ -49,10 +50,10 @@ export class ProductRepository implements IProductRepository {
       if (!docSnap.exists()) return null;
 
       const data = docSnap.data();
-      return this.mapProductData(data, docSnap.id);
+      return this.mapCategoryData(data, docSnap.id);
     } catch (error) {
       console.log(`Erro ao buscar documento: ${id}, erro: ${error}`);
-      throw new Error("Error fetching product");
+      throw new Error("Error fetching caegory");
     }
   }
 
@@ -62,25 +63,26 @@ export class ProductRepository implements IProductRepository {
 
       return querySnapshot.docs.map((doc) => {
         const data = doc.data();
-        return this.mapProductData(data, doc.id);
+        return this.mapCategoryData(data, doc.id);
       });
     } catch (error) {
-      console.log(`Erro so buscar produtos, erro: ${error}`);
+      console.log(`Erro so buscar caegorys, erro: ${error}`);
       throw new Error(`${error}`);
     }
   }
 
-  async update(product: Product): Promise<void> {
+  async update(caegory: Category): Promise<void> {
     try {
-      if (!product.id) throw new Error("Product ID is required for update");
-      const productDTO = product.toDTO();
+      if (!caegory.id) throw new Error("Category ID is required for update");
+      const caegoryDTO = caegory.toDTO();
 
-      const docRef = doc(db, this.collectionName, product.id);
+      const docRef = doc(db, this.collectionName, caegory.id);
 
-      const cleanedDTO = this.cleanObject(productDTO);
+      const cleanedDTO = this.cleanObject(caegoryDTO);
       await updateDoc(docRef, cleanedDTO);
     } catch (error) {
-      throw new Error(`Error updating product: ${error}`);
+      console.error(`Error updating caegory ${caegory.id}:`, error);
+      throw new Error("Error updating caegory");
     }
   }
 
@@ -89,12 +91,12 @@ export class ProductRepository implements IProductRepository {
       const docRef = doc(db, this.collectionName, id);
       await deleteDoc(docRef);
     } catch (error) {
-      console.error(`Error deleting product ${id}:`, error);
-      throw new Error("Error deleting product");
+      console.error(`Error deleting caegory ${id}:`, error);
+      throw new Error("Error deleting caegory");
     }
   }
 
-  private mapProductData(data: any, id: string): Product {
+  private mapCategoryData(data: any, id: string): Category {
     const createdAt =
       data.createdAt instanceof Timestamp
         ? data.createdAt.toDate()
@@ -105,11 +107,11 @@ export class ProductRepository implements IProductRepository {
         ? data.updatedAt.toDate()
         : new Date(data.updatedAt ?? Date.now());
 
-    return new Product({
+    return new Category({
       ...data,
       id,
       createdAt,
       updatedAt,
-    } as ProductProps);
+    } as CategoryProps);
   }
 }

@@ -2,6 +2,7 @@ export type TransactionType = "sale" | "purchase" | "aporte";
 
 export interface TransactionItem {
   productId: string;
+  name: string;
   quantity: number;
   unitPrice: number;
 }
@@ -12,7 +13,7 @@ export interface TransactionProps {
   description?: string;
   value: number;
   date: Date;
-  items: TransactionItem[];
+  items?: TransactionItem[];
   discount?: number;
 }
 
@@ -37,7 +38,11 @@ export class Transaction {
       throw new Error("Invalid transaction type. ");
     }
 
-    if (this.props.items.length <= 0) {
+    if (
+      this.props.type === "sale" &&
+      this.props.items &&
+      this.props.items.length <= 0
+    ) {
       throw new Error("Transaction items cannot be empty");
     }
   }

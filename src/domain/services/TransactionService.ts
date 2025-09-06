@@ -1,19 +1,19 @@
-import { Transaction } from "../../domain/entities/Transaction";
-import type { ITransactionRepository } from "../../domain/interfaces/TransactionRepositoryInterface";
+import { Transaction } from "../entities/Transaction";
+import type { ITransactionRepository } from "../interfaces/TransactionRepositoryInterface";
 
 export class TransactionService {
   constructor(private readonly transactionRepository: ITransactionRepository) {}
 
-  async save(transaction: Transaction) {
-    try {
-      const transactionId = await this.transactionRepository.save(transaction);
+  // async save(transaction: Transaction) {
+  //   try {
+  //     const transactionId = await this.transactionRepository.save(transaction);
 
-      return transactionId;
-    } catch (error) {
-      console.log("Error ao salvar transação");
-      throw new Error(`${error}`);
-    }
-  }
+  //     return transactionId;
+  //   } catch (error) {
+  //     console.log("Error ao salvar transação");
+  //     throw new Error(`${error}`);
+  //   }
+  // }
 
   async getId(id: string): Promise<Transaction> {
     try {
@@ -38,7 +38,7 @@ export class TransactionService {
         throw new Error("Transactions not found");
       }
 
-      return transactions;
+      return transactions!;
     } catch (error) {
       console.log("Error ao buscar transações, erro: " + error);
       throw new Error(`${error}`);
@@ -54,12 +54,12 @@ export class TransactionService {
     }
   }
 
-  async delete(id: string) {
-    try {
-      await this.transactionRepository.delete(id);
-    } catch (error) {
-      console.log("Error ao deletar transações, erro: " + error);
-      throw new Error(`${error}`);
-    }
-  }
+  // async delete(id: string) {
+  //   try {
+  //     await this.transactionRepository.delete(id);
+  //   } catch (error) {
+  //     console.log("Error ao deletar transações, erro: " + error);
+  //     throw new Error(`${error}`);
+  //   }
+  // }
 }

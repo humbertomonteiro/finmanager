@@ -1,0 +1,112 @@
+/* src/components/templates/header.module.css */
+.header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+}
+
+.headerStart {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.menuButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.menuButton:hover {
+  background-color: var(--color-border);
+}
+
+.menuIcon {
+  font-size: var(--font-size-lg);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.headerEnd {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.notificationButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.notificationButton:hover {
+  background-color: var(--color-border);
+}
+
+.notificationIcon {
+  font-size: var(--font-size-lg);
+}
+
+.notificationBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: var(--color-error);
+  color: var(--color-on-primary);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.userMenu {
+  display: flex;
+  align-items: center;
+}
+
+.userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-on-primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+  .menuButton {
+    display: none;
+  }
+}

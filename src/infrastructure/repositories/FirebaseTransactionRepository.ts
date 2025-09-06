@@ -101,6 +101,10 @@ export class TransactionRepository implements ITransactionRepository {
   }
 
   private mapTransactionData(data: any, id: string): Transaction {
+    const date =
+      data.date instanceof Timestamp
+        ? data.date.toDate()
+        : new Date(data.date ?? Date.now());
     const createdAt =
       data.createdAt instanceof Timestamp
         ? data.createdAt.toDate()
@@ -114,6 +118,7 @@ export class TransactionRepository implements ITransactionRepository {
     return new Transaction({
       ...data,
       id,
+      date,
       createdAt,
       updatedAt,
     } as TransactionProps);

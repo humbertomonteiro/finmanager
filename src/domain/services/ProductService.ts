@@ -1,5 +1,5 @@
-import { Product } from "../../domain/entities/Product";
-import type { IProductRepository } from "../../domain/interfaces/ProductReposiryInterface";
+import { Product } from "../entities/Product";
+import type { IProductRepository } from "../interfaces/ProductReposiryInterface";
 
 export class ProductService {
   constructor(private readonly productRepository: IProductRepository) {}
