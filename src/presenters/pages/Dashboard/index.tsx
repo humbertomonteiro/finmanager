@@ -6,6 +6,7 @@ import ProductList from "../../components/sections/ProductList";
 import { CreateTransactionForm } from "../../components/sections/CreateTransactionForm";
 import TransactionList from "../../components/sections/TransactionList";
 import styles from "./dashboard.module.css";
+import { ButtonsMobileCreateForm } from "../../components/sections/ButtonsMobileCreateForm";
 
 const Dashboard: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -63,6 +64,8 @@ const Dashboard: React.FC = () => {
             onClose={() => setShowTransactionForm(false)}
           />
         )}
+
+        <ButtonsMobileCreateForm />
       </div>
     </div>
   );

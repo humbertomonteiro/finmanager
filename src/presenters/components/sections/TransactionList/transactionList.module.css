@@ -1,6 +1,5 @@
 /* src/components/sections/transactionList.module.css */
 .container {
-  padding: var(--spacing-lg);
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -10,8 +9,11 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-xl);
-  padding-bottom: var(--spacing-md);
-  border-bottom: 1px solid var(--color-border);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-md);
 }
 
 .headerContent {
@@ -54,6 +56,7 @@
   background-color: var(--color-surface);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
 }
 
 .totalLabel {
@@ -94,9 +97,14 @@
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-xl);
   padding: var(--spacing-md);
-  background-color: var(--color-background);
+  background-color: var(--color-surface);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+}
+
+.mobileFilterButton {
+  display: none;
 }
 
 .searchBox {
@@ -211,7 +219,7 @@
 /* Grid de transações */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-xl);
 }
@@ -224,10 +232,11 @@
   gap: var(--spacing-md);
   margin-top: var(--spacing-xl);
   padding: var(--spacing-md);
-  background-color: var(--color-background);
+  background-color: var(--color-surface);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   flex-wrap: wrap;
+  box-shadow: var(--shadow-md);
 }
 
 .paginationButton {
@@ -342,23 +351,68 @@
 
 /* Responsividade */
 @media (max-width: 768px) {
-  .container {
-    padding: var(--spacing-md);
-  }
-
   .header {
-    flex-direction: column;
     gap: var(--spacing-md);
-    align-items: stretch;
-    text-align: center;
   }
 
   .totals {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .totalValueSales,
+  .totalValuePurchases,
+  .totalValueContributions,
+  .totalValue {
+    font-size: var(--font-size-lg);
   }
 
   .controls {
-    gap: var(--spacing-md);
+    display: none;
+  }
+
+  .mobileFilterButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  .mobileFilterButton:hover {
+    background-color: var(--color-primary-dark);
+  }
+
+  .controlsOpen {
+    display: flex;
+    position: fixed;
+    top: 100px;
+    right: 30px;
+    z-index: 2000;
+  }
+
+  .headerControls {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .headerControls button {
+    background-color: transparent;
+    border: 0;
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+  }
+
+  .headerControls button:hover {
+    background-color: var(--color-background);
   }
 
   .filterRow {
@@ -391,10 +445,6 @@
 }
 
 @media (max-width: 480px) {
-  .sortButtons {
-    flex-direction: column;
-  }
-
   .sortButton {
     justify-content: center;
   }

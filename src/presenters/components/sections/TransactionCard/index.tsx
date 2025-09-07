@@ -65,13 +65,6 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
           )}
 
           <div className={styles.details}>
-            <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>Valor:</span>
-              <span className={styles.amount}>
-                {formatBRL(transaction.value)}
-              </span>
-            </div>
-
             {transaction.items && transaction.items.length > 0 && (
               <div className={styles.detailRow}>
                 <span className={styles.detailLabel}>Itens:</span>
@@ -81,21 +74,28 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
               </div>
             )}
 
-            {transaction.discount && transaction.discount > 0 && (
+            {transaction.discount! > 0 && (
               <div className={styles.detailRow}>
                 <span className={styles.detailLabel}>Desconto:</span>
                 <span className={styles.discount}>
-                  -{formatBRL(transaction.discount)}
+                  -{formatBRL(transaction.discount!)}
                 </span>
               </div>
             )}
+
+            <div className={styles.detailRow}>
+              <span className={styles.detailLabel}>Valor:</span>
+              <span className={styles.amount}>
+                {formatBRL(transaction.value)}
+              </span>
+            </div>
           </div>
         </div>
 
         <div className={styles.cardFooter}>
-          <span className={styles.id}>
+          {/* <span className={styles.id}>
             ID: {transaction.id?.substring(0, 8)}...
-          </span>
+          </span> */}
 
           <button className={styles.detailsButton} onClick={handleViewDetails}>
             Ver Detalhes

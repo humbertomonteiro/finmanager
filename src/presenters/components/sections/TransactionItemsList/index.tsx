@@ -3,6 +3,7 @@ import React from "react";
 import { TransactionItem } from "../../../../domain/entities/Transaction";
 import { Product } from "../../../../domain/entities/Product";
 import styles from "./transactionItemsList.module.css";
+import { formatBRL } from "../../../../utils/formatCurrency";
 
 interface TransactionItemsListProps {
   items: TransactionItem[];
@@ -72,7 +73,7 @@ export const TransactionItemsList: React.FC<TransactionItemsListProps> = ({
                     {product?.name || item.name}
                   </span>
                   <span className={styles.itemUnitPrice}>
-                    R$ {item.unitPrice.toFixed(2)}/un
+                    R$ {formatBRL(item.unitPrice)}/un
                   </span>
                   {product && (
                     <span className={styles.stockInfo}>

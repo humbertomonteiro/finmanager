@@ -23,6 +23,8 @@ const ProductList: React.FC = () => {
   // Estados para paginação
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [showFilters, setShowFilters] = useState(false);
+
   // Resetar para a primeira página quando os filtros mudarem
   useEffect(() => {
     setCurrentPage(1);
@@ -150,13 +152,29 @@ const ProductList: React.FC = () => {
           </p>
         </div>
         <button className={styles.addButton} onClick={() => setShowForm(true)}>
-          <span className={styles.addIcon}>+</span>
           Novo Produto
+        </button>
+
+        <button
+          className={styles.mobileFilterButton}
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          Filtros
         </button>
       </div>
 
       {/* Filtros e controles */}
-      <div className={styles.controls}>
+      <div
+        className={`${styles.controls} ${
+          showFilters ? styles.controlsOpen : ""
+        }`}
+      >
+        {showFilters && (
+          <div className={styles.headerControls}>
+            <h3>Filtros</h3>{" "}
+            <button onClick={() => setShowFilters(false)}>x</button>
+          </div>
+        )}
         <div className={styles.searchBox}>
           <input
             type="text"

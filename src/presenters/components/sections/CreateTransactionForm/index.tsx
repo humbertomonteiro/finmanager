@@ -104,7 +104,7 @@ export const CreateTransactionForm: React.FC<CreateTransactionFormProps> = ({
       unitPrice: unitPrice,
     };
 
-    setItems((prev) => [...prev, newItem]);
+    setItems((prev) => [newItem, ...prev]);
     setQuantity(1);
   };
 

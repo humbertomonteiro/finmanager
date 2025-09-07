@@ -35,7 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, items }) => {
         <nav className={styles.nav}>
           <ul className={styles.navList}>
             {items.map((item) => (
-              <li key={item.id} className={styles.navItem}>
+              <li key={item.id} className={styles.navItem} onClick={onClose}>
                 <button className={styles.navButton} onClick={item.onClick}>
                   {item.icon && (
                     <span className={styles.navIcon}>{item.icon}</span>

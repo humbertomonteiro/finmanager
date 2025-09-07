@@ -22,6 +22,7 @@ const TransactionList: React.FC = () => {
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false);
 
   // Configurar datas padrão (início e fim do mês atual)
   useEffect(() => {
@@ -108,13 +109,6 @@ const TransactionList: React.FC = () => {
   const totals = useMemo(() => {
     return filteredAndSortedTransactions.reduce(
       (acc, transaction) => {
-        // const transactionDate = new Date(transaction.date);
-        // const start = startDate ? new Date(startDate) : null;
-        // const end = endDate ? new Date(endDate) : null;
-        // const isCurrentMonth =
-        //   transactionDate.getMonth() === new Date().getMonth() &&
-        //   transactionDate.getFullYear() === new Date().getFullYear();
-
         if (transaction.type === "sale") {
           acc.sales += transaction.value;
         } else if (transaction.type === "purchase") {
@@ -157,6 +151,17 @@ const TransactionList: React.FC = () => {
     console.log("Visualizar detalhes:", transaction);
   };
 
+  // const clearAllFilters = () => {
+  //   setSearchTerm("");
+  //   setTypeFilter("all");
+  //   const now = new Date();
+  //   const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  //   const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  //   setStartDate(firstDay.toISOString().split("T")[0]);
+  //   setEndDate(lastDay.toISOString().split("T")[0]);
+  //   setShowFilters(false);
+  // };
+
   if (!transactions.length) {
     return (
       <div className={styles.emptyState}>
@@ -167,6 +172,10 @@ const TransactionList: React.FC = () => {
       </div>
     );
   }
+
+  // const toggleFilters = () => {
+  //   setShowFilters(!showFilters);
+  // };
 
   return (
     <div className={styles.container}>
@@ -181,6 +190,13 @@ const TransactionList: React.FC = () => {
             encontradas
           </p>
         </div>
+
+        <button
+          className={styles.mobileFilterButton}
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          Filtros
+        </button>
       </div>
 
       {/* Resumo de totais */}
@@ -215,7 +231,17 @@ const TransactionList: React.FC = () => {
       </div>
 
       {/* Filtros e controles */}
-      <div className={styles.controls}>
+      <div
+        className={`${styles.controls} ${
+          showFilters ? styles.controlsOpen : ""
+        }`}
+      >
+        {showFilters && (
+          <div className={styles.headerControls}>
+            <h3>Filtros</h3>{" "}
+            <button onClick={() => setShowFilters(false)}>x</button>
+          </div>
+        )}
         <div className={styles.searchBox}>
           <input
             type="text"
@@ -314,6 +340,121 @@ const TransactionList: React.FC = () => {
           </div>
         </div>
       </div>
+      {/* <div
+        className={`${styles.controls} ${
+          showFilters ? styles.controlsOpen : ""
+        }`}
+      >
+        <div className={styles.searchBox}>
+          <input
+            type="text"
+            placeholder="Buscar transações por descrição ou ID..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={styles.searchInput}
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className={styles.clearSearch}
+              aria-label="Limpar busca"
+            >
+              ×
+            </button>
+          )}
+        </div>
+
+        <div className={styles.filterRow}>
+          <div className={styles.filterGroup}>
+            <label htmlFor="typeFilter" className={styles.filterLabel}>
+              Tipo:
+            </label>
+            <select
+              id="typeFilter"
+              value={typeFilter}
+              onChange={(e) =>
+                setTypeFilter(
+                  e.target.value as "all" | "sale" | "purchase" | "aporte"
+                )
+              }
+              className={styles.filterSelect}
+            >
+              <option value="all">Todos os tipos</option>
+              <option value="sale">Vendas</option>
+              <option value="purchase">Compras</option>
+              <option value="aporte">Aportes</option>
+            </select>
+          </div>
+
+          <div className={styles.filterGroup}>
+            <label htmlFor="startDate" className={styles.filterLabel}>
+              De:
+            </label>
+            <input
+              type="date"
+              id="startDate"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className={styles.dateInput}
+            />
+          </div>
+
+          <div className={styles.filterGroup}>
+            <label htmlFor="endDate" className={styles.filterLabel}>
+              Até:
+            </label>
+            <input
+              type="date"
+              id="endDate"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className={styles.dateInput}
+            />
+          </div>
+        </div>
+
+        <div className={styles.sortGroup}>
+          <span className={styles.sortLabel}>Ordenar por:</span>
+          <div className={styles.sortButtons}>
+            <button
+              onClick={() => handleSort("date")}
+              className={`${styles.sortButton} ${
+                sortBy === "date" ? styles.active : ""
+              }`}
+            >
+              Data {getSortIcon("date")}
+            </button>
+            <button
+              onClick={() => handleSort("value")}
+              className={`${styles.sortButton} ${
+                sortBy === "value" ? styles.active : ""
+              }`}
+            >
+              Valor {getSortIcon("value")}
+            </button>
+            <button
+              onClick={() => handleSort("type")}
+              className={`${styles.sortButton} ${
+                sortBy === "type" ? styles.active : ""
+              }`}
+            >
+              Tipo {getSortIcon("type")}
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.mobileActions}>
+          <button
+            onClick={clearAllFilters}
+            className={styles.clearFiltersButton}
+          >
+            🗑️ Limpar Filtros
+          </button>
+          <button onClick={toggleFilters} className={styles.applyFiltersButton}>
+            ✅ Aplicar
+          </button>
+        </div>
+      </div> */}
 
       {/* Lista de transações */}
       {paginatedTransactions.length > 0 ? (
