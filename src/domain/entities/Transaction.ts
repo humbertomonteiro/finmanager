@@ -1,4 +1,4 @@
-export type TransactionType = "sale" | "purchase" | "aporte";
+export type TransactionType = "sale" | "purchase" | "aporte" | "service";
 
 export interface TransactionItem {
   productId: string;

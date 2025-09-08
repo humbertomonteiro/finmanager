@@ -27,6 +27,7 @@
     sans-serif;
 
   /* 🔠 Tamanhos de Fonte */
+  --font-size-xxs: 0.69rem; /* 12px */
   --font-size-xs: 0.75rem; /* 12px */
   --font-size-sm: 0.875rem; /* 14px */
   --font-size-md: 1rem; /* 16px */

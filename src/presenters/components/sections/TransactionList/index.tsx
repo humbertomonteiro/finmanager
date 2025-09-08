@@ -1,14 +1,15 @@
-// src/components/sections/TransactionList.tsx
 import React, { useState, useMemo, useEffect } from "react";
 import { useTransaction } from "../../../contexts/TransactionContext";
 import { Transaction } from "../../../../domain/entities/Transaction";
 import styles from "./transactionList.module.css";
 import TransactionCard from "../TransactionCard";
+import { GrTransaction } from "react-icons/gr";
+import { FaArrowDown, FaArrowsUpDown, FaArrowUp } from "react-icons/fa6";
 
-const ITEMS_PER_PAGE = 12;
+const ITEMS_PER_PAGE = 6;
 
 const TransactionList: React.FC = () => {
-  const { transactions, metrics } = useTransaction(); // Add metrics from context
+  const { transactions, metrics } = useTransaction();
   console.log("Transações no TransactionList:", transactions);
   console.log("Métricas no TransactionList:", metrics);
 
@@ -68,7 +69,7 @@ const TransactionList: React.FC = () => {
         matchesDate = matchesDate && transactionDate <= end;
       }
 
-      return matchesType && matchesSearch && matchesDate; // Fixed: Include matchesDate
+      return matchesType && matchesSearch && matchesDate;
     });
 
     // Ordenação
@@ -143,24 +144,13 @@ const TransactionList: React.FC = () => {
   };
 
   const getSortIcon = (field: string) => {
-    if (sortBy !== field) return "↕️";
-    return sortOrder === "asc" ? "↑" : "↓";
+    if (sortBy !== field) return <FaArrowsUpDown />;
+    return sortOrder === "asc" ? <FaArrowUp /> : <FaArrowDown />;
   };
 
   const handleViewDetails = (transaction: Transaction) => {
     console.log("Visualizar detalhes:", transaction);
   };
-
-  // const clearAllFilters = () => {
-  //   setSearchTerm("");
-  //   setTypeFilter("all");
-  //   const now = new Date();
-  //   const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-  //   const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  //   setStartDate(firstDay.toISOString().split("T")[0]);
-  //   setEndDate(lastDay.toISOString().split("T")[0]);
-  //   setShowFilters(false);
-  // };
 
   if (!transactions.length) {
     return (
@@ -173,15 +163,14 @@ const TransactionList: React.FC = () => {
     );
   }
 
-  // const toggleFilters = () => {
-  //   setShowFilters(!showFilters);
-  // };
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.headerContent}>
-          <h2 className={styles.title}>Transações</h2>
+          <h2 className={styles.title}>
+            <GrTransaction />
+            Transações
+          </h2>
           <p className={styles.subtitle}>
             {filteredAndSortedTransactions.length} de {transactions.length}{" "}
             {filteredAndSortedTransactions.length === 1
@@ -340,121 +329,6 @@ const TransactionList: React.FC = () => {
           </div>
         </div>
       </div>
-      {/* <div
-        className={`${styles.controls} ${
-          showFilters ? styles.controlsOpen : ""
-        }`}
-      >
-        <div className={styles.searchBox}>
-          <input
-            type="text"
-            placeholder="Buscar transações por descrição ou ID..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={styles.searchInput}
-          />
-          {searchTerm && (
-            <button
-              onClick={() => setSearchTerm("")}
-              className={styles.clearSearch}
-              aria-label="Limpar busca"
-            >
-              ×
-            </button>
-          )}
-        </div>
-
-        <div className={styles.filterRow}>
-          <div className={styles.filterGroup}>
-            <label htmlFor="typeFilter" className={styles.filterLabel}>
-              Tipo:
-            </label>
-            <select
-              id="typeFilter"
-              value={typeFilter}
-              onChange={(e) =>
-                setTypeFilter(
-                  e.target.value as "all" | "sale" | "purchase" | "aporte"
-                )
-              }
-              className={styles.filterSelect}
-            >
-              <option value="all">Todos os tipos</option>
-              <option value="sale">Vendas</option>
-              <option value="purchase">Compras</option>
-              <option value="aporte">Aportes</option>
-            </select>
-          </div>
-
-          <div className={styles.filterGroup}>
-            <label htmlFor="startDate" className={styles.filterLabel}>
-              De:
-            </label>
-            <input
-              type="date"
-              id="startDate"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className={styles.dateInput}
-            />
-          </div>
-
-          <div className={styles.filterGroup}>
-            <label htmlFor="endDate" className={styles.filterLabel}>
-              Até:
-            </label>
-            <input
-              type="date"
-              id="endDate"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className={styles.dateInput}
-            />
-          </div>
-        </div>
-
-        <div className={styles.sortGroup}>
-          <span className={styles.sortLabel}>Ordenar por:</span>
-          <div className={styles.sortButtons}>
-            <button
-              onClick={() => handleSort("date")}
-              className={`${styles.sortButton} ${
-                sortBy === "date" ? styles.active : ""
-              }`}
-            >
-              Data {getSortIcon("date")}
-            </button>
-            <button
-              onClick={() => handleSort("value")}
-              className={`${styles.sortButton} ${
-                sortBy === "value" ? styles.active : ""
-              }`}
-            >
-              Valor {getSortIcon("value")}
-            </button>
-            <button
-              onClick={() => handleSort("type")}
-              className={`${styles.sortButton} ${
-                sortBy === "type" ? styles.active : ""
-              }`}
-            >
-              Tipo {getSortIcon("type")}
-            </button>
-          </div>
-        </div>
-
-        <div className={styles.mobileActions}>
-          <button
-            onClick={clearAllFilters}
-            className={styles.clearFiltersButton}
-          >
-            🗑️ Limpar Filtros
-          </button>
-          <button onClick={toggleFilters} className={styles.applyFiltersButton}>
-            ✅ Aplicar
-          </button>
-        </div>
-      </div> */}
 
       {/* Lista de transações */}
       {paginatedTransactions.length > 0 ? (

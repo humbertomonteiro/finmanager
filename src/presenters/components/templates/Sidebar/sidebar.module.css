@@ -56,6 +56,9 @@
   padding: var(--spacing-xs);
   border-radius: var(--radius-sm);
   transition: var(--transition-colors);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .closeButton:hover {

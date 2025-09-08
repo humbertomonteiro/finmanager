@@ -4,6 +4,9 @@ import { Transaction } from "../../../../domain/entities/Transaction";
 import styles from "./transactionCard.module.css";
 import { formatBRL } from "../../../../utils/formatCurrency";
 import { TransactionDetails } from "../TransactionDetails";
+import { TbMoneybag, TbReportMoney } from "react-icons/tb";
+import { IoCartOutline } from "react-icons/io5";
+import { GrTransaction } from "react-icons/gr";
 
 interface TransactionCardProps {
   transaction: Transaction;
@@ -19,13 +22,17 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
   const getTypeConfig = (type: string) => {
     switch (type) {
       case "sale":
-        return { label: "Venda", color: "success", icon: "💰" };
+        return { label: "Venda", color: "success", icon: <TbMoneybag /> };
       case "purchase":
-        return { label: "Compra", color: "warning", icon: "🛒" };
+        return { label: "Compra", color: "warning", icon: <IoCartOutline /> };
       case "aporte":
-        return { label: "Aporte", color: "primary", icon: "💎" };
+        return { label: "Aporte", color: "primary", icon: <TbReportMoney /> };
       default:
-        return { label: "Transação", color: "secondary", icon: "📊" };
+        return {
+          label: "Transação",
+          color: "secondary",
+          icon: <GrTransaction />,
+        };
     }
   };
 
@@ -93,10 +100,6 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
         </div>
 
         <div className={styles.cardFooter}>
-          {/* <span className={styles.id}>
-            ID: {transaction.id?.substring(0, 8)}...
-          </span> */}
-
           <button className={styles.detailsButton} onClick={handleViewDetails}>
             Ver Detalhes
           </button>

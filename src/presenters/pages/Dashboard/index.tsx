@@ -7,44 +7,67 @@ import { CreateTransactionForm } from "../../components/sections/CreateTransacti
 import TransactionList from "../../components/sections/TransactionList";
 import styles from "./dashboard.module.css";
 import { ButtonsMobileCreateForm } from "../../components/sections/ButtonsMobileCreateForm";
+import { CreateProductForm } from "../../components/sections/CreateProductForm";
+
+import { MdDashboard } from "react-icons/md";
+import { FaBox } from "react-icons/fa6";
+import { GrTransaction } from "react-icons/gr";
+import { FaPlus } from "react-icons/fa6";
+
+export type ActiveViewProps =
+  | "dashboard"
+  | "transactions"
+  | "products"
+  | "new-transaction"
+  | "new-product";
 
 const Dashboard: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeView, setActiveView] = useState<
-    "dashboard" | "transactions" | "products"
-  >("dashboard");
-  const [showTransactionForm, setShowTransactionForm] = useState(false);
+  const [activeView, setActiveView] = useState<ActiveViewProps>("dashboard");
+  const [dataEditing, setDataEditing] = useState<any>();
+
+  const handleFormCreate = (activeView: ActiveViewProps, dataEditing?: any) => {
+    setActiveView(activeView);
+    if (dataEditing) {
+      setDataEditing(dataEditing);
+    } else {
+      setDataEditing(null);
+    }
+  };
 
   const sidebarItems = [
-    // {
-    //   id: "dashboard",
-    //   label: "Dashboard",
-    //   icon: "📊",
-    //   onClick: () => setActiveView("dashboard"),
-    // },
     {
       id: "dashboard",
       label: "Dashboard",
-      icon: "📊",
-      onClick: () => setActiveView("dashboard"),
+      icon: <MdDashboard />,
+      onClick: () => handleFormCreate("dashboard"),
     },
     {
       id: "products",
       label: "Produtos",
-      icon: "📦",
-      onClick: () => setActiveView("products"),
+      icon: <FaBox />,
+      onClick: () => handleFormCreate("products"),
     },
     {
       id: "new-transaction",
       label: "Nova Transação",
-      icon: "➕",
-      onClick: () => setShowTransactionForm(true),
+      icon: <GrTransaction />,
+      onClick: () => handleFormCreate("new-transaction"),
+    },
+    {
+      id: "new-product",
+      label: "Novo Produto",
+      icon: <FaPlus />,
+      onClick: () => handleFormCreate("new-product"),
     },
   ];
 
   return (
     <div className={styles.dashboard}>
-      <Header onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      <Header
+        onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+        handleFormCreate={handleFormCreate}
+      />
 
       <div className={styles.layout}>
         <Sidebar
@@ -54,18 +77,20 @@ const Dashboard: React.FC = () => {
         />
 
         <main className={styles.content}>
-          {/* {activeView === "dashboard" && <DashboardMetrics />} */}
           {activeView === "dashboard" && <TransactionList />}
-          {activeView === "products" && <ProductList />}
+          {activeView === "products" && (
+            <ProductList handleFormCreate={handleFormCreate} />
+          )}
+          {activeView === "new-transaction" && <CreateTransactionForm />}
+          {activeView === "new-product" && (
+            <CreateProductForm
+              product={dataEditing}
+              handleFormCreate={handleFormCreate}
+            />
+          )}
         </main>
 
-        {showTransactionForm && (
-          <CreateTransactionForm
-            onClose={() => setShowTransactionForm(false)}
-          />
-        )}
-
-        <ButtonsMobileCreateForm />
+        <ButtonsMobileCreateForm setActiveView={setActiveView} />
       </div>
     </div>
   );

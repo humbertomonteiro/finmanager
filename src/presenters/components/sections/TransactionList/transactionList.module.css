@@ -27,6 +27,9 @@
   font-weight: 700;
   color: var(--color-on-surface);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .subtitle {

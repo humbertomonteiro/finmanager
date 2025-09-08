@@ -3,15 +3,16 @@ import React, { useState, useEffect } from "react";
 import { useProduct } from "../../../contexts/ProductContext";
 import { Product } from "../../../../domain/entities/Product";
 import styles from "./createProductForm.module.css";
+import { ActiveViewProps } from "../../../pages/Dashboard";
 
 interface CreateProductFormProps {
   product?: Product;
-  onClose: () => void;
+  handleFormCreate: (activeView: ActiveViewProps, dataEditing?: any) => void;
 }
 
 export const CreateProductForm: React.FC<CreateProductFormProps> = ({
   product,
-  onClose,
+  handleFormCreate,
 }) => {
   const { createProduct, updateProduct } = useProduct();
 
@@ -34,6 +35,13 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
       setSalePrice(product.salePrice);
       setSupplier(product.supplier || "");
       setDescription(product.description || "");
+    } else {
+      setName("");
+      setCode("");
+      setCostPrice("");
+      setSalePrice("");
+      setSupplier("");
+      setDescription("");
     }
   }, [product]);
 
@@ -58,8 +66,6 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
       } else {
         await createProduct(productData);
       }
-
-      onClose();
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -86,13 +92,6 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
           <h2 className={styles.formTitle}>
             {isEditing ? "Editar Produto" : "Novo Produto"}
           </h2>
-          <button
-            className={styles.closeButton}
-            onClick={onClose}
-            aria-label="Fechar"
-          >
-            <span className={styles.closeIcon}>×</span>
-          </button>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -111,23 +110,6 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
                 required
               />
             </div>
-
-            {/* <div className={styles.formGroup}>
-              <label htmlFor="code" className={styles.label}>
-                Código *
-              </label>
-              <input
-                type="number"
-                id="code"
-                placeholder="Ex: 1001"
-                value={code}
-                onChange={(e) =>
-                  setCode(e.target.value === "" ? "" : Number(e.target.value))
-                }
-                className={styles.input}
-                required
-              />
-            </div> */}
 
             <div className={styles.formGroup}>
               <label htmlFor="costPrice" className={styles.label}>
@@ -170,24 +152,6 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
                 required
               />
             </div>
-
-            {/* <div className={styles.formGroup}>
-              <label htmlFor="stock" className={styles.label}>
-                Estoque *
-              </label>
-              <input
-                type="number"
-                id="stock"
-                placeholder="0"
-                min="0"
-                value={stock}
-                onChange={(e) =>
-                  setStock(e.target.value === "" ? "" : Number(e.target.value))
-                }
-                className={styles.input}
-                required
-              />
-            </div> */}
 
             <div className={styles.formGroup}>
               <label htmlFor="supplier" className={styles.label}>
@@ -247,9 +211,8 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
 
           <div className={styles.formActions}>
             <button
-              type="button"
+              onClick={() => handleFormCreate("products")}
               className={styles.cancelButton}
-              onClick={onClose}
             >
               Cancelar
             </button>

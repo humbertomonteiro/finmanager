@@ -1,10 +1,12 @@
 import React from "react";
 import styles from "./sidebar.module.css";
 
+import { IoClose } from "react-icons/io5";
+
 interface SidebarItem {
   id: string;
   label: string;
-  icon?: string;
+  icon?: any;
   onClick: () => void;
 }
 
@@ -28,7 +30,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, items }) => {
             onClick={onClose}
             aria-label="Fechar menu"
           >
-            <span className={styles.closeIcon}>×</span>
+            <span className={styles.closeIcon}>
+              <IoClose />
+            </span>
           </button>
         </div>
 

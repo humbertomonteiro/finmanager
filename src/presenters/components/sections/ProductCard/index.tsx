@@ -3,13 +3,18 @@ import { Product } from "../../../../domain/entities/Product";
 import styles from "./productCard.module.css";
 import { useProduct } from "../../../contexts/ProductContext";
 import { useState } from "react";
+import { MdDelete, MdModeEdit } from "react-icons/md";
+import { ActiveViewProps } from "../../../pages/Dashboard";
 
 interface ProductCardProps {
   product: Product;
-  onEdit: (product: Product) => void;
+  handleFormCreate: (activeView: ActiveViewProps, dataEditing?: any) => void;
 }
 
-export default function ProductCard({ product, onEdit }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  handleFormCreate,
+}: ProductCardProps) {
   const { deleteProduct } = useProduct();
   const [error, setError] = useState<string | null>(null);
   const profit = product.salePrice - product.costPrice;
@@ -35,17 +40,17 @@ export default function ProductCard({ product, onEdit }: ProductCardProps) {
         <div className={styles.actions}>
           <button
             className={styles.editButton}
-            onClick={() => onEdit(product)}
+            onClick={() => handleFormCreate("new-product", product)}
             aria-label="Editar produto"
           >
-            ✏️
+            <MdModeEdit />
           </button>
           <button
             className={styles.deleteButton}
             onClick={handleDelete}
             aria-label="Excluir produto"
           >
-            🗑️
+            <MdDelete />
           </button>
         </div>
       </div>

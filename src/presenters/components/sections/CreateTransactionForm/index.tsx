@@ -11,13 +11,16 @@ import styles from "./createTransactionForm.module.css";
 import { ProductSearchInput } from "../ProductSearchInput";
 import { TransactionItemsList } from "../TransactionItemsList";
 
-interface CreateTransactionFormProps {
-  onClose: () => void;
-}
+// interface CreateTransactionFormProps {
+//   onClose: () => void;
+// }
 
-export const CreateTransactionForm: React.FC<CreateTransactionFormProps> = ({
-  onClose,
-}) => {
+// export const CreateTransactionForm: React.FC<CreateTransactionFormProps> = (
+export const CreateTransactionForm = (
+  {
+    // onClose,
+  }
+) => {
   const { createTransaction } = useTransaction();
   const { products, fetchProducts } = useProduct();
 
@@ -69,7 +72,7 @@ export const CreateTransactionForm: React.FC<CreateTransactionFormProps> = ({
 
       await createTransaction(transaction);
       await fetchProducts();
-      onClose();
+      // onClose();
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -133,13 +136,13 @@ export const CreateTransactionForm: React.FC<CreateTransactionFormProps> = ({
       <div className={styles.formContainer}>
         <div className={styles.formHeader}>
           <h2 className={styles.formTitle}>Nova Transação</h2>
-          <button
+          {/* <button
             className={styles.closeButton}
             onClick={onClose}
             aria-label="Fechar"
           >
             <span className={styles.closeIcon}>×</span>
-          </button>
+          </button> */}
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -214,7 +217,7 @@ export const CreateTransactionForm: React.FC<CreateTransactionFormProps> = ({
               </div>
             )}
 
-            {type !== "aporte" && (
+            {type !== "aporte" && type !== "service" && (
               <>
                 <div className={styles.formGroup}>
                   <label htmlFor="product" className={styles.label}>
@@ -300,13 +303,13 @@ export const CreateTransactionForm: React.FC<CreateTransactionFormProps> = ({
           {error && <div className={styles.errorMessage}>{error}</div>}
 
           <div className={styles.formActions}>
-            <button
+            {/* <button
               type="button"
               className={styles.cancelButton}
               onClick={onClose}
             >
               Cancelar
-            </button>
+            </button> */}
             <button
               type="submit"
               className={styles.submitButton}

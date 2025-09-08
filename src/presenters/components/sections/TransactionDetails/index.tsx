@@ -4,6 +4,10 @@ import { Transaction } from "../../../../domain/entities/Transaction";
 import { formatBRL } from "../../../../utils/formatCurrency";
 import styles from "./transactionDetails.module.css";
 import { useTransaction } from "../../../contexts/TransactionContext";
+import { TbMoneybag, TbReportMoney } from "react-icons/tb";
+import { IoCartOutline, IoClose } from "react-icons/io5";
+import { GrTransaction } from "react-icons/gr";
+import { MdDelete, MdModeEdit } from "react-icons/md";
 
 interface TransactionDetailsProps {
   transaction: Transaction;
@@ -22,13 +26,17 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   const getTypeConfig = (type: string) => {
     switch (type) {
       case "sale":
-        return { label: "Venda", color: "success", icon: "💰" };
+        return { label: "Venda", color: "success", icon: <TbMoneybag /> };
       case "purchase":
-        return { label: "Compra", color: "warning", icon: "🛒" };
+        return { label: "Compra", color: "warning", icon: <IoCartOutline /> };
       case "aporte":
-        return { label: "Aporte", color: "primary", icon: "💎" };
+        return { label: "Aporte", color: "primary", icon: <TbReportMoney /> };
       default:
-        return { label: "Transação", color: "secondary", icon: "📊" };
+        return {
+          label: "Transação",
+          color: "secondary",
+          icon: <GrTransaction />,
+        };
     }
   };
 
@@ -57,7 +65,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
         <div className={styles.header}>
           <h2 className={styles.title}>Detalhes da Transação</h2>
           <button className={styles.closeButton} onClick={onClose}>
-            ×
+            <IoClose />
           </button>
         </div>
 
@@ -84,11 +92,11 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
                   {formatBRL(transaction.value)}
                 </span>
               </div>
-              {transaction.discount && transaction.discount > 0 && (
+              {transaction.discount! > 0 && (
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>Desconto:</span>
                   <span className={styles.infoValueDiscount}>
-                    -{formatBRL(transaction.discount)}
+                    -{formatBRL(transaction.discount!)}
                   </span>
                 </div>
               )}
@@ -158,13 +166,14 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
             className={styles.editButton}
             onClick={() => onEdit(transaction)}
           >
-            ✏️ Editar
+            <MdModeEdit /> Editar
           </button>
           <button className={styles.deleteButton} onClick={handleDelete}>
-            🗑️ Excluir
+            <MdDelete />
+            Excluir
           </button>
           <button className={styles.cancelButton} onClick={onClose}>
-            Fechar
+            <IoClose /> Fechar
           </button>
         </div>
       </div>

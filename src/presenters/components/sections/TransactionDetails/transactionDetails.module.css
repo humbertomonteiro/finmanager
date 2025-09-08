@@ -46,6 +46,8 @@
   color: var(--color-on-surface-variant);
   padding: var(--spacing-xs);
   border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
 }
 
 .closeButton:hover {
@@ -212,6 +214,9 @@
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition-colors);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 .editButton {
@@ -234,9 +239,9 @@
 
 /* Responsividade */
 @media (max-width: 768px) {
-  .actions {
+  /* .actions {
     flex-direction: column;
-  }
+  } */
 
   .editButton,
   .deleteButton {

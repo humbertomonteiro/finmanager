@@ -1,19 +1,29 @@
 import styles from "./buttonsMobileCreateForm.module.css";
 import { useState } from "react";
-import { CreateProductForm } from "../CreateProductForm";
-import { CreateTransactionForm } from "../CreateTransactionForm";
 
-export function ButtonsMobileCreateForm() {
+interface ButtonMobileCreateFormProps {
+  setActiveView: React.Dispatch<
+    React.SetStateAction<
+      | "dashboard"
+      | "transactions"
+      | "products"
+      | "new-transaction"
+      | "new-product"
+    >
+  >;
+}
+
+export function ButtonsMobileCreateForm({
+  setActiveView,
+}: ButtonMobileCreateFormProps) {
   const [showButtons, setShowButtons] = useState(false);
-  const [showCreateProduct, setShowCreateProduct] = useState(false);
-  const [showCreateTransaction, setShowCreateTransaction] = useState(false);
 
   const handleShowCreateProduct = () => {
-    setShowCreateProduct(false);
+    setActiveView("new-product");
   };
 
   const handleShowCreateTransaction = () => {
-    setShowCreateTransaction(false);
+    setActiveView("new-transaction");
   };
   return (
     <div className={styles.container}>
@@ -25,19 +35,13 @@ export function ButtonsMobileCreateForm() {
       </button>
       {showButtons && (
         <div className={styles.buttons}>
-          <button onClick={() => setShowCreateProduct(true)}>
+          <button onClick={handleShowCreateProduct}>
             Cadastrar novo Produto
           </button>
-          <button onClick={() => setShowCreateTransaction(true)}>
+          <button onClick={handleShowCreateTransaction}>
             Adicionar Transação
           </button>
         </div>
-      )}
-      {showCreateProduct && (
-        <CreateProductForm onClose={handleShowCreateProduct} />
-      )}
-      {showCreateTransaction && (
-        <CreateTransactionForm onClose={handleShowCreateTransaction} />
       )}
     </div>
   );

@@ -1,17 +1,19 @@
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useProduct } from "../../../contexts/ProductContext";
-import { Product } from "../../../../domain/entities/Product";
 import styles from "./productList.module.css";
 import ProductCard from "../ProductCard";
-import { CreateProductForm } from "../CreateProductForm";
+import { FaArrowDown, FaArrowsUpDown, FaArrowUp, FaBox } from "react-icons/fa6";
+import { ActiveViewProps } from "../../../pages/Dashboard";
+
+interface ProductListProps {
+  handleFormCreate: (activeView: ActiveViewProps, dataEditing?: any) => void;
+}
 
 const ITEMS_PER_PAGE = 6;
 
-const ProductList: React.FC = () => {
+const ProductList = ({ handleFormCreate }: ProductListProps) => {
   const { products } = useProduct();
-  const [showForm, setShowForm] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-
+  // const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   // Estados para filtros
   const [searchTerm, setSearchTerm] = useState("");
   const [stockFilter, setStockFilter] = useState<"all" | "low" | "out">("all");
@@ -29,16 +31,6 @@ const ProductList: React.FC = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, stockFilter, sortBy, sortOrder]);
-
-  const handleEdit = (product: Product) => {
-    setEditingProduct(product);
-    setShowForm(true);
-  };
-
-  const handleCloseForm = () => {
-    setShowForm(false);
-    setEditingProduct(null);
-  };
 
   // Filtrar e ordenar produtos
   const filteredAndSortedProducts = useMemo(() => {
@@ -117,8 +109,8 @@ const ProductList: React.FC = () => {
   };
 
   const getSortIcon = (field: string) => {
-    if (sortBy !== field) return "↕️";
-    return sortOrder === "asc" ? "↑" : "↓";
+    if (sortBy !== field) return <FaArrowsUpDown />;
+    return sortOrder === "asc" ? <FaArrowUp /> : <FaArrowDown />;
   };
 
   if (!products.length) {
@@ -129,7 +121,7 @@ const ProductList: React.FC = () => {
           <p>Comece adicionando seu primeiro produto ao sistema.</p>
           <button
             className={styles.primaryButton}
-            onClick={() => setShowForm(true)}
+            onClick={() => handleFormCreate("new-product")}
           >
             Adicionar Primeiro Produto
           </button>
@@ -142,7 +134,10 @@ const ProductList: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.headerContent}>
-          <h2 className={styles.title}>Produtos</h2>
+          <h2 className={styles.title}>
+            <FaBox />
+            Produtos
+          </h2>
           <p className={styles.subtitle}>
             {filteredAndSortedProducts.length} de {products.length}{" "}
             {filteredAndSortedProducts.length === 1 ? "produto" : "produtos"}{" "}
@@ -151,7 +146,10 @@ const ProductList: React.FC = () => {
               : "cadastrados"}
           </p>
         </div>
-        <button className={styles.addButton} onClick={() => setShowForm(true)}>
+        <button
+          className={styles.addButton}
+          onClick={() => handleFormCreate("new-product")}
+        >
           Novo Produto
         </button>
 
@@ -259,7 +257,7 @@ const ProductList: React.FC = () => {
               <ProductCard
                 key={product.id}
                 product={product}
-                onEdit={handleEdit}
+                handleFormCreate={handleFormCreate}
               />
             ))}
           </div>
@@ -346,13 +344,6 @@ const ProductList: React.FC = () => {
             Limpar filtros
           </button>
         </div>
-      )}
-
-      {showForm && (
-        <CreateProductForm
-          product={editingProduct || undefined}
-          onClose={handleCloseForm}
-        />
       )}
     </div>
   );

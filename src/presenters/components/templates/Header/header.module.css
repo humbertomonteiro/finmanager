@@ -35,12 +35,16 @@
 
 .menuIcon {
   font-size: var(--font-size-xxl);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .title {
   font-size: var(--font-size-xl);
   font-weight: 600;
   color: var(--color-on-surface);
+  cursor: pointer;
 }
 
 .headerEnd {
