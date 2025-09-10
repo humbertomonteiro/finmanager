@@ -1,0 +1,214 @@
+/* src/components/sections/metrics.module.css */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.metricCard {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metricCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.metricTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0 0 var(--spacing-md) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.metricValue {
+  font-size: var(--font-size-xxl);
+  font-weight: 700;
+  margin: 0 0 var(--spacing-md) 0;
+  line-height: 1.2;
+}
+
+.metricValue.positive {
+  color: var(--color-success);
+}
+
+.metricValue.negative {
+  color: var(--color-error);
+}
+
+.metricValue.expense {
+  color: var(--color-warning);
+}
+
+.breakdown {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--spacing-md);
+}
+
+.breakdownItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xs) 0;
+}
+
+.breakdownLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface-variant);
+  font-weight: 500;
+}
+
+.breakdownValue {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.breakdownValue.positive {
+  color: var(--color-success);
+}
+
+.breakdownValue.negative {
+  color: var(--color-error);
+}
+
+/* Indicadores visuais */
+.metricCard:nth-child(1) {
+  border-left: 4px solid var(--color-success);
+}
+
+.metricCard:nth-child(2) {
+  border-left: 4px solid var(--color-warning);
+}
+
+.metricCard:nth-child(3) {
+  border-left: 4px solid var(--color-primary);
+}
+
+/* Badge para valores positivos/negativos */
+.valueBadge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  margin-left: var(--spacing-xs);
+}
+
+.valueBadge.positive {
+  background-color: var(--color-success);
+  color: var(--color-on-primary);
+}
+
+.valueBadge.negative {
+  background-color: var(--color-error);
+  color: var(--color-on-primary);
+}
+
+/* Tooltip para informações adicionais */
+.tooltip {
+  position: relative;
+  cursor: help;
+}
+
+.tooltip:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--spacing-sm);
+  background: var(--color-neutral-dark);
+  color: var(--color-on-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .metrics {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .metricValue {
+    font-size: var(--font-size-xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .metricCard {
+    padding: var(--spacing-md);
+  }
+
+  .metricValue {
+    font-size: var(--font-size-lg);
+  }
+
+  .breakdownItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .breakdownValue {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .metricTitle {
+    font-size: var(--font-size-md);
+  }
+
+  .metricValue {
+    font-size: var(--font-size-xl);
+  }
+
+  .breakdownLabel,
+  .breakdownValue {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Animações suaves */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.metricCard {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.metricCard:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.metricCard:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.metricCard:nth-child(3) {
+  animation-delay: 0.3s;
+}

@@ -4,17 +4,6 @@ import type { ITransactionRepository } from "../interfaces/TransactionRepository
 export class TransactionService {
   constructor(private readonly transactionRepository: ITransactionRepository) {}
 
-  // async save(transaction: Transaction) {
-  //   try {
-  //     const transactionId = await this.transactionRepository.save(transaction);
-
-  //     return transactionId;
-  //   } catch (error) {
-  //     console.log("Error ao salvar transação");
-  //     throw new Error(`${error}`);
-  //   }
-  // }
-
   async getId(id: string): Promise<Transaction> {
     try {
       const transaction = await this.transactionRepository.getById(id);
@@ -53,13 +42,4 @@ export class TransactionService {
       throw new Error(`${error}`);
     }
   }
-
-  // async delete(id: string) {
-  //   try {
-  //     await this.transactionRepository.delete(id);
-  //   } catch (error) {
-  //     console.log("Error ao deletar transações, erro: " + error);
-  //     throw new Error(`${error}`);
-  //   }
-  // }
 }

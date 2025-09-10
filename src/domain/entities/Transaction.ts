@@ -1,4 +1,9 @@
-export type TransactionType = "sale" | "purchase" | "aporte" | "service";
+export type TransactionType =
+  | "sale"
+  | "purchase"
+  | "aporte"
+  | "service"
+  | "payment";
 
 export interface TransactionItem {
   productId: string;
@@ -25,7 +30,6 @@ export class Transaction {
       ...props,
       date: props.date || new Date(),
     };
-
     this.validate();
   }
 
@@ -34,7 +38,7 @@ export class Transaction {
       throw new Error("Value must be greater than 0");
     }
 
-    if (!["sale", "purchase", "aporte"].includes(this.props.type)) {
+    if (!["sale", "purchase", "aporte", "service"].includes(this.props.type)) {
       throw new Error("Invalid transaction type. ");
     }
 

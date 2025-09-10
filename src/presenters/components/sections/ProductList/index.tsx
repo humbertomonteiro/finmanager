@@ -13,8 +13,6 @@ const ITEMS_PER_PAGE = 6;
 
 const ProductList = ({ handleFormCreate }: ProductListProps) => {
   const { products } = useProduct();
-  // const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  // Estados para filtros
   const [searchTerm, setSearchTerm] = useState("");
   const [stockFilter, setStockFilter] = useState<"all" | "low" | "out">("all");
   const [sortBy, setSortBy] = useState<"name" | "code" | "price" | "stock">(

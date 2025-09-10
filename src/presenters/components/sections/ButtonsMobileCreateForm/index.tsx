@@ -1,5 +1,6 @@
 import styles from "./buttonsMobileCreateForm.module.css";
 import { useState } from "react";
+import { FaPlus, FaMinus } from "react-icons/fa6";
 
 interface ButtonMobileCreateFormProps {
   setActiveView: React.Dispatch<
@@ -19,10 +20,12 @@ export function ButtonsMobileCreateForm({
   const [showButtons, setShowButtons] = useState(false);
 
   const handleShowCreateProduct = () => {
+    setShowButtons(false);
     setActiveView("new-product");
   };
 
   const handleShowCreateTransaction = () => {
+    setShowButtons(false);
     setActiveView("new-transaction");
   };
   return (
@@ -31,7 +34,7 @@ export function ButtonsMobileCreateForm({
         className={styles.mainButton}
         onClick={() => setShowButtons(!showButtons)}
       >
-        +
+        {showButtons ? <FaMinus /> : <FaPlus />}
       </button>
       {showButtons && (
         <div className={styles.buttons}>

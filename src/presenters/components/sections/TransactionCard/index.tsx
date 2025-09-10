@@ -7,15 +7,16 @@ import { TransactionDetails } from "../TransactionDetails";
 import { TbMoneybag, TbReportMoney } from "react-icons/tb";
 import { IoCartOutline } from "react-icons/io5";
 import { GrTransaction } from "react-icons/gr";
+import { ActiveViewProps } from "../../../pages/Dashboard";
 
 interface TransactionCardProps {
   transaction: Transaction;
-  onEdit: (transaction: Transaction) => void;
+  handleFormCreate: (activeView: ActiveViewProps, dataEditing?: any) => void;
 }
 
 const TransactionCard: React.FC<TransactionCardProps> = ({
   transaction,
-  onEdit,
+  handleFormCreate,
 }) => {
   const [showDetails, setShowDetails] = useState(false);
 
@@ -109,7 +110,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
       {showDetails && (
         <TransactionDetails
           transaction={transaction}
-          onEdit={onEdit}
+          handleFormCreate={handleFormCreate}
           // onDelete={onDelete}
           onClose={handleCloseDetails}
         />

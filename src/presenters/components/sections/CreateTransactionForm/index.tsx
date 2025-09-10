@@ -1,5 +1,5 @@
 // src/components/sections/CreateTransactionForm.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTransaction } from "../../../contexts/TransactionContext";
 import { useProduct } from "../../../contexts/ProductContext";
 import {
@@ -10,18 +10,18 @@ import {
 import styles from "./createTransactionForm.module.css";
 import { ProductSearchInput } from "../ProductSearchInput";
 import { TransactionItemsList } from "../TransactionItemsList";
+import { ActiveViewProps } from "../../../pages/Dashboard";
 
-// interface CreateTransactionFormProps {
-//   onClose: () => void;
-// }
+interface CreateTransactionFormProps {
+  transaction?: Transaction;
+  handleFormCreate: (activeView: ActiveViewProps, dataEditing?: any) => void;
+}
 
-// export const CreateTransactionForm: React.FC<CreateTransactionFormProps> = (
-export const CreateTransactionForm = (
-  {
-    // onClose,
-  }
-) => {
-  const { createTransaction } = useTransaction();
+export const CreateTransactionForm = ({
+  transaction,
+  handleFormCreate,
+}: CreateTransactionFormProps) => {
+  const { createTransaction, updateTransaction } = useTransaction();
   const { products, fetchProducts } = useProduct();
 
   const [type, setType] = useState<TransactionType>("sale");
@@ -35,6 +35,26 @@ export const CreateTransactionForm = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [quantity, setQuantity] = useState(1);
+
+  const isEditing = !!transaction;
+
+  useEffect(() => {
+    if (transaction) {
+      setType(transaction.type);
+      setDescription(transaction.description || "");
+      setValue(transaction.value);
+      setDiscount(transaction.discount || "");
+      setDate(new Date(transaction.date).toISOString().split("T")[0]);
+      setItems(transaction.items || []);
+    } else {
+      setType("sale");
+      setDescription("");
+      setValue("");
+      setDiscount("");
+      setDate(new Date().toISOString().split("T")[0]);
+      setItems([]);
+    }
+  }, [transaction]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,24 +75,30 @@ export const CreateTransactionForm = (
         }
       }
 
-      const transaction = new Transaction({
+      const transactionData = new Transaction({
+        id: isEditing ? transaction.id : undefined,
         type,
         description: description || undefined,
         value:
-          type === "aporte"
-            ? Number(value)
+          type === "aporte" || type === "service"
+            ? Number(value) - Number(discount || 0) // Aplica desconto também para service
             : items.reduce(
                 (acc, item) => acc + item.quantity * item.unitPrice,
                 0
               ) - Number(discount || 0),
         date: new Date(date),
-        items: type === "aporte" ? [] : items,
+        items: type === "aporte" || type === "service" ? [] : items,
         discount: Number(discount),
       });
 
-      await createTransaction(transaction);
+      if (isEditing) {
+        await updateTransaction(transactionData);
+      } else {
+        await createTransaction(transactionData);
+      }
+
       await fetchProducts();
-      // onClose();
+      handleFormCreate("dashboard");
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -93,8 +119,8 @@ export const CreateTransactionForm = (
   };
 
   const handleProductSelect = (product: any) => {
-    if (type === "aporte") {
-      setError("Transações de aporte não podem ter itens de produto");
+    if (type === "aporte" || type === "service") {
+      setError("Transações de aporte e serviço não podem ter itens de produto");
       return;
     }
 
@@ -115,56 +141,58 @@ export const CreateTransactionForm = (
     setType(newType);
 
     // Limpa itens e valores quando muda o tipo
-    if (newType === "aporte") {
+    if (newType === "aporte" || newType === "service") {
       setItems([]);
       setDiscount("");
+      setValue(""); // Limpa o valor também
     } else {
       setValue("");
+      setDiscount("");
     }
   };
 
-  // Calcular valores
+  // Calcular valores - CORRIGIDO
   const subtotal = items.reduce(
     (acc, item) => acc + item.quantity * item.unitPrice,
     0
   );
   const totalValue =
-    type === "aporte" ? Number(value) : subtotal - Number(discount || 0);
+    type === "aporte" || type === "service"
+      ? Number(value) - Number(discount || 0) // Inclui desconto para service
+      : subtotal - Number(discount || 0);
 
   return (
     <div className={styles.overlay}>
       <div className={styles.formContainer}>
         <div className={styles.formHeader}>
-          <h2 className={styles.formTitle}>Nova Transação</h2>
-          {/* <button
-            className={styles.closeButton}
-            onClick={onClose}
-            aria-label="Fechar"
-          >
-            <span className={styles.closeIcon}>×</span>
-          </button> */}
+          <h2 className={styles.formTitle}>
+            {isEditing ? "Editar Transação" : "Nova Transação"}
+          </h2>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGrid}>
-            <div className={styles.formGroup}>
-              <label htmlFor="type" className={styles.label}>
-                Tipo de Transação *
-              </label>
-              <select
-                id="type"
-                value={type}
-                onChange={(e) =>
-                  handleTypeChange(e.target.value as TransactionType)
-                }
-                className={styles.select}
-                required
-              >
-                <option value="sale">Venda</option>
-                <option value="purchase">Compra</option>
-                <option value="aporte">Aporte</option>
-              </select>
-            </div>
+            {!isEditing && (
+              <div className={styles.formGroup}>
+                <label htmlFor="type" className={styles.label}>
+                  Tipo de Transação *
+                </label>
+                <select
+                  id="type"
+                  value={type}
+                  onChange={(e) =>
+                    handleTypeChange(e.target.value as TransactionType)
+                  }
+                  className={styles.select}
+                  required
+                >
+                  <option value="sale">Venda</option>
+                  <option value="purchase">Compra</option>
+                  <option value="aporte">Aporte</option>
+                  <option value="service">Serviço</option>
+                </select>
+              </div>
+            )}
 
             <div className={styles.formGroup}>
               <label htmlFor="date" className={styles.label}>
@@ -180,7 +208,27 @@ export const CreateTransactionForm = (
               />
             </div>
 
-            {type !== "aporte" && (
+            {(type === "aporte" || type === "service") && (
+              <div className={styles.formGroup}>
+                <label htmlFor="value" className={styles.label}>
+                  Valor do {type === "service" ? "Serviço" : "Aporte"} (R$) *
+                </label>
+                <input
+                  type="number"
+                  id="value"
+                  placeholder="0,00"
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  className={styles.input}
+                  min="0"
+                  // step="0.01"
+                  required
+                />
+              </div>
+            )}
+
+            {/* Permitir desconto para todos os tipos exceto os que não fazem sentido */}
+            {(type === "sale" || type === "purchase" || type === "service") && (
               <div className={styles.formGroup}>
                 <label htmlFor="discount" className={styles.label}>
                   Desconto (R$)
@@ -192,32 +240,14 @@ export const CreateTransactionForm = (
                   value={discount}
                   onChange={(e) => setDiscount(e.target.value)}
                   className={styles.input}
-                  step="0.01"
                   min="0"
+                  // step="0.01"
                 />
               </div>
             )}
 
-            {type === "aporte" && (
-              <div className={styles.formGroup}>
-                <label htmlFor="value" className={styles.label}>
-                  Valor do Aporte (R$) *
-                </label>
-                <input
-                  type="number"
-                  id="value"
-                  placeholder="0,00"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  className={styles.input}
-                  step="0.01"
-                  min="0"
-                  required
-                />
-              </div>
-            )}
-
-            {type !== "aporte" && type !== "service" && (
+            {/* Mostrar campos de produtos apenas para vendas e compras */}
+            {(type === "sale" || type === "purchase") && !isEditing && (
               <>
                 <div className={styles.formGroup}>
                   <label htmlFor="product" className={styles.label}>
@@ -272,7 +302,8 @@ export const CreateTransactionForm = (
           </div>
 
           <div className={styles.summary}>
-            {type !== "aporte" && (
+            {/* Mostrar subtotal apenas para vendas e compras */}
+            {(type === "sale" || type === "purchase") && (
               <div className={styles.summaryRow}>
                 <span className={styles.summaryLabel}>Subtotal:</span>
                 <span className={styles.summaryValue}>
@@ -281,7 +312,8 @@ export const CreateTransactionForm = (
               </div>
             )}
 
-            {type !== "aporte" && Number(discount) > 0 && (
+            {/* Mostrar desconto apenas se houver e for aplicável */}
+            {Number(discount) > 0 && type !== "aporte" && (
               <div className={styles.summaryRow}>
                 <span className={styles.summaryLabel}>Desconto:</span>
                 <span className={styles.summaryDiscount}>
@@ -291,9 +323,7 @@ export const CreateTransactionForm = (
             )}
 
             <div className={styles.summaryRow}>
-              <span className={styles.summaryLabel}>
-                {type === "aporte" ? "Valor do Aporte:" : "Valor Total:"}
-              </span>
+              <span className={styles.summaryLabel}>Valor Total:</span>
               <span className={styles.summaryTotal}>
                 R$ {totalValue.toFixed(2)}
               </span>
@@ -303,19 +333,24 @@ export const CreateTransactionForm = (
           {error && <div className={styles.errorMessage}>{error}</div>}
 
           <div className={styles.formActions}>
-            {/* <button
+            <button
               type="button"
               className={styles.cancelButton}
-              onClick={onClose}
+              onClick={() => handleFormCreate("dashboard")}
             >
               Cancelar
-            </button> */}
+            </button>
             <button
               type="submit"
               className={styles.submitButton}
-              disabled={loading || (type !== "aporte" && items.length === 0)}
+              disabled={
+                loading ||
+                (type !== "aporte" && type !== "service" && items.length === 0)
+              }
             >
-              {loading ? "Processando..." : "Criar Transação"}
+              {loading
+                ? "Processando..."
+                : (isEditing ? "Atualizar" : "Criar") + " Transação"}
             </button>
           </div>
         </form>

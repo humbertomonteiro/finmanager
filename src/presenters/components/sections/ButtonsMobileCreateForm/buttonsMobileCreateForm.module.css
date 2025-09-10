@@ -7,23 +7,27 @@
 }
 
 .mainButton {
-  padding: 0.6rem var(--spacing-md);
-  border-radius: var(--radius-full);
-  border: 0;
   cursor: pointer;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-dark);
   font-size: var(--font-size-xxl);
   color: var(--color-on-primary);
+  height: 60px;
+  width: 60px;
+  border: 0;
+  border-radius: var(--radius-full);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   transition: 0.3s all;
 }
 
 .mainButton:hover {
-  transform: scale(1.2);
+  transform: scale(1.08);
 }
 
 .buttons {
   position: fixed;
-  bottom: 110px;
+  bottom: 120px;
   right: 30px;
   display: flex;
   flex-direction: column;
@@ -35,8 +39,13 @@
   border: 1px solid var(--color-border);
   cursor: pointer;
   border-radius: var(--radius-sm);
-  background-color: var(--color-secondary);
+  background-color: var(--color-primary-dark);
   color: var(--color-on-primary);
+  transition: 0.3s all;
+}
+
+.buttons button:hover {
+  background-color: var(--color-primary);
 }
 
 @media (max-width: 768px) {

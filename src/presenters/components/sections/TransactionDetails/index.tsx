@@ -4,24 +4,26 @@ import { Transaction } from "../../../../domain/entities/Transaction";
 import { formatBRL } from "../../../../utils/formatCurrency";
 import styles from "./transactionDetails.module.css";
 import { useTransaction } from "../../../contexts/TransactionContext";
+import { useProduct } from "../../../contexts/ProductContext";
 import { TbMoneybag, TbReportMoney } from "react-icons/tb";
 import { IoCartOutline, IoClose } from "react-icons/io5";
 import { GrTransaction } from "react-icons/gr";
 import { MdDelete, MdModeEdit } from "react-icons/md";
+import { ActiveViewProps } from "../../../pages/Dashboard";
 
 interface TransactionDetailsProps {
   transaction: Transaction;
-  onEdit: (transaction: Transaction) => void;
+  handleFormCreate: (activeView: ActiveViewProps, dataEditing?: any) => void;
   onClose: () => void;
 }
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   transaction,
-  onEdit,
-  // onDelete,
+  handleFormCreate,
   onClose,
 }) => {
   const { deleteTransaction } = useTransaction();
+  const { fetchProducts } = useProduct();
   const [error, setError] = useState<null | string>(null);
   const getTypeConfig = (type: string) => {
     switch (type) {
@@ -51,6 +53,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
     if (window.confirm("Tem certeza que deseja excluir esta transação?")) {
       try {
         await deleteTransaction(transaction);
+        fetchProducts();
         setError(null);
       } catch (error) {
         setError(`${error}`);
@@ -164,7 +167,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
         <div className={styles.actions}>
           <button
             className={styles.editButton}
-            onClick={() => onEdit(transaction)}
+            onClick={() => handleFormCreate("new-transaction", transaction)}
           >
             <MdModeEdit /> Editar
           </button>

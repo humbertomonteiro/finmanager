@@ -66,6 +66,7 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
       } else {
         await createProduct(productData);
       }
+      handleFormCreate("products");
     } catch (err: any) {
       setError(err.message);
     } finally {

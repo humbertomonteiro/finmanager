@@ -77,11 +77,18 @@ const Dashboard: React.FC = () => {
         />
 
         <main className={styles.content}>
-          {activeView === "dashboard" && <TransactionList />}
+          {activeView === "dashboard" && (
+            <TransactionList handleFormCreate={handleFormCreate} />
+          )}
           {activeView === "products" && (
             <ProductList handleFormCreate={handleFormCreate} />
           )}
-          {activeView === "new-transaction" && <CreateTransactionForm />}
+          {activeView === "new-transaction" && (
+            <CreateTransactionForm
+              transaction={dataEditing}
+              handleFormCreate={handleFormCreate}
+            />
+          )}
           {activeView === "new-product" && (
             <CreateProductForm
               product={dataEditing}

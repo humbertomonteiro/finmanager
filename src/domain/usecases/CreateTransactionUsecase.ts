@@ -12,13 +12,18 @@ export class CreateTransactionUsecase {
     try {
       const { items, type } = transaction;
 
-      if (type !== "purchase" && type !== "sale" && type !== "aporte") {
+      if (
+        type !== "purchase" &&
+        type !== "sale" &&
+        type !== "aporte" &&
+        type !== "service"
+      ) {
         throw new Error(
           "Invalid transaction type. Must be: purchase, sale, or aporte"
         );
       }
 
-      if (type === "aporte") {
+      if (type === "aporte" || type === "service") {
         return this.transactionRepository.save(transaction);
       }
 

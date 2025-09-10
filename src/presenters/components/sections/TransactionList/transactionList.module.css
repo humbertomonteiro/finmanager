@@ -38,185 +38,25 @@
   margin: 0;
 }
 
-/* Totais */
-.totals {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-  /* padding: var(--spacing-md); */
-  /* background-color: var(--color-surface); */
-  /* border-radius: var(--radius-lg); */
-  /* border: 1px solid var(--color-border); */
-}
-
-.totalItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: var(--spacing-md);
-  background-color: var(--color-surface);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
-}
-
-.totalLabel {
-  font-size: var(--font-size-sm);
-  color: var(--color-on-surface-variant);
-  font-weight: 500;
-  margin-bottom: var(--spacing-xs);
-}
-
-.totalValue {
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: var(--color-primary);
-}
-
-.totalValueSales {
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: var(--color-success);
-}
-
-.totalValuePurchases {
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: var(--color-warning);
-}
-
-.totalValueContributions {
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: var(--color-primary);
-}
-
-/* Controles de filtro e ordenação */
-.controls {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-  padding: var(--spacing-md);
-  background-color: var(--color-surface);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
-}
-
+.addButton,
 .mobileFilterButton {
-  display: none;
-}
-
-.searchBox {
-  position: relative;
   display: flex;
   align-items: center;
-}
-
-.searchInput {
-  flex: 1;
-  padding: var(--spacing-md) var(--spacing-lg);
-  padding-right: var(--spacing-xl);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-md);
-  transition: var(--transition-colors);
-}
-
-.searchInput:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.clearSearch {
-  position: absolute;
-  right: var(--spacing-md);
-  background: none;
-  border: none;
-  font-size: var(--font-size-lg);
-  cursor: pointer;
-  color: var(--color-on-surface-variant);
-  padding: var(--spacing-xs);
-  border-radius: var(--radius-sm);
-  transition: var(--transition-colors);
-}
-
-.clearSearch:hover {
-  color: var(--color-on-surface);
-}
-
-.filterRow {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-md);
-}
-
-.filterGroup {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-}
-
-.filterLabel {
-  font-weight: 500;
-  color: var(--color-on-surface);
-  font-size: var(--font-size-sm);
-}
-
-.filterSelect,
-.dateInput {
+  justify-content: center;
+  gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface);
-  color: var(--color-on-surface);
-  font-size: var(--font-size-md);
-}
-
-.sortGroup {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
-.sortLabel {
-  font-weight: 500;
-  color: var(--color-on-surface);
-  white-space: nowrap;
-}
-
-.sortButtons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-xs);
-}
-
-.sortButton {
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: none;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-on-surface);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-colors);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
-.sortButton:hover {
-  background-color: var(--color-background);
-}
-
-.sortButton.active {
   background-color: var(--color-primary);
   color: var(--color-on-primary);
-  border-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.addButton:hover,
+.mobileFilterButton:hover {
+  background-color: var(--color-primary-dark);
 }
 
 /* Grid de transações */
@@ -352,84 +192,22 @@
   color: var(--color-on-primary);
 }
 
+.mobileFilterButton {
+  display: none;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
   .header {
     gap: var(--spacing-md);
   }
 
-  .totals {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .totalValueSales,
-  .totalValuePurchases,
-  .totalValueContributions,
-  .totalValue {
-    font-size: var(--font-size-lg);
-  }
-
-  .controls {
+  .addButton {
     display: none;
   }
 
   .mobileFilterButton {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm) var(--spacing-md);
-    background-color: var(--color-primary);
-    color: var(--color-on-primary);
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-sm);
-    cursor: pointer;
-    transition: var(--transition-colors);
-  }
-
-  .mobileFilterButton:hover {
-    background-color: var(--color-primary-dark);
-  }
-
-  .controlsOpen {
-    display: flex;
-    position: fixed;
-    top: 100px;
-    right: 30px;
-    z-index: 2000;
-  }
-
-  .headerControls {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .headerControls button {
-    background-color: transparent;
-    border: 0;
-    font-size: var(--font-size-lg);
-    cursor: pointer;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--radius-sm);
-  }
-
-  .headerControls button:hover {
-    background-color: var(--color-background);
-  }
-
-  .filterRow {
-    grid-template-columns: 1fr;
-  }
-
-  .sortGroup {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--spacing-xs);
-  }
-
-  .sortButtons {
-    justify-content: center;
   }
 
   .grid {
