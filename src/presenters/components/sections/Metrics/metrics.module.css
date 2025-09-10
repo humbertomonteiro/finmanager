@@ -162,7 +162,6 @@
   }
 
   .breakdownItem {
-    flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-xs);
   }
