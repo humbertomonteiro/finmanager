@@ -63,7 +63,7 @@ export class Product {
       const currentStock = this.props.stock || 0;
       if (currentStock < amount) {
         throw new Error(
-          `Larger quantity than is in stock, stock = ${this.props.stock}`
+          `Larger quantity than is in stock, product: ${this.props.name}, stock = ${this.props.stock}`
         );
       }
       this.props.stock = currentStock - amount;

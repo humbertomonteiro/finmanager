@@ -2,17 +2,18 @@
 import React, { useState } from "react";
 import Header from "../../components/templates/Header";
 import Sidebar from "../../components/templates/Sidebar";
-import ProductList from "../../components/sections/ProductList";
-import { CreateTransactionForm } from "../../components/sections/CreateTransactionForm";
-import TransactionList from "../../components/sections/TransactionList";
+import { CreateTransactionForm } from "../../components/sections/transaction/CreateTransactionForm";
 import styles from "./dashboard.module.css";
-import { ButtonsMobileCreateForm } from "../../components/sections/ButtonsMobileCreateForm";
-import { CreateProductForm } from "../../components/sections/CreateProductForm";
+import { ButtonsMobileCreateForm } from "../../components/shared/ButtonsMobileCreateForm";
+import { CreateProductForm } from "../../components/sections/product/CreateProductForm";
 
 import { MdDashboard } from "react-icons/md";
 import { FaBox } from "react-icons/fa6";
 import { GrTransaction } from "react-icons/gr";
 import { FaPlus } from "react-icons/fa6";
+
+import TransactionContent from "../../components/contents/TransactionContent";
+import ProductContent from "../../components/contents/ProductContent";
 
 export type ActiveViewProps =
   | "dashboard"
@@ -26,7 +27,7 @@ const Dashboard: React.FC = () => {
   const [activeView, setActiveView] = useState<ActiveViewProps>("dashboard");
   const [dataEditing, setDataEditing] = useState<any>();
 
-  const handleFormCreate = (activeView: ActiveViewProps, dataEditing?: any) => {
+  const handleActiveView = (activeView: ActiveViewProps, dataEditing?: any) => {
     setActiveView(activeView);
     if (dataEditing) {
       setDataEditing(dataEditing);
@@ -40,25 +41,25 @@ const Dashboard: React.FC = () => {
       id: "dashboard",
       label: "Dashboard",
       icon: <MdDashboard />,
-      onClick: () => handleFormCreate("dashboard"),
+      onClick: () => handleActiveView("dashboard"),
     },
     {
       id: "products",
       label: "Produtos",
       icon: <FaBox />,
-      onClick: () => handleFormCreate("products"),
+      onClick: () => handleActiveView("products"),
     },
     {
       id: "new-transaction",
       label: "Nova Transação",
       icon: <GrTransaction />,
-      onClick: () => handleFormCreate("new-transaction"),
+      onClick: () => handleActiveView("new-transaction"),
     },
     {
       id: "new-product",
       label: "Novo Produto",
       icon: <FaPlus />,
-      onClick: () => handleFormCreate("new-product"),
+      onClick: () => handleActiveView("new-product"),
     },
   ];
 
@@ -66,7 +67,7 @@ const Dashboard: React.FC = () => {
     <div className={styles.dashboard}>
       <Header
         onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-        handleFormCreate={handleFormCreate}
+        handleActiveView={handleActiveView}
       />
 
       <div className={styles.layout}>
@@ -78,21 +79,21 @@ const Dashboard: React.FC = () => {
 
         <main className={styles.content}>
           {activeView === "dashboard" && (
-            <TransactionList handleFormCreate={handleFormCreate} />
+            <TransactionContent handleActiveView={handleActiveView} />
           )}
           {activeView === "products" && (
-            <ProductList handleFormCreate={handleFormCreate} />
+            <ProductContent handleActiveView={handleActiveView} />
           )}
           {activeView === "new-transaction" && (
             <CreateTransactionForm
               transaction={dataEditing}
-              handleFormCreate={handleFormCreate}
+              handleActiveView={handleActiveView}
             />
           )}
           {activeView === "new-product" && (
             <CreateProductForm
               product={dataEditing}
-              handleFormCreate={handleFormCreate}
+              handleActiveView={handleActiveView}
             />
           )}
         </main>

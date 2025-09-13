@@ -7,17 +7,17 @@ import { ActiveViewProps } from "../../../pages/Dashboard";
 
 interface HeaderProps {
   onToggleSidebar: () => void;
-  handleFormCreate: (activeView: ActiveViewProps, dataEditing?: any) => void;
+  handleActiveView: (activeView: ActiveViewProps, dataEditing?: any) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
   onToggleSidebar,
-  handleFormCreate,
+  handleActiveView,
 }) => {
   return (
     <header className={styles.header}>
       <div className={styles.headerStart}>
-        <button
+        {/* <button
           className={styles.menuButton}
           onClick={onToggleSidebar}
           aria-label="Abrir menu"
@@ -25,9 +25,9 @@ const Header: React.FC<HeaderProps> = ({
           <span className={styles.menuIcon}>
             <RxHamburgerMenu />
           </span>
-        </button>
+        </button> */}
         <h1
-          onClick={() => handleFormCreate("dashboard")}
+          onClick={() => handleActiveView("dashboard")}
           className={styles.title}
         >
           FinManager
@@ -40,9 +40,19 @@ const Header: React.FC<HeaderProps> = ({
           <span className={styles.notificationBadge}>3</span>
         </button> */}
 
-        <div className={styles.userMenu}>
+        {/* <div className={styles.userMenu}>
           <div className={styles.userAvatar}></div>
-        </div>
+        </div> */}
+
+        <button
+          className={styles.menuButton}
+          onClick={onToggleSidebar}
+          aria-label="Abrir menu"
+        >
+          <span className={styles.menuIcon}>
+            <RxHamburgerMenu />
+          </span>
+        </button>
       </div>
     </header>
   );

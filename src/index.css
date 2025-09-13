@@ -19,6 +19,7 @@
 
   /* 🌈 Gradientes */
   --gradient-primary: linear-gradient(135deg, #2563eb, #1e40af);
+  --gradient-secondary: linear-gradient(135deg, #b0b9c0, #909da7);
   --gradient-sidebar: linear-gradient(180deg, #1e293b, #0f172a);
 
   /* 🖋️ Tipografia */

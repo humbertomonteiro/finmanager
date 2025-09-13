@@ -16,14 +16,15 @@ export class CreateTransactionUsecase {
         type !== "purchase" &&
         type !== "sale" &&
         type !== "aporte" &&
-        type !== "service"
+        type !== "service" &&
+        type !== "payment"
       ) {
         throw new Error(
-          "Invalid transaction type. Must be: purchase, sale, or aporte"
+          "Invalid transaction type. Must be: purchase, payment, sale, service or aporte"
         );
       }
 
-      if (type === "aporte" || type === "service") {
+      if (type === "aporte" || type === "service" || type === "payment") {
         return this.transactionRepository.save(transaction);
       }
 

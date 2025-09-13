@@ -1,0 +1,198 @@
+.listProducts {
+  margin-bottom: var(--spacing-xl);
+  background-color: var(--color-surface);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+}
+
+.headerList {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+  align-items: flex-start;
+}
+
+.mobileFilterButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--gradient-primary);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+/* Grid de transações */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+/* Paginação (mesmo estilo do ProductList) */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
+.paginationButton {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-on-surface);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.paginationButton:hover:not(:disabled) {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+.paginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pageNumbers {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.pageButton {
+  min-width: 40px;
+  height: 40px;
+  padding: var(--spacing-xs);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-on-surface);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.pageButton:hover {
+  background-color: var(--color-background);
+}
+
+.pageButton.active {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+.pageDots {
+  padding: var(--spacing-xs);
+  color: var(--color-on-surface-variant);
+}
+
+.pageInfo {
+  color: var(--color-on-surface-variant);
+  font-size: var(--font-size-sm);
+  margin-left: var(--spacing-md);
+}
+
+/* Estados vazios */
+.emptyState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: var(--spacing-xl);
+}
+
+.emptyContent {
+  text-align: center;
+  max-width: 400px;
+}
+
+.emptyContent h3 {
+  font-size: var(--font-size-xl);
+  color: var(--color-on-surface);
+  margin-bottom: var(--spacing-md);
+}
+
+.emptyContent p {
+  color: var(--color-on-surface-variant);
+  margin-bottom: var(--spacing-lg);
+}
+
+.noResults {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-on-surface-variant);
+}
+
+.clearFiltersButton {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: none;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.clearFiltersButton:hover {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.mobileFilterButton {
+  display: none;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .header {
+    gap: var(--spacing-md);
+  }
+
+  .addButton {
+    display: none;
+  }
+
+  .mobileFilterButton {
+    display: flex;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .pageInfo {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .sortButton {
+    justify-content: center;
+  }
+}

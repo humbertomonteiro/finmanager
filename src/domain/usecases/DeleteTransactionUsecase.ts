@@ -17,14 +17,16 @@ export class DeleteTransactionUsecase {
 
       const { items, type } = transaction;
 
-      if (type !== "purchase" && type !== "sale" && type !== "aporte") {
+      if (
+        type !== "purchase" &&
+        type !== "payment" &&
+        type !== "sale" &&
+        type !== "service" &&
+        type !== "aporte"
+      ) {
         throw new Error(
-          "Invalid transaction type. Must be: purchase, sale, or aporte"
+          "Invalid transaction type. Must be: purchase, payment, sale, service or aporte"
         );
-      }
-
-      if (type === "aporte") {
-        return this.transactionRepository.save(transaction);
       }
 
       for (const item of items) {

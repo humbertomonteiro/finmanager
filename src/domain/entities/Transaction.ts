@@ -38,12 +38,24 @@ export class Transaction {
       throw new Error("Value must be greater than 0");
     }
 
-    if (!["sale", "purchase", "aporte", "service"].includes(this.props.type)) {
+    if (
+      !["sale", "purchase", "aporte", "service", "payment"].includes(
+        this.props.type
+      )
+    ) {
       throw new Error("Invalid transaction type. ");
     }
 
     if (
       this.props.type === "sale" &&
+      this.props.items &&
+      this.props.items.length <= 0
+    ) {
+      throw new Error("Transaction items cannot be empty");
+    }
+
+    if (
+      this.props.type === "purchase" &&
       this.props.items &&
       this.props.items.length <= 0
     ) {
