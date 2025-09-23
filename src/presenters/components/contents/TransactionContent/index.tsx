@@ -56,7 +56,10 @@ export default function TransactionContent({
         </button>
       </div>
 
-      <Metrics filteredTransactions={filteredTransactions} />
+      <Metrics
+        filteredTransactions={filteredTransactions}
+        transactions={transactions}
+      />
 
       <FiltersTransactions
         onFiltersChange={updateFilters}

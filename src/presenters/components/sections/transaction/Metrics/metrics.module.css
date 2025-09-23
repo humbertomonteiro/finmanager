@@ -83,15 +83,18 @@
 }
 
 /* Indicadores visuais */
-.metricCard:nth-child(1) {
+.metricCard:nth-child(2),
+.metricCard:nth-child(4) {
   border-left: 4px solid var(--color-success);
 }
 
-.metricCard:nth-child(2) {
+.metricCard:nth-child(3),
+.metricCard:nth-child(5) {
   border-left: 4px solid var(--color-warning);
 }
 
-.metricCard:nth-child(3) {
+.metricCard:nth-child(1),
+.metricCard:nth-child(6) {
   border-left: 4px solid var(--color-primary);
 }
 

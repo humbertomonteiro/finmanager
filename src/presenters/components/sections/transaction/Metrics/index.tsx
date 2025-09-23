@@ -5,12 +5,17 @@ import { useMemo } from "react";
 import { Transaction } from "../../../../../domain/entities/Transaction";
 import { FaBalanceScale } from "react-icons/fa";
 import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
+import { TbPigMoney } from "react-icons/tb";
 
 interface MetricsProps {
   filteredTransactions: Transaction[];
+  transactions: Transaction[];
 }
 
-export default function Metrics({ filteredTransactions }: MetricsProps) {
+export default function Metrics({
+  filteredTransactions,
+  transactions,
+}: MetricsProps) {
   const metrics = useMemo(() => {
     const totals = filteredTransactions.reduce(
       (acc, transaction) => {
@@ -51,8 +56,56 @@ export default function Metrics({ filteredTransactions }: MetricsProps) {
     };
   }, [filteredTransactions]);
 
+  const totalInCash = useMemo(() => {
+    const totalsNoFiltersDate = transactions.reduce(
+      (acc, transaction) => {
+        if (
+          transaction.type === "sale" ||
+          transaction.type === "aporte" ||
+          transaction.type === "service"
+        ) {
+          acc.revenues += transaction.value;
+        } else if (transaction.type === "purchase") {
+          acc.expenses += transaction.value;
+        }
+
+        return acc;
+      },
+      { revenues: 0, expenses: 0, totalInCash: 0 }
+    );
+
+    const revenues = totalsNoFiltersDate.revenues;
+    const expenses = totalsNoFiltersDate.expenses;
+    const balance = revenues - expenses;
+
+    return {
+      revenues,
+      expenses,
+      balance,
+    };
+  }, [transactions]);
+
   return (
     <section aria-label="Métricas financeiras" className={styles.metrics}>
+      <div className={styles.metricCard}>
+        <h3 className={styles.metricTitle}>
+          <TbPigMoney /> Valor em caixa
+        </h3>
+        <p className={styles.metricValue}>{formatBRL(totalInCash.balance)}</p>
+      </div>
+      <div className={styles.metricCard}>
+        <h3 className={styles.metricTitle}>
+          <TbPigMoney /> Todas as receitas
+        </h3>
+        <p className={styles.metricValue}>{formatBRL(totalInCash.revenues)}</p>
+      </div>
+      <div className={styles.metricCard}>
+        <h3 className={styles.metricTitle}>
+          <TbPigMoney /> Todas as despesas
+        </h3>
+        <p className={styles.metricValue}>{formatBRL(totalInCash.expenses)}</p>
+      </div>
+
       <div className={styles.metricCard}>
         <h3 className={styles.metricTitle}>
           <GiReceiveMoney /> Receitas
