@@ -43,8 +43,8 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   };
 
   const typeConfig = getTypeConfig(transaction.type);
-  const date = new Date(transaction.date).toLocaleDateString("pt-BR");
-  const time = new Date(transaction.date).toLocaleTimeString("pt-BR", {
+  const date = new Date(transaction.date!).toLocaleDateString("pt-BR");
+  const time = new Date(transaction.date!).toLocaleTimeString("pt-BR", {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -154,7 +154,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
               <div className={styles.infoItem}>
                 <span className={styles.infoLabel}>Data de Criação:</span>
                 <span className={styles.infoValue}>
-                  {new Date(transaction.date).toLocaleString("pt-BR")}
+                  {new Date(transaction.date!).toLocaleString("pt-BR")}
                 </span>
               </div>
             </div>

@@ -45,7 +45,6 @@ const TransactionList = ({
   };
 
   if (!filteredTransactions.length) {
-    // Use filteredTransactions para verificar vazio
     return (
       <div className={styles.emptyState}>
         <div className={styles.emptyContent}>

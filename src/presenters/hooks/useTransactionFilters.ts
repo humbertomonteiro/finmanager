@@ -65,7 +65,7 @@ export const useTransactionFilters = (
         );
 
       // Filtro por data
-      const transactionDate = new Date(transaction.date);
+      const transactionDate = new Date(transaction.date!);
       const start = filters.startDate ? new Date(filters.startDate) : null;
       const end = filters.endDate ? new Date(filters.endDate) : null;
 
@@ -88,8 +88,8 @@ export const useTransactionFilters = (
 
       switch (filters.sortBy) {
         case "date":
-          aValue = new Date(a.date).getTime();
-          bValue = new Date(b.date).getTime();
+          aValue = new Date(a.date!).getTime();
+          bValue = new Date(b.date!).getTime();
           break;
         case "value":
           aValue = a.value;
@@ -100,8 +100,8 @@ export const useTransactionFilters = (
           bValue = b.type;
           break;
         default:
-          aValue = new Date(a.date).getTime();
-          bValue = new Date(b.date).getTime();
+          aValue = new Date(a.date!).getTime();
+          bValue = new Date(b.date!).getTime();
       }
 
       return filters.sortOrder === "asc" ? aValue - bValue : bValue - aValue;

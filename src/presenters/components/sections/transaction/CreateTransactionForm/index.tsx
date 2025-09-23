@@ -29,9 +29,6 @@ export const CreateTransactionForm = ({
   const [description, setDescription] = useState("");
   const [value, setValue] = useState<number | string>("");
   const [discount, setDiscount] = useState<number | string>("");
-  const [date, setDate] = useState<string>(
-    new Date().toISOString().split("T")[0]
-  );
   const [items, setItems] = useState<TransactionItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -45,14 +42,12 @@ export const CreateTransactionForm = ({
       setDescription(transaction.description || "");
       setValue(transaction.value);
       setDiscount(transaction.discount || "");
-      setDate(new Date(transaction.date).toISOString().split("T")[0]);
       setItems(transaction.items || []);
     } else {
       setType("sale");
       setDescription("");
       setValue("");
       setDiscount("");
-      setDate(new Date().toISOString().split("T")[0]);
       setItems([]);
     }
   }, [transaction]);
@@ -87,7 +82,6 @@ export const CreateTransactionForm = ({
                 (acc, item) => acc + item.quantity * item.unitPrice,
                 0
               ) - Number(discount || 0),
-        date: new Date(date),
         items: type === "aporte" || type === "service" ? [] : items,
         discount: Number(discount),
       });
@@ -153,7 +147,7 @@ export const CreateTransactionForm = ({
   );
   const totalValue =
     type === "aporte" || type === "service"
-      ? Number(value) - Number(discount || 0) // Inclui desconto para service
+      ? Number(value) - Number(discount || 0)
       : subtotal - Number(discount || 0);
 
   return (
@@ -191,20 +185,6 @@ export const CreateTransactionForm = ({
               </div>
             )}
 
-            <div className={styles.formGroup}>
-              <label htmlFor="date" className={styles.label}>
-                Data *
-              </label>
-              <input
-                type="date"
-                id="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className={styles.input}
-                required
-              />
-            </div>
-
             {(type === "aporte" ||
               type === "service" ||
               type === "payment") && (
@@ -226,27 +206,7 @@ export const CreateTransactionForm = ({
                   onChange={(e) => setValue(e.target.value)}
                   className={styles.input}
                   min="0"
-                  // step="0.01"
                   required
-                />
-              </div>
-            )}
-
-            {/* Permitir desconto para todos os tipos exceto os que não fazem sentido */}
-            {(type === "sale" || type === "purchase" || type === "service") && (
-              <div className={styles.formGroup}>
-                <label htmlFor="discount" className={styles.label}>
-                  Desconto (R$)
-                </label>
-                <input
-                  type="number"
-                  id="discount"
-                  placeholder="0,00"
-                  value={discount}
-                  onChange={(e) => setDiscount(e.target.value)}
-                  className={styles.input}
-                  min="0"
-                  // step="0.01"
                 />
               </div>
             )}
@@ -289,6 +249,25 @@ export const CreateTransactionForm = ({
                   onRemoveItem={handleRemoveItem}
                 />
               </>
+            )}
+
+            {/* Permitir desconto para todos os tipos exceto os que não fazem sentido */}
+            {(type === "sale" || type === "purchase" || type === "service") && (
+              <div className={styles.formGroup}>
+                <label htmlFor="discount" className={styles.label}>
+                  Desconto (R$)
+                </label>
+                <input
+                  type="number"
+                  id="discount"
+                  placeholder="0,00"
+                  value={discount}
+                  onChange={(e) => setDiscount(e.target.value)}
+                  className={styles.input}
+                  min="0"
+                  // step="0.01"
+                />
+              </div>
             )}
 
             <div className={styles.formGroup}>

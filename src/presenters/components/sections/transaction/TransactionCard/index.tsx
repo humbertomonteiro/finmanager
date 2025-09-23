@@ -51,8 +51,8 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
   };
 
   const typeConfig = getTypeConfig(transaction.type);
-  const date = new Date(transaction.date).toLocaleDateString("pt-BR");
-  const time = new Date(transaction.date).toLocaleTimeString("pt-BR", {
+  const date = new Date(transaction?.date as Date).toLocaleDateString("pt-BR");
+  const time = new Date(transaction?.date as Date).toLocaleTimeString("pt-BR", {
     hour: "2-digit",
     minute: "2-digit",
   });

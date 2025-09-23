@@ -24,9 +24,9 @@ export const useProductFilters = (
     searchTerm: "",
     sortBy: "name",
     sortOrder: "asc",
-    type: "all", // Inicializado para evitar erros de tipagem
-    startDate: "", // Inicializado para evitar erros de tipagem
-    endDate: "", // Inicializado para evitar erros de tipagem
+    type: "all",
+    startDate: "",
+    endDate: "",
   });
 
   const [currentPage, setCurrentPage] = useState(1);

@@ -17,9 +17,10 @@ export interface TransactionProps {
   type: TransactionType;
   description?: string;
   value: number;
-  date: Date;
   items?: TransactionItem[];
   discount?: number;
+  date?: Date;
+  updatedAt?: Date;
 }
 
 export class Transaction {
@@ -29,6 +30,7 @@ export class Transaction {
     this.props = {
       ...props,
       date: props.date || new Date(),
+      updatedAt: props.updatedAt || new Date(),
     };
     this.validate();
   }
@@ -75,14 +77,17 @@ export class Transaction {
   get description() {
     return this.props.description;
   }
-  get date() {
-    return this.props.date;
-  }
   get items() {
     return this.props.items || [];
   }
   get discount() {
     return this.props.discount;
+  }
+  get date() {
+    return this.props.date;
+  }
+  get updatedAt() {
+    return this.props.updatedAt;
   }
 
   public toDTO(): TransactionProps {

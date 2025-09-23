@@ -35,7 +35,15 @@ export class TransactionRepository implements ITransactionRepository {
         ? doc(db, this.collectionName, transaction.id)
         : doc(collection(db, this.collectionName));
 
-      const cleanedTransaction = this.cleanObject(transactionDTO);
+      const cleanedTransaction = this.cleanObject({
+        ...transactionDTO,
+        date: transactionDTO.date
+          ? transactionDTO.date.toISOString()
+          : new Date().toISOString(),
+        updatedAt: transactionDTO.updatedAt
+          ? transactionDTO.updatedAt.toISOString()
+          : new Date().toISOString(),
+      });
 
       await setDoc(docRef, cleanedTransaction, { merge: true });
       return docRef.id;
@@ -105,10 +113,6 @@ export class TransactionRepository implements ITransactionRepository {
       data.date instanceof Timestamp
         ? data.date.toDate()
         : new Date(data.date ?? Date.now());
-    const createdAt =
-      data.createdAt instanceof Timestamp
-        ? data.createdAt.toDate()
-        : new Date(data.createdAt ?? Date.now());
 
     const updatedAt =
       data.updatedAt instanceof Timestamp
@@ -119,7 +123,6 @@ export class TransactionRepository implements ITransactionRepository {
       ...data,
       id,
       date,
-      createdAt,
       updatedAt,
     } as TransactionProps);
   }
