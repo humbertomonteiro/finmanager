@@ -20,6 +20,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
   handleActiveView,
 }) => {
   const [showDetails, setShowDetails] = useState(false);
+  const [showListItems, setShowListItems] = useState(false);
 
   const getTypeConfig = (type: string) => {
     switch (type) {
@@ -87,11 +88,23 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
 
           <div className={styles.details}>
             {transaction.items && transaction.items.length > 0 && (
-              <div className={styles.detailRow}>
-                <span className={styles.detailLabel}>Itens:</span>
-                <span className={styles.itemsCount}>
-                  {transaction.items.length}
-                </span>
+              <div className={styles.contentItem}>
+                <div
+                  className={styles.buttonShowItems}
+                  onClick={() => setShowListItems(!showListItems)}
+                >
+                  <span>Ver itens:</span>
+                  <span>{transaction.items.length}</span>
+                </div>
+                {showListItems && (
+                  <ul className={styles.litsItems}>
+                    {transaction.items.map((item) => (
+                      <li>
+                        <div>{item.name}</div> <div>{item.quantity}</div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             )}
 
