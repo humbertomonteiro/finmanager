@@ -38,6 +38,14 @@ export class DeleteTransactionUsecase {
 
         const quantityChange =
           type === "purchase" ? -item.quantity : item.quantity;
+        const quantityCurrentStock = product.stock || 0;
+
+        if (quantityChange > quantityCurrentStock && type === "purchase") {
+          throw new Error(
+            "Stock cannot be negative. Please verify the sales with the product(s) in the transaction."
+          );
+        }
+
         product.updateStock(quantityChange, "purchase");
 
         await this.productRepository.update(product);

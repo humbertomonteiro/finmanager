@@ -59,6 +59,7 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
         costPrice: Number(costPrice),
         salePrice: Number(salePrice),
         supplier: supplier || null,
+        stock: isEditing ? product.stock : 0,
         description: description || undefined,
       });
 

@@ -74,7 +74,7 @@ export const CreateTransactionForm = ({
       const transactionData = new Transaction({
         id: isEditing ? transaction.id : undefined,
         type,
-        description: description || undefined,
+        description: description || "",
         value:
           type === "aporte" || type === "service" || type === "payment"
             ? Number(value) - Number(discount || 0)
