@@ -15,7 +15,7 @@
   --color-on-primary: #ffffff; /* Texto sobre cores primárias */
   --color-on-surface: #ffffff; /* Texto principal */
   --color-on-surface-variant: #64748b; /* Texto secundário */
-  --color-border: #e2e8f0; /* Bordas */
+  --color-border: #b8c3d16c; /* Bordas */
 
   /* 🌈 Gradientes */
   --gradient-primary: linear-gradient(135deg, #2563eb, #1e40af);

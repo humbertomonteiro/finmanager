@@ -139,7 +139,7 @@
 
 .buttonShowItems {
   background: var(--color-background);
-  color: var(--color-primary);
+  color: var(--color-secondary);
   display: flex;
   justify-content: space-between;
   font-size: 0.9rem;
