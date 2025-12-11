@@ -65,7 +65,10 @@ export default function Metrics({
           transaction.type === "service"
         ) {
           acc.revenues += transaction.value;
-        } else if (transaction.type === "purchase") {
+        } else if (
+          transaction.type === "purchase" ||
+          transaction.type === "payment"
+        ) {
           acc.expenses += transaction.value;
         }
 

@@ -120,10 +120,9 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
                 Preço de Custo (R$) *
               </label>
               <input
-                type="number"
+                type="text"
                 id="costPrice"
                 placeholder="0,00"
-                step="0.01"
                 min="0"
                 value={costPrice}
                 onChange={(e) =>
@@ -141,10 +140,9 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
                 Preço de Venda (R$) *
               </label>
               <input
-                type="number"
+                type="text"
                 id="salePrice"
                 placeholder="0,00"
-                step="0.01"
                 min="0"
                 value={salePrice}
                 onChange={(e) =>
