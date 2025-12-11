@@ -199,7 +199,7 @@ export const CreateTransactionForm = ({
                   (R$) *
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   id="value"
                   placeholder="0,00"
                   value={value}
