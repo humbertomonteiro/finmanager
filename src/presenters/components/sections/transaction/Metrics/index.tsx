@@ -1,11 +1,12 @@
 // src/components/sections/Metrics.tsx
 import styles from "./metrics.module.css";
 import { formatBRL } from "../../../../../utils/formatCurrency";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Transaction } from "../../../../../domain/entities/Transaction";
 import { FaBalanceScale } from "react-icons/fa";
 import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
 import { TbPigMoney } from "react-icons/tb";
+import { BsArrowDown, BsArrowUp } from "react-icons/bs";
 
 interface MetricsProps {
   filteredTransactions: Transaction[];
@@ -16,6 +17,10 @@ export default function Metrics({
   filteredTransactions,
   transactions,
 }: MetricsProps) {
+  const [showDetailsExpense, setShowDetailsExpense] = useState(false);
+  const [showDetailsRevenue, setShowDetailsRevenue] = useState(false);
+  const [showDetailsBalance, setShowDetailsBalance] = useState(false);
+
   const metrics = useMemo(() => {
     const totals = filteredTransactions.reduce(
       (acc, transaction) => {
@@ -88,6 +93,23 @@ export default function Metrics({
     };
   }, [transactions]);
 
+  function showDetails(details: string) {
+    switch (details) {
+      case "revenue": {
+        setShowDetailsRevenue(!showDetailsRevenue);
+        break;
+      }
+      case "expense": {
+        setShowDetailsExpense(!showDetailsExpense);
+        break;
+      }
+      case "balance": {
+        setShowDetailsBalance(!showDetailsBalance);
+        break;
+      }
+    }
+  }
+
   return (
     <section aria-label="Métricas financeiras" className={styles.metrics}>
       <div className={styles.metricCard}>
@@ -114,26 +136,34 @@ export default function Metrics({
           <GiReceiveMoney /> Receitas
         </h3>
         <p className={styles.metricValue}>{formatBRL(metrics.revenues)}</p>
-        <div className={styles.breakdown}>
-          <div className={styles.breakdownItem}>
-            <span className={styles.breakdownLabel}>Vendas:</span>
-            <span className={styles.breakdownValue}>
-              {formatBRL(metrics.totals.sales)}
-            </span>
-          </div>
-          <div className={styles.breakdownItem}>
-            <span className={styles.breakdownLabel}>Aportes:</span>
-            <span className={styles.breakdownValue}>
-              {formatBRL(metrics.totals.aportes)}
-            </span>
-          </div>
-          <div className={styles.breakdownItem}>
-            <span className={styles.breakdownLabel}>Serviços:</span>
-            <span className={styles.breakdownValue}>
-              {formatBRL(metrics.totals.services)}
-            </span>
-          </div>
+        <div
+          className={styles.showBreakdown}
+          onClick={() => showDetails("revenue")}
+        >
+          Detalhes {showDetailsRevenue ? <BsArrowUp /> : <BsArrowDown />}
         </div>
+        {showDetailsRevenue && (
+          <div className={styles.breakdown}>
+            <div className={styles.breakdownItem}>
+              <span className={styles.breakdownLabel}>Vendas:</span>
+              <span className={styles.breakdownValue}>
+                {formatBRL(metrics.totals.sales)}
+              </span>
+            </div>
+            <div className={styles.breakdownItem}>
+              <span className={styles.breakdownLabel}>Aportes:</span>
+              <span className={styles.breakdownValue}>
+                {formatBRL(metrics.totals.aportes)}
+              </span>
+            </div>
+            <div className={styles.breakdownItem}>
+              <span className={styles.breakdownLabel}>Serviços:</span>
+              <span className={styles.breakdownValue}>
+                {formatBRL(metrics.totals.services)}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className={styles.metricCard}>
@@ -143,20 +173,28 @@ export default function Metrics({
         <p className={`${styles.metricValue} ${styles.expense}`}>
           {formatBRL(metrics.expenses)}
         </p>
-        <div className={styles.breakdown}>
-          <div className={styles.breakdownItem}>
-            <span className={styles.breakdownLabel}>Compras:</span>
-            <span className={styles.breakdownValue}>
-              {formatBRL(metrics.totals.purchases)}
-            </span>
-          </div>
-          <div className={styles.breakdownItem}>
-            <span className={styles.breakdownLabel}>Pagamentos:</span>
-            <span className={styles.breakdownValue}>
-              {formatBRL(metrics.totals.payments)}
-            </span>
-          </div>
+        <div
+          className={styles.showBreakdown}
+          onClick={() => showDetails("expense")}
+        >
+          Detalhes {showDetailsExpense ? <BsArrowUp /> : <BsArrowDown />}
         </div>
+        {showDetailsExpense && (
+          <div className={styles.breakdown}>
+            <div className={styles.breakdownItem}>
+              <span className={styles.breakdownLabel}>Compras:</span>
+              <span className={styles.breakdownValue}>
+                {formatBRL(metrics.totals.purchases)}
+              </span>
+            </div>
+            <div className={styles.breakdownItem}>
+              <span className={styles.breakdownLabel}>Pagamentos:</span>
+              <span className={styles.breakdownValue}>
+                {formatBRL(metrics.totals.payments)}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className={styles.metricCard}>
@@ -170,32 +208,40 @@ export default function Metrics({
         >
           {formatBRL(metrics.balance)}
         </p>
-        <div className={styles.breakdown}>
-          <div className={styles.breakdownItem}>
-            <span className={styles.breakdownLabel}>
-              Resultado Operacional:
-            </span>
-            <span
-              className={`${styles.breakdownValue} ${
-                metrics.operationalResult >= 0
-                  ? styles.positive
-                  : styles.negative
-              }`}
-            >
-              {formatBRL(metrics.operationalResult)}
-            </span>
-          </div>
-          <div className={styles.breakdownItem}>
-            <span className={styles.breakdownLabel}>Margem de Lucro:</span>
-            <span
-              className={`${styles.breakdownValue} ${
-                metrics.profitMargin >= 0 ? styles.positive : styles.negative
-              }`}
-            >
-              {metrics.profitMargin.toFixed(1)}%
-            </span>
-          </div>
+        <div
+          className={styles.showBreakdown}
+          onClick={() => showDetails("balance")}
+        >
+          Detalhes {showDetailsBalance ? <BsArrowUp /> : <BsArrowDown />}
         </div>
+        {showDetailsBalance && (
+          <div className={styles.breakdown}>
+            <div className={styles.breakdownItem}>
+              <span className={styles.breakdownLabel}>
+                Resultado Operacional:
+              </span>
+              <span
+                className={`${styles.breakdownValue} ${
+                  metrics.operationalResult >= 0
+                    ? styles.positive
+                    : styles.negative
+                }`}
+              >
+                {formatBRL(metrics.operationalResult)}
+              </span>
+            </div>
+            <div className={styles.breakdownItem}>
+              <span className={styles.breakdownLabel}>Margem de Lucro:</span>
+              <span
+                className={`${styles.breakdownValue} ${
+                  metrics.profitMargin >= 0 ? styles.positive : styles.negative
+                }`}
+              >
+                {metrics.profitMargin.toFixed(1)}%
+              </span>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

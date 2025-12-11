@@ -53,7 +53,7 @@
   display: flex;
   flex-direction: column;
   border-top: 1px solid var(--color-border);
-  padding-top: var(--spacing-md);
+  padding-top: var(--spacing-xs);
 }
 
 .breakdownItem {
@@ -80,6 +80,10 @@
 
 .breakdownValue.negative {
   color: var(--color-error);
+}
+
+.showBreakdown {
+  font-size: var(--font-size-xs);
 }
 
 /* Indicadores visuais */
@@ -175,12 +179,23 @@
 }
 
 @media (max-width: 480px) {
+  .metrics {
+    grid-template-rows: 1fr, fit-content, 1fr, 1fr, 1fr;
+    grid-template-columns: repeat(2, 1fr);
+  }
   .metricTitle {
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-sm);
+  }
+
+  .metricCard:nth-child(1),
+  .metricCard:nth-child(4) {
+    /* .metricCard:nth-child(5), */
+    /* .metricCard:nth-child(6) { */
+    grid-column: span 2;
   }
 
   .metricValue {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-md);
   }
 
   .breakdownLabel,

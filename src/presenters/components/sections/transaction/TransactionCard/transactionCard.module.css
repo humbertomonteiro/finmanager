@@ -117,10 +117,9 @@
 
 .description {
   color: var(--color-on-surface);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-xs);
   margin-bottom: var(--spacing-md);
   line-height: 1.4;
-  font-weight: 500;
 }
 
 .details {

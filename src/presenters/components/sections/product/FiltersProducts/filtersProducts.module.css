@@ -40,8 +40,13 @@
   align-items: center;
 }
 
+.hideFiltersButton {
+  color: var(--color-on-surface);
+}
+
 .headerActions .clearAllButton {
   font-size: var(--font-size-sm);
+  color: var(--color-on-surface);
 }
 
 .searchBox {

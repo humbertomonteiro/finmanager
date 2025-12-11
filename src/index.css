@@ -10,8 +10,8 @@
   --color-error: #ef4444; /* Vermelho para erros */
 
   /* 🎨 Tons neutros */
-  --color-background: #1e293b; /* Fundo claro */
-  --color-surface: linear-gradient(180deg, #1e293b, #0f172a); /* Superfícies */
+  --color-background: #000000; /* Fundo claro */
+  --color-surface: #0f0f0f; /* Superfícies */
   --color-on-primary: #ffffff; /* Texto sobre cores primárias */
   --color-on-surface: #ffffff; /* Texto principal */
   --color-on-surface-variant: #94a5bd; /* Texto secundário */

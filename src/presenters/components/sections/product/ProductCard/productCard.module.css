@@ -45,6 +45,7 @@
   cursor: pointer;
   font-size: var(--font-size-md);
   transition: var(--transition-colors);
+  color: var(--color-on-surface);
 }
 
 .editButton:hover {

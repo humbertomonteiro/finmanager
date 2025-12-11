@@ -40,8 +40,13 @@
   align-items: center;
 }
 
+.hideFiltersButton {
+  color: var(--color-on-surface);
+}
+
 .headerActions .clearAllButton {
   font-size: var(--font-size-sm);
+  color: var(--color-on-surface);
 }
 
 .searchBox {
@@ -73,7 +78,7 @@
   border: none;
   font-size: var(--font-size-lg);
   cursor: pointer;
-  color: var(--color-on-surface-variant);
+  color: var(--color-on-surface);
   padding: var(--spacing-xs);
   border-radius: var(--radius-sm);
   transition: var(--transition-colors);

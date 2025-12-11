@@ -39,7 +39,7 @@
   border: 1px solid var(--color-border);
   font-size: var(--font-size-md);
   cursor: pointer;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-lg);
   background: var(--gradient-primary);
   color: var(--color-on-primary);
   display: flex;
