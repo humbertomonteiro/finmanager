@@ -18,6 +18,55 @@ interface CreateTransactionFormProps {
   handleActiveView: (activeView: ActiveViewProps, dataEditing?: any) => void;
 }
 
+// Função auxiliar para converter entrada monetária
+const parseMoneyInput = (value: string): number => {
+  if (!value) return 0;
+
+  // Remove espaços em branco
+  let cleaned = value.trim();
+
+  // Remove o símbolo R$ se existir
+  cleaned = cleaned.replace(/R\$\s?/g, "");
+
+  // Conta quantos pontos e vírgulas existem
+  const dotCount = (cleaned.match(/\./g) || []).length;
+  const commaCount = (cleaned.match(/,/g) || []).length;
+
+  // Se tem vírgula e ponto, determina qual é o separador decimal
+  if (dotCount > 0 && commaCount > 0) {
+    const lastDot = cleaned.lastIndexOf(".");
+    const lastComma = cleaned.lastIndexOf(",");
+
+    if (lastDot > lastComma) {
+      // Formato: 1.234,56 -> remove pontos (milhares) e troca vírgula por ponto
+      cleaned = cleaned.replace(/\./g, "").replace(",", ".");
+    } else {
+      // Formato: 1,234.56 -> remove vírgulas (milhares)
+      cleaned = cleaned.replace(/,/g, "");
+    }
+  } else if (commaCount > 0) {
+    // Só tem vírgulas
+    if (commaCount === 1) {
+      // Pode ser decimal brasileiro (10,50) ou milhares americano (1,234)
+      const parts = cleaned.split(",");
+      if (parts[1] && parts[1].length <= 2) {
+        // Provavelmente decimal brasileiro
+        cleaned = cleaned.replace(",", ".");
+      } else {
+        // Provavelmente separador de milhares
+        cleaned = cleaned.replace(/,/g, "");
+      }
+    } else {
+      // Múltiplas vírgulas = separador de milhares
+      cleaned = cleaned.replace(/,/g, "");
+    }
+  }
+  // Se só tem pontos, mantém como está (formato americano padrão)
+
+  const parsed = parseFloat(cleaned);
+  return isNaN(parsed) ? 0 : parsed;
+};
+
 export const CreateTransactionForm = ({
   transaction,
   handleActiveView,
@@ -27,8 +76,8 @@ export const CreateTransactionForm = ({
 
   const [type, setType] = useState<TransactionType>("sale");
   const [description, setDescription] = useState("");
-  const [value, setValue] = useState<number | string>("");
-  const [discount, setDiscount] = useState<number | string>("");
+  const [value, setValue] = useState<string>("");
+  const [discount, setDiscount] = useState<string>("");
   const [items, setItems] = useState<TransactionItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -40,8 +89,8 @@ export const CreateTransactionForm = ({
     if (transaction) {
       setType(transaction.type);
       setDescription(transaction.description || "");
-      setValue(transaction.value);
-      setDiscount(transaction.discount || "");
+      setValue(transaction.value.toString());
+      setDiscount(transaction.discount ? transaction.discount.toString() : "");
       setItems(transaction.items || []);
     } else {
       setType("sale");
@@ -71,19 +120,22 @@ export const CreateTransactionForm = ({
         }
       }
 
+      const parsedValue = parseMoneyInput(value);
+      const parsedDiscount = parseMoneyInput(discount);
+
       const transactionData = new Transaction({
         id: isEditing ? transaction.id : undefined,
         type,
         description: description || "",
         value:
           type === "aporte" || type === "service" || type === "payment"
-            ? Number(value) - Number(discount || 0)
+            ? parsedValue - parsedDiscount
             : items.reduce(
                 (acc, item) => acc + item.quantity * item.unitPrice,
                 0
-              ) - Number(discount || 0),
+              ) - parsedDiscount,
         items: type === "aporte" || type === "service" ? [] : items,
-        discount: Number(discount),
+        discount: parsedDiscount,
       });
 
       if (isEditing) {
@@ -140,15 +192,19 @@ export const CreateTransactionForm = ({
     setValue("");
   };
 
-  // Calcular valores - CORRIGIDO
+  // Calcular valores
   const subtotal = items.reduce(
     (acc, item) => acc + item.quantity * item.unitPrice,
     0
   );
+
+  const parsedValue = parseMoneyInput(value);
+  const parsedDiscount = parseMoneyInput(discount);
+
   const totalValue =
-    type === "aporte" || type === "service"
-      ? Number(value) - Number(discount || 0)
-      : subtotal - Number(discount || 0);
+    type === "aporte" || type === "service" || type === "payment"
+      ? parsedValue - parsedDiscount
+      : subtotal - parsedDiscount;
 
   return (
     <div className={styles.overlay}>
@@ -195,17 +251,16 @@ export const CreateTransactionForm = ({
                     ? "Serviço"
                     : type === "aporte"
                     ? "Aporte"
-                    : "Pagemento"}{" "}
+                    : "Pagamento"}{" "}
                   (R$) *
                 </label>
                 <input
                   type="text"
                   id="value"
-                  placeholder="0,00"
+                  placeholder="0,00 ou 0.00"
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                   className={styles.input}
-                  min="0"
                   required
                 />
               </div>
@@ -258,14 +313,12 @@ export const CreateTransactionForm = ({
                   Desconto (R$)
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   id="discount"
-                  placeholder="0,00"
+                  placeholder="0,00 ou 0.00"
                   value={discount}
                   onChange={(e) => setDiscount(e.target.value)}
                   className={styles.input}
-                  min="0"
-                  // step="0.01"
                 />
               </div>
             )}
@@ -291,17 +344,17 @@ export const CreateTransactionForm = ({
               <div className={styles.summaryRow}>
                 <span className={styles.summaryLabel}>Subtotal:</span>
                 <span className={styles.summaryValue}>
-                  R$ {subtotal.toFixed(2)}
+                  R$ {subtotal.toFixed(2).replace(".", ",")}
                 </span>
               </div>
             )}
 
             {/* Mostrar desconto apenas se houver e for aplicável */}
-            {Number(discount) > 0 && type !== "aporte" && (
+            {parsedDiscount > 0 && type !== "aporte" && (
               <div className={styles.summaryRow}>
                 <span className={styles.summaryLabel}>Desconto:</span>
                 <span className={styles.summaryDiscount}>
-                  -R$ {Number(discount).toFixed(2)}
+                  -R$ {parsedDiscount.toFixed(2).replace(".", ",")}
                 </span>
               </div>
             )}
@@ -309,7 +362,7 @@ export const CreateTransactionForm = ({
             <div className={styles.summaryRow}>
               <span className={styles.summaryLabel}>Valor Total:</span>
               <span className={styles.summaryTotal}>
-                R$ {totalValue.toFixed(2)}
+                R$ {totalValue.toFixed(2).replace(".", ",")}
               </span>
             </div>
           </div>
