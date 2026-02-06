@@ -14,57 +14,57 @@ interface CreateProductFormProps {
 // Funções auxiliares para manipulação de valores monetários
 const parseMoneyInput = (value: string): number => {
   if (!value) return 0;
-  
+
   // Remove espaços em branco
   let cleaned = value.trim();
-  
+
   // Remove o símbolo R$ se existir
-  cleaned = cleaned.replace(/R\$\s?/g, '');
-  
+  cleaned = cleaned.replace(/R\$\s?/g, "");
+
   // Conta quantos pontos e vírgulas existem
   const dotCount = (cleaned.match(/\./g) || []).length;
   const commaCount = (cleaned.match(/,/g) || []).length;
-  
+
   // Se tem vírgula e ponto, determina qual é o separador decimal
   if (dotCount > 0 && commaCount > 0) {
     // Se o ponto vem depois da vírgula, vírgula é separador de milhares
-    const lastDot = cleaned.lastIndexOf('.');
-    const lastComma = cleaned.lastIndexOf(',');
-    
+    const lastDot = cleaned.lastIndexOf(".");
+    const lastComma = cleaned.lastIndexOf(",");
+
     if (lastDot > lastComma) {
       // Formato: 1.234,56 -> remove pontos (milhares) e troca vírgula por ponto
-      cleaned = cleaned.replace(/\./g, '').replace(',', '.');
+      cleaned = cleaned.replace(/\./g, "").replace(",", ".");
     } else {
       // Formato: 1,234.56 -> remove vírgulas (milhares)
-      cleaned = cleaned.replace(/,/g, '');
+      cleaned = cleaned.replace(/,/g, "");
     }
   } else if (commaCount > 0) {
     // Só tem vírgulas
     if (commaCount === 1) {
       // Pode ser decimal brasileiro (10,50) ou milhares americano (1,234)
-      const parts = cleaned.split(',');
+      const parts = cleaned.split(",");
       if (parts[1] && parts[1].length <= 2) {
         // Provavelmente decimal brasileiro
-        cleaned = cleaned.replace(',', '.');
+        cleaned = cleaned.replace(",", ".");
       } else {
         // Provavelmente separador de milhares
-        cleaned = cleaned.replace(/,/g, '');
+        cleaned = cleaned.replace(/,/g, "");
       }
     } else {
       // Múltiplas vírgulas = separador de milhares
-      cleaned = cleaned.replace(/,/g, '');
+      cleaned = cleaned.replace(/,/g, "");
     }
   }
   // Se só tem pontos, mantém como está (formato americano padrão)
-  
+
   const parsed = parseFloat(cleaned);
   return isNaN(parsed) ? 0 : parsed;
 };
 
-const formatMoneyDisplay = (value: number | ""): string => {
-  if (value === "") return "";
-  return value.toString();
-};
+// const formatMoneyDisplay = (value: number | ""): string => {
+//   if (value === "") return "";
+//   return value.toString();
+// };
 
 export const CreateProductForm: React.FC<CreateProductFormProps> = ({
   product,
@@ -134,7 +134,7 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
   const calculateProfit = () => {
     const cost = parseMoneyInput(costPrice);
     const sale = parseMoneyInput(salePrice);
-    
+
     if (cost && sale) {
       const profit = sale - cost;
       const margin = cost > 0 ? (profit / cost) * 100 : 0;
@@ -225,7 +225,7 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
                       profit >= 0 ? styles.profitValue : styles.lossValue
                     }
                   >
-                    R$ {profit.toFixed(2).replace('.', ',')}
+                    R$ {profit.toFixed(2).replace(".", ",")}
                   </span>
                 </div>
                 <div className={styles.profitRow}>
@@ -235,7 +235,7 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
                       margin >= 0 ? styles.profitValue : styles.lossValue
                     }
                   >
-                    {margin.toFixed(1).replace('.', ',')}%
+                    {margin.toFixed(1).replace(".", ",")}%
                   </span>
                 </div>
               </div>
