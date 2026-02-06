@@ -11,6 +11,61 @@ interface CreateProductFormProps {
   handleActiveView: (activeView: ActiveViewProps, dataEditing?: any) => void;
 }
 
+// Funções auxiliares para manipulação de valores monetários
+const parseMoneyInput = (value: string): number => {
+  if (!value) return 0;
+  
+  // Remove espaços em branco
+  let cleaned = value.trim();
+  
+  // Remove o símbolo R$ se existir
+  cleaned = cleaned.replace(/R\$\s?/g, '');
+  
+  // Conta quantos pontos e vírgulas existem
+  const dotCount = (cleaned.match(/\./g) || []).length;
+  const commaCount = (cleaned.match(/,/g) || []).length;
+  
+  // Se tem vírgula e ponto, determina qual é o separador decimal
+  if (dotCount > 0 && commaCount > 0) {
+    // Se o ponto vem depois da vírgula, vírgula é separador de milhares
+    const lastDot = cleaned.lastIndexOf('.');
+    const lastComma = cleaned.lastIndexOf(',');
+    
+    if (lastDot > lastComma) {
+      // Formato: 1.234,56 -> remove pontos (milhares) e troca vírgula por ponto
+      cleaned = cleaned.replace(/\./g, '').replace(',', '.');
+    } else {
+      // Formato: 1,234.56 -> remove vírgulas (milhares)
+      cleaned = cleaned.replace(/,/g, '');
+    }
+  } else if (commaCount > 0) {
+    // Só tem vírgulas
+    if (commaCount === 1) {
+      // Pode ser decimal brasileiro (10,50) ou milhares americano (1,234)
+      const parts = cleaned.split(',');
+      if (parts[1] && parts[1].length <= 2) {
+        // Provavelmente decimal brasileiro
+        cleaned = cleaned.replace(',', '.');
+      } else {
+        // Provavelmente separador de milhares
+        cleaned = cleaned.replace(/,/g, '');
+      }
+    } else {
+      // Múltiplas vírgulas = separador de milhares
+      cleaned = cleaned.replace(/,/g, '');
+    }
+  }
+  // Se só tem pontos, mantém como está (formato americano padrão)
+  
+  const parsed = parseFloat(cleaned);
+  return isNaN(parsed) ? 0 : parsed;
+};
+
+const formatMoneyDisplay = (value: number | ""): string => {
+  if (value === "") return "";
+  return value.toString();
+};
+
 export const CreateProductForm: React.FC<CreateProductFormProps> = ({
   product,
   handleActiveView,
@@ -19,8 +74,8 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
 
   const [name, setName] = useState("");
   const [code, setCode] = useState<number | "">("");
-  const [costPrice, setCostPrice] = useState<number | "">("");
-  const [salePrice, setSalePrice] = useState<number | "">("");
+  const [costPrice, setCostPrice] = useState<string>("");
+  const [salePrice, setSalePrice] = useState<string>("");
   const [supplier, setSupplier] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,8 +87,8 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
     if (product) {
       setName(product.name);
       setCode(product.code);
-      setCostPrice(product.costPrice);
-      setSalePrice(product.salePrice);
+      setCostPrice(product.costPrice.toString());
+      setSalePrice(product.salePrice.toString());
       setSupplier(product.supplier || "");
       setDescription(product.description || "");
     } else {
@@ -56,8 +111,8 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
         id: isEditing ? product.id : undefined,
         name,
         code: Number(code),
-        costPrice: Number(costPrice),
-        salePrice: Number(salePrice),
+        costPrice: parseMoneyInput(costPrice),
+        salePrice: parseMoneyInput(salePrice),
         supplier: supplier || null,
         stock: isEditing ? product.stock : 0,
         description: description || undefined,
@@ -77,10 +132,12 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
   };
 
   const calculateProfit = () => {
-    if (costPrice && salePrice) {
-      const profit = Number(salePrice) - Number(costPrice);
-      const margin =
-        Number(costPrice) > 0 ? (profit / Number(costPrice)) * 100 : 0;
+    const cost = parseMoneyInput(costPrice);
+    const sale = parseMoneyInput(salePrice);
+    
+    if (cost && sale) {
+      const profit = sale - cost;
+      const margin = cost > 0 ? (profit / cost) * 100 : 0;
       return { profit, margin };
     }
     return { profit: 0, margin: 0 };
@@ -122,14 +179,9 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
               <input
                 type="text"
                 id="costPrice"
-                placeholder="0,00"
-                min="0"
+                placeholder="0,00 ou 0.00"
                 value={costPrice}
-                onChange={(e) =>
-                  setCostPrice(
-                    e.target.value === "" ? "" : Number(e.target.value)
-                  )
-                }
+                onChange={(e) => setCostPrice(e.target.value)}
                 className={styles.input}
                 required
               />
@@ -142,14 +194,9 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
               <input
                 type="text"
                 id="salePrice"
-                placeholder="0,00"
-                min="0"
+                placeholder="0,00 ou 0.00"
                 value={salePrice}
-                onChange={(e) =>
-                  setSalePrice(
-                    e.target.value === "" ? "" : Number(e.target.value)
-                  )
-                }
+                onChange={(e) => setSalePrice(e.target.value)}
                 className={styles.input}
                 required
               />
@@ -178,7 +225,7 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
                       profit >= 0 ? styles.profitValue : styles.lossValue
                     }
                   >
-                    R$ {profit.toFixed(2)}
+                    R$ {profit.toFixed(2).replace('.', ',')}
                   </span>
                 </div>
                 <div className={styles.profitRow}>
@@ -188,7 +235,7 @@ export const CreateProductForm: React.FC<CreateProductFormProps> = ({
                       margin >= 0 ? styles.profitValue : styles.lossValue
                     }
                   >
-                    {margin.toFixed(1)}%
+                    {margin.toFixed(1).replace('.', ',')}%
                   </span>
                 </div>
               </div>
