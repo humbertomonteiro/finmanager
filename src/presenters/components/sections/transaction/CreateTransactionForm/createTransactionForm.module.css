@@ -235,3 +235,8 @@
     text-align: center;
   }
 }
+
+/* span full 2 columns for items list inside the grid */
+.formGroupFull {
+  grid-column: span 2;
+}
