@@ -1,199 +1,122 @@
-/* src/components/sections/transactionItemsList.module.css */
-.itemsSection {
+/* transactionItemsList.module.css */
+
+.container {
   grid-column: span 2;
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-md);
-  background-color: var(--color-background);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-}
-
-.itemsTitle {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  margin-bottom: var(--spacing-md);
-  color: var(--color-on-surface);
-}
-
-.itemsList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--s-2);
+}
+
+.title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-3);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
 }
 
 .item {
-  padding: var(--spacing-md);
-  background-color: var(--color-surface);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-}
-
-.itemMain {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-md);
-  gap: var(--spacing-md);
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
 }
 
 .itemInfo {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
-  flex: 1;
+  gap: 2px;
 }
-
 .itemName {
+  font-size: 13px;
   font-weight: 600;
-  color: var(--color-on-surface);
-  font-size: var(--font-size-md);
+  color: var(--text-1);
+}
+.itemPrice {
+  font-size: 12px;
+  color: var(--text-3);
 }
 
-.itemUnitPrice {
-  font-size: var(--font-size-sm);
-  color: var(--color-on-surface-variant);
-}
-
-.quantityControls {
+.quantityControl {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--s-2);
 }
 
-.quantityButton {
-  width: 32px;
-  height: 32px;
+.qtyBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  border: none;
-  border-radius: var(--radius-md);
-  font-weight: 600;
+  width: 26px;
+  height: 26px;
+  background: var(--surface-3);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-sm);
+  color: var(--text-2);
+  font-size: 14px;
   cursor: pointer;
-  transition: var(--transition-colors);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.qtyBtn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
 }
 
-.quantityButton:hover {
-  background-color: var(--color-primary-dark);
-}
-
-.quantityInput {
-  width: 60px;
-  height: 32px;
-  padding: var(--spacing-xs);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+.qtyInput {
+  width: 44px;
   text-align: center;
-  font-size: var(--font-size-md);
-  font-weight: 500;
-}
-
-.quantityInput:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
-}
-
-.itemFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: var(--spacing-md);
-  border-top: 1px solid var(--color-border);
+  padding: 4px 0;
+  background: var(--surface-3);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  color: var(--text-1);
 }
 
 .itemTotal {
+  font-size: 14px;
   font-weight: 700;
-  color: var(--color-primary);
-  font-size: var(--font-size-lg);
+  color: var(--text-1);
+  font-variant-numeric: tabular-nums;
+  min-width: 72px;
+  text-align: right;
 }
 
-.removeButton {
-  padding: var(--spacing-xs) var(--spacing-md);
-  background: none;
-  border: 1px solid var(--color-error);
-  border-radius: var(--radius-md);
-  color: var(--color-error);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: var(--transition-colors);
-}
-
-.removeButton:hover {
-  background-color: var(--color-error);
-  color: var(--color-on-primary);
-}
-
-.itemsSummary {
-  margin-top: var(--spacing-lg);
-  padding-top: var(--spacing-md);
-  border-top: 2px solid var(--color-border);
-}
-
-.summaryRow {
+.removeBtn {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-xs);
-  font-weight: 500;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-sm);
+  color: var(--text-3);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast),
+    border-color var(--t-fast);
+}
+.removeBtn:hover {
+  background: var(--red-subtle);
+  border-color: var(--red-border);
+  color: var(--red);
 }
 
-.summaryRow:last-child {
-  margin-bottom: 0;
-}
-
-.emptyState {
+.empty {
+  font-size: 12px;
+  color: var(--text-3);
+  padding: var(--s-3);
   text-align: center;
-  padding: var(--spacing-xl);
-  color: var(--color-on-surface-variant);
-  font-style: italic;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-  .itemMain {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--spacing-md);
-  }
-
-  .quantityControls {
-    justify-content: center;
-  }
-
-  .itemFooter {
-    flex-direction: column;
-    gap: var(--spacing-md);
-    align-items: stretch;
-  }
-
-  .removeButton {
-    text-align: center;
-  }
-
-  .quantityInput {
-    width: 60%;
-  }
-
-  .quantityButton {
-    width: 20%;
-  }
-}
-
-/* Adicione estas regras ao CSS existente */
-.stockInfo {
-  font-size: var(--font-size-xs);
-  color: var(--color-on-surface-variant);
-  margin-top: var(--spacing-xs);
-}
-
-.stockWarning {
-  color: var(--color-error);
-  font-weight: 600;
-  margin-left: var(--spacing-xs);
 }

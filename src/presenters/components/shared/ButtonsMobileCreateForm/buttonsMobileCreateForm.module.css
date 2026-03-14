@@ -1,60 +1,65 @@
-.container {
-  position: fixed;
-  bottom: 50px;
-  right: 30px;
+/* buttonsMobileCreateForm.module.css */
+
+.fab {
   display: none;
-  z-index: 3;
-}
-
-.mainButton {
-  cursor: pointer;
-  background-color: var(--color-primary-dark);
-  font-size: var(--font-size-xxl);
-  color: var(--color-on-primary);
-  height: 60px;
-  width: 60px;
-  border: 0;
-  border-radius: var(--radius-full);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: 0.3s all;
-}
-
-.mainButton:hover {
-  transform: scale(1.08);
-}
-
-.buttons {
   position: fixed;
-  bottom: 120px;
-  right: 30px;
+  bottom: var(--s-5);
+  right: var(--s-5);
+  z-index: 50;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--s-2);
+}
+
+.fabMain {
+  width: 52px;
+  height: 52px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--r-full);
+  color: #fff;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(79, 127, 255, 0.4);
+  cursor: pointer;
+  transition: background var(--t-fast), transform var(--t-fast);
+}
+.fabMain:hover {
+  background: var(--accent-hover);
+  transform: scale(1.06);
+}
+
+.fabMenu {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  align-items: flex-end;
+  gap: var(--s-2);
 }
 
-.buttons button {
-  padding: var(--spacing-md) var(--spacing-lg);
-  border: 1px solid var(--color-border);
-  font-size: var(--font-size-md);
-  cursor: pointer;
-  border-radius: var(--radius-lg);
-  background: var(--gradient-primary);
-  color: var(--color-on-primary);
+.fabItem {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: var(--spacing-sm);
-  transition: 0.3s all;
+  gap: var(--s-2);
+  padding: 8px var(--s-4) 8px var(--s-3);
+  background: var(--surface-1);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-full);
+  color: var(--text-1);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: background var(--t-fast), transform var(--t-fast);
+}
+.fabItem:hover {
+  background: var(--surface-2);
+  transform: translateX(-2px);
 }
 
-.buttons button:hover {
-  background-color: var(--color-primary);
-}
-
-@media (max-width: 768px) {
-  .container {
+@media (max-width: 900px) {
+  .fab {
     display: flex;
   }
 }

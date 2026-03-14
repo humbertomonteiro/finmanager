@@ -1,200 +1,200 @@
-.controls {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-  padding: var(--spacing-md);
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
-}
+/* filtersProducts.module.css — mirrors filtersTransactions style */
 
-.mobileFilterButton {
-  display: none;
+.controls {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+  transition: max-height 0.3s ease, padding 0.3s ease, border-width 0.2s ease;
+}
+.controlsOpen {
+  max-height: 600px;
+  padding: var(--s-4) var(--s-5);
+  border-width: 1px;
 }
 
 .headerControls {
   display: flex;
-  justify-content: space-between;
-}
-
-.headerControls button {
-  background-color: transparent;
-  border: 0;
-  font-size: var(--font-size-lg);
-  cursor: pointer;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-sm);
-  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
 }
-
-.headerControls button:hover {
-  background-color: var(--color-background);
+.headerControls h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
 }
 
 .headerActions {
   display: flex;
-  justify-content: center;
   align-items: center;
+  gap: var(--s-2);
+}
+
+.clearAllButton {
+  padding: 5px var(--s-3);
+  background: transparent;
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-md);
+  color: var(--text-3);
+  font-size: 12px;
+  font-weight: 500;
+  transition: background var(--t-fast), color var(--t-fast),
+    border-color var(--t-fast);
+}
+.clearAllButton:hover {
+  background: var(--red-subtle);
+  border-color: var(--red-border);
+  color: var(--red);
 }
 
 .hideFiltersButton {
-  color: var(--color-on-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-sm);
+  color: var(--text-3);
+  font-size: 14px;
+  transition: background var(--t-fast), color var(--t-fast);
 }
-
-.headerActions .clearAllButton {
-  font-size: var(--font-size-sm);
-  color: var(--color-on-surface);
+.hideFiltersButton:hover {
+  background: var(--surface-2);
+  color: var(--text-1);
 }
 
 .searchBox {
   position: relative;
-  display: flex;
-  align-items: center;
+  width: 100%;
 }
-
 .searchInput {
-  flex: 1;
-  padding: var(--spacing-md) var(--spacing-lg);
-  padding-right: var(--spacing-xl);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-md);
-  transition: var(--transition-colors);
-}
-
-.searchInput:focus {
+  width: 100%;
+  padding: 9px 36px 9px 13px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  color: var(--text-1);
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  transition: border-color var(--t-base), box-shadow var(--t-base);
+}
+.searchInput:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
+}
+.searchInput::placeholder {
+  color: var(--text-3);
 }
 
 .clearSearch {
   position: absolute;
-  right: var(--spacing-md);
-  background: none;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
   border: none;
-  font-size: var(--font-size-lg);
+  color: var(--text-3);
+  font-size: 18px;
+  line-height: 1;
   cursor: pointer;
-  color: var(--color-on-surface-variant);
-  padding: var(--spacing-xs);
-  border-radius: var(--radius-sm);
-  transition: var(--transition-colors);
+  transition: color var(--t-fast);
+}
+.clearSearch:hover {
+  color: var(--text-1);
 }
 
-.clearSearch:hover {
-  color: var(--color-on-surface);
+.filterRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--s-3);
+  align-items: end;
 }
 
 .filterGroup {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
+  flex-direction: column;
+  gap: var(--s-1);
 }
-
 .filterLabel {
+  font-size: 11px;
   font-weight: 500;
-  color: var(--color-on-surface);
-  white-space: nowrap;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
-.filterSelect {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface);
-  color: var(--color-on-surface);
-  cursor: pointer;
+.filterSelect,
+.dateInput {
+  padding: 7px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  color: var(--text-1);
+  outline: none;
+  transition: border-color var(--t-base);
+}
+.filterSelect:focus,
+.dateInput:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
 }
 
 .sortGroup {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--s-3);
+  flex-wrap: wrap;
 }
-
 .sortLabel {
+  font-size: 11px;
   font-weight: 500;
-  color: var(--color-on-surface);
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   white-space: nowrap;
 }
-
 .sortButtons {
   display: flex;
+  gap: var(--s-2);
   flex-wrap: wrap;
-  gap: var(--spacing-xs);
 }
 
 .sortButton {
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: none;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-on-surface);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-colors);
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--s-1);
+  padding: 6px var(--s-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-md);
+  color: var(--text-3);
+  font-size: 12px;
+  font-weight: 500;
+  transition: background var(--t-fast), color var(--t-fast),
+    border-color var(--t-fast);
 }
-
 .sortButton:hover {
-  background-color: var(--color-background);
+  background: var(--surface-3);
+  color: var(--text-1);
 }
-
 .sortButton.active {
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  border-color: var(--color-primary);
+  background: var(--accent-subtle);
+  border-color: var(--accent-border);
+  color: var(--accent);
 }
 
-@media (max-width: 768px) {
-  .controls {
-    display: none;
-  }
-
-  .mobileFilterButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm) var(--spacing-md);
-    background-color: var(--color-primary);
-    color: var(--color-on-primary);
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-sm);
-    cursor: pointer;
-    transition: var(--transition-colors);
-  }
-
-  .mobileFilterButton:hover {
-    background-color: var(--color-primary-dark);
-  }
-
-  .controlsOpen {
-    display: flex;
-    position: fixed;
-    top: 100px;
-    right: 30px;
-    z-index: 2000;
-  }
-
+@media (max-width: 600px) {
   .filterRow {
-    grid-template-columns: 1fr;
-  }
-
-  .sortGroup {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--spacing-xs);
-  }
-
-  .sortButtons {
-    display: grid;
     grid-template-columns: 1fr 1fr;
   }
 }

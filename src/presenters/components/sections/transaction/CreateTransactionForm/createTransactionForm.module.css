@@ -1,90 +1,83 @@
-/* src/components/sections/createTransactionForm.module.css */
+/* createTransactionForm.module.css */
+
+.overlay {
+  width: 100%;
+  animation: fadeUp 0.2s ease;
+}
 
 .formContainer {
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
   width: 100%;
-  box-shadow: var(--shadow-xl);
+  max-width: 720px;
 }
 
 .formHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-lg);
-  border-bottom: 1px solid var(--color-border);
+  padding: var(--s-5) var(--s-6);
+  border-bottom: 1px solid var(--border);
 }
 
 .formTitle {
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  color: var(--color-on-surface);
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-}
-
-.closeButton {
-  background: none;
-  border: none;
-  font-size: var(--font-size-xxl);
-  line-height: 1;
-  cursor: pointer;
-  color: var(--color-on-surface-variant);
-  padding: var(--spacing-xs);
-  border-radius: var(--radius-sm);
-  transition: var(--transition-colors);
-}
-
-.closeButton:hover {
-  background-color: var(--color-border);
-  color: var(--color-on-surface);
+  gap: var(--s-3);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-1);
 }
 
 .form {
-  padding: var(--spacing-lg);
+  padding: var(--s-6);
 }
 
 .formGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
+  gap: var(--s-4);
+  margin-bottom: var(--s-5);
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
-}
-
-.formGroupFull {
-  grid-column: span 2;
+  gap: var(--s-1);
 }
 
 .label {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--color-on-surface);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-3);
 }
 
 .input,
 .select,
 .textarea {
-  padding: var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-md);
-  transition: var(--transition-colors);
-  font-family: var(--font-family-base);
+  padding: 9px 13px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-md);
+  font-size: 14px;
+  color: var(--text-1);
+  font-family: var(--font);
+  transition: border-color var(--t-base), box-shadow var(--t-base);
+  width: 100%;
+  outline: none;
 }
-
 .input:focus,
 .select:focus,
 .textarea:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
+}
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--text-3);
 }
 
 .textarea {
@@ -92,109 +85,15 @@
   min-height: 80px;
 }
 
-.addButton {
-  padding: var(--spacing-md);
-  background-color: var(--color-success);
-  border: none;
-  border-radius: var(--radius-md);
-  color: var(--color-on-primary);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-colors);
-}
-
-.addButton:hover {
-  background-color: #0d9661;
-}
-
-.addButton:disabled {
-  background-color: var(--color-secondary);
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.itemsSection {
-  grid-column: span 2;
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-md);
-  background-color: var(--color-background);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-}
-
-.itemsTitle {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  margin-bottom: var(--spacing-md);
-  color: var(--color-on-surface);
-}
-
-.itemsList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--spacing-sm);
-  background-color: var(--color-surface);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-}
-
-.itemInfo {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.itemName {
-  font-weight: 500;
-  color: var(--color-on-surface);
-}
-
-.itemDetails {
-  font-size: var(--font-size-sm);
-  color: var(--color-on-surface-variant);
-}
-
-.itemTotal {
-  font-weight: 600;
-  color: var(--color-primary);
-  margin: 0 var(--spacing-md);
-}
-
-.removeItemButton {
-  background: none;
-  border: none;
-  font-size: var(--font-size-lg);
-  cursor: pointer;
-  color: var(--color-error);
-  padding: var(--spacing-xs);
-  border-radius: var(--radius-sm);
-  transition: var(--transition-colors);
-}
-
-.removeItemButton:hover {
-  background-color: rgba(239, 68, 68, 0.1);
-}
-
 .summary {
-  grid-column: span 2;
-  padding: var(--spacing-md);
-  background-color: var(--color-background);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  margin-bottom: var(--spacing-lg);
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-lg);
+  padding: var(--s-4);
+  margin-bottom: var(--s-5);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--s-2);
 }
 
 .summaryRow {
@@ -204,120 +103,135 @@
 }
 
 .summaryLabel {
+  font-size: 13px;
   font-weight: 500;
-  color: var(--color-on-surface);
+  color: var(--text-3);
 }
 
 .summaryValue {
+  font-size: 14px;
   font-weight: 600;
-  font-size: var(--font-size-lg);
-  color: var(--color-primary);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
 }
 
 .summaryDiscount {
+  font-size: 14px;
   font-weight: 600;
-  font-size: var(--font-size-lg);
-  color: var(--color-error);
+  color: var(--red);
+  font-variant-numeric: tabular-nums;
 }
 
 .summaryTotal {
+  font-size: 20px;
   font-weight: 700;
-  font-size: var(--font-size-xl);
-  color: var(--color-primary);
+  color: var(--text-1);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Aviso de venda fiado */
 .creditSaleNotice {
-  margin-top: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: rgba(234, 179, 8, 0.12);
-  border: 1px solid rgba(234, 179, 8, 0.4);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
-  color: var(--color-on-surface);
+  margin-top: var(--s-1);
+  padding: var(--s-2) var(--s-3);
+  background: var(--amber-subtle);
+  border: 1px solid var(--amber-border);
+  border-radius: var(--r-md);
+  font-size: 12px;
+  color: var(--text-2);
   line-height: 1.5;
 }
 
 .errorMessage {
-  grid-column: span 2;
-  padding: var(--spacing-md);
-  background-color: rgba(239, 68, 68, 0.1);
-  color: var(--color-error);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-error);
-  margin-bottom: var(--spacing-md);
+  padding: var(--s-3) var(--s-4);
+  background: var(--red-subtle);
+  border: 1px solid var(--red-border);
+  border-radius: var(--r-md);
+  color: var(--red);
+  font-size: 13px;
+  margin-bottom: var(--s-4);
 }
 
 .formActions {
   display: flex;
-  gap: var(--spacing-md);
+  gap: var(--s-3);
   justify-content: flex-end;
 }
 
 .cancelButton {
-  padding: var(--spacing-md) var(--spacing-lg);
-  background: none;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-on-surface);
+  padding: 9px var(--s-5);
+  background: transparent;
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-md);
+  color: var(--text-2);
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: var(--transition-colors);
+  transition: background var(--t-fast), color var(--t-fast);
 }
-
 .cancelButton:hover {
-  background-color: var(--color-border);
+  background: var(--surface-2);
+  color: var(--text-1);
 }
 
 .submitButton {
-  padding: var(--spacing-md) var(--spacing-lg);
-  background: var(--gradient-primary);
+  padding: 9px var(--s-5);
+  background: var(--accent);
   border: none;
-  border-radius: var(--radius-md);
-  color: var(--color-on-primary);
+  border-radius: var(--r-md);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--t-fast), transform var(--t-fast);
+}
+.submitButton:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+.submitButton:active {
+  transform: translateY(0);
+}
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* addButton kept for compatibility */
+.addButton {
+  padding: 9px var(--s-4);
+  background: var(--green);
+  border: none;
+  border-radius: var(--r-md);
+  color: #fff;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: var(--transition-colors);
+  transition: background var(--t-fast);
 }
-
-.submitButton:hover {
-  background-color: var(--color-primary-dark);
+.addButton:hover {
+  background: #16a34a;
 }
-
-.submitButton:disabled {
-  background-color: var(--color-secondary);
+.addButton:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
-  opacity: 0.6;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .formGrid {
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
-
-  .formGroupFull {
-    grid-column: span 1;
+  .form {
+    padding: var(--s-4);
   }
-
-  .itemsSection {
-    grid-column: span 1;
+  .formHeader {
+    padding: var(--s-4);
   }
-
-  .summary {
-    grid-column: span 1;
-  }
-
-  .errorMessage {
-    grid-column: span 1;
-  }
-
   .formActions {
     flex-direction: column;
   }
-
   .cancelButton,
   .submitButton {
     width: 100%;
+    text-align: center;
   }
 }

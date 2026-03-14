@@ -30,20 +30,23 @@ export function ButtonsMobileCreateForm({
     setActiveView("new-transaction");
   };
   return (
-    <div className={styles.container}>
+    <div className={styles.fab}>
       <button
-        className={styles.mainButton}
+        className={styles.fabMain}
         onClick={() => setShowButtons(!showButtons)}
       >
         {showButtons ? <FaMinus /> : <FaPlus />}
       </button>
       {showButtons && (
-        <div className={styles.buttons}>
-          <button onClick={handleShowCreateProduct}>
+        <div className={styles.fabMenu}>
+          <button className={styles.fabItem} onClick={handleShowCreateProduct}>
             Cadastrar novo Produto
             <FaBox />
           </button>
-          <button onClick={handleShowCreateTransaction}>
+          <button
+            className={styles.fabItem}
+            onClick={handleShowCreateTransaction}
+          >
             Adicionar Transação
             <GrTransaction />
           </button>

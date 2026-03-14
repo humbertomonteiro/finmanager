@@ -1,74 +1,66 @@
-/* src/components/sections/transactionList.module.css */
+/* transactionContent.module.css */
+
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+  animation: fadeUp 0.25s ease forwards;
 }
 
 .header {
   display: flex;
+  align-items: flex-end;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-xl);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-md);
+  gap: var(--s-4);
+  flex-wrap: wrap;
 }
 
 .headerContent {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 2px;
 }
 
 .title {
-  font-size: var(--font-size-xxl);
+  font-size: 22px;
   font-weight: 700;
-  color: var(--color-on-surface);
-  margin: 0;
+  color: var(--text-1);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--s-3);
 }
 
 .subtitle {
-  font-size: var(--font-size-md);
-  color: var(--color-on-surface-variant);
-  margin: 0;
+  font-size: 13px;
+  color: var(--text-3);
+  font-weight: 400;
 }
 
-.addButton,
-.mobileFilterButton {
+.addButton {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--gradient-primary);
-  color: var(--color-on-primary);
+  gap: var(--s-2);
+  padding: 8px var(--s-5);
+  background: var(--accent);
   border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: var(--transition-colors);
+  border-radius: var(--r-md);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background var(--t-fast), transform var(--t-fast);
+}
+.addButton:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
 }
 
-.addButton:hover,
-.mobileFilterButton:hover {
-  background-color: var(--color-primary-dark);
-}
-
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .header {
-    gap: var(--spacing-md);
+    align-items: flex-start;
   }
-
   .addButton {
     display: none;
-  }
-
-  .mobileFilterButton {
-    display: flex;
   }
 }

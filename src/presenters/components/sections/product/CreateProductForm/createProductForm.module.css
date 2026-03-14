@@ -1,206 +1,224 @@
-.formContainer {
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  width: 100%;
+/* createProductForm.module.css */
 
-  box-shadow: var(--shadow-xl);
+.formContainer {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  width: 100%;
+  max-width: 720px;
+  animation: fadeUp 0.2s ease;
 }
 
 .formHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-lg);
-  border-bottom: 1px solid var(--color-border);
+  padding: var(--s-5) var(--s-6);
+  border-bottom: 1px solid var(--border);
 }
 
 .formTitle {
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  color: var(--color-on-surface);
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--s-3);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-1);
 }
 
 .closeButton {
-  background: none;
-  border: none;
-  font-size: var(--font-size-xxl);
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-md);
+  color: var(--text-2);
+  font-size: 16px;
   cursor: pointer;
-  color: var(--color-on-surface-variant);
-  padding: var(--spacing-xs);
-  border-radius: var(--radius-sm);
-  transition: var(--transition-colors);
+  transition: background var(--t-fast), color var(--t-fast);
 }
-
 .closeButton:hover {
-  background-color: var(--color-border);
-  color: var(--color-on-surface);
+  background: var(--surface-3);
+  color: var(--text-1);
 }
 
 .form {
-  padding: var(--spacing-lg);
+  padding: var(--s-6);
 }
 
 .formGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
+  gap: var(--s-4);
+  margin-bottom: var(--s-5);
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--s-1);
 }
-
 .formGroupFull {
   grid-column: span 2;
 }
 
 .label {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--color-on-surface);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-3);
 }
 
 .input,
 .textarea {
-  padding: var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-md);
-  transition: var(--transition-colors);
-  font-family: var(--font-family-base);
+  padding: 9px 13px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-md);
+  font-size: 14px;
+  color: var(--text-1);
+  font-family: var(--font);
+  transition: border-color var(--t-base), box-shadow var(--t-base);
   width: 100%;
+  outline: none;
 }
-
 .input:focus,
 .textarea:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
 }
-
+.input::placeholder {
+  color: var(--text-3);
+}
 .textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 90px;
 }
 
 .profitSummary {
   grid-column: span 2;
-  padding: var(--spacing-md);
-  background-color: var(--color-background);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  margin-bottom: var(--spacing-md);
+  padding: var(--s-4);
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-lg);
+  margin-bottom: var(--s-2);
 }
 
 .profitRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-xs);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
 }
-
 .profitRow:last-child {
-  margin-bottom: 0;
+  border-bottom: none;
 }
 
 .profitLabel {
+  font-size: 13px;
+  color: var(--text-3);
   font-weight: 500;
-  color: var(--color-on-surface);
 }
-
 .profitValue {
-  font-weight: 600;
-  color: var(--color-success);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--green);
+  font-variant-numeric: tabular-nums;
 }
-
 .lossValue {
-  font-weight: 600;
-  color: var(--color-error);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--red);
+  font-variant-numeric: tabular-nums;
 }
 
 .errorMessage {
   grid-column: span 2;
-  padding: var(--spacing-md);
-  background-color: rgba(239, 68, 68, 0.1);
-  color: var(--color-error);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-error);
-  margin-bottom: var(--spacing-md);
+  padding: var(--s-3) var(--s-4);
+  background: var(--red-subtle);
+  border: 1px solid var(--red-border);
+  border-radius: var(--r-md);
+  color: var(--red);
+  font-size: 13px;
+  margin-bottom: var(--s-4);
 }
 
 .formActions {
   display: flex;
-  gap: var(--spacing-md);
+  gap: var(--s-3);
   justify-content: flex-end;
 }
 
 .cancelButton {
-  padding: var(--spacing-md) var(--spacing-lg);
-  background: none;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-on-surface);
+  padding: 9px var(--s-5);
+  background: transparent;
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-md);
+  color: var(--text-2);
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: var(--transition-colors);
+  transition: background var(--t-fast), color var(--t-fast);
 }
-
 .cancelButton:hover {
-  background-color: var(--color-border);
+  background: var(--surface-2);
+  color: var(--text-1);
 }
 
 .submitButton {
-  padding: var(--spacing-md) var(--spacing-lg);
-  background-color: var(--color-primary);
+  padding: 9px var(--s-5);
+  background: var(--accent);
   border: none;
-  border-radius: var(--radius-md);
-  color: var(--color-on-primary);
-  font-weight: 500;
+  border-radius: var(--r-md);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: var(--transition-colors);
+  transition: background var(--t-fast), transform var(--t-fast);
 }
-
 .submitButton:hover {
-  background-color: var(--color-primary-dark);
+  background: var(--accent-hover);
+  transform: translateY(-1px);
 }
-
+.submitButton:active {
+  transform: translateY(0);
+}
 .submitButton:disabled {
-  background-color: var(--color-secondary);
+  opacity: 0.5;
   cursor: not-allowed;
-  opacity: 0.6;
+  transform: none;
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .formGrid {
     grid-template-columns: 1fr;
   }
-
   .formGroupFull {
     grid-column: span 1;
   }
-
   .profitSummary {
     grid-column: span 1;
   }
-
   .errorMessage {
     grid-column: span 1;
   }
-
+  .form {
+    padding: var(--s-4);
+  }
+  .formHeader {
+    padding: var(--s-4);
+  }
   .formActions {
     flex-direction: column;
   }
-
   .cancelButton,
   .submitButton {
     width: 100%;
+    text-align: center;
   }
 }
