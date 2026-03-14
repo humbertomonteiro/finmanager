@@ -17,7 +17,6 @@
   transform: translateY(-2px);
 }
 
-/* Cores baseadas no tipo de transação */
 .card.success {
   border-bottom-color: var(--color-success);
 }
@@ -34,11 +33,27 @@
   border-bottom-color: var(--color-secondary);
 }
 
+/* Fiado */
+.card.credit {
+  border-bottom-color: #eab308;
+}
+
+.card.pendingCard {
+  background: linear-gradient(
+    to bottom right,
+    var(--color-surface),
+    rgba(234, 179, 8, 0.04)
+  );
+}
+
+.credit .typeLabel {
+  color: #ca8a04;
+}
+
 .cardHeader {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  /* margin-bottom: var(--spacing-md); */
   flex-wrap: wrap;
   gap: var(--spacing-sm);
 }
@@ -50,6 +65,7 @@
   padding: var(--spacing-xs) var(--spacing-sm);
   background-color: var(--color-background);
   border-radius: var(--radius-full);
+  flex-wrap: wrap;
 }
 
 .typeIcon {
@@ -79,6 +95,26 @@
   color: var(--color-secondary);
 }
 
+/* Badges de status de pagamento */
+.paymentBadge {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.paidBadge {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.pendingBadge {
+  background-color: rgba(234, 179, 8, 0.15);
+  color: #b45309;
+  border: 1px solid rgba(234, 179, 8, 0.35);
+}
+
 .transactionInfo {
   display: flex;
   flex-direction: column;
@@ -100,6 +136,18 @@
 .cardContent {
   flex: 1;
   margin-bottom: var(--spacing-md);
+}
+
+.customerName {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: #92400e;
+  background-color: rgba(234, 179, 8, 0.1);
+  border: 1px solid rgba(234, 179, 8, 0.25);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
 }
 
 .litsItems {
@@ -165,6 +213,10 @@
   color: var(--color-on-surface);
 }
 
+.pendingAmount {
+  color: #b45309;
+}
+
 .discount {
   font-size: var(--font-size-sm);
   color: var(--color-error);
@@ -191,14 +243,13 @@
 
 .detailsButton {
   padding: var(--spacing-sm) var(--spacing-md);
-  background: none;
+  background: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   color: var(--color-on-surface);
   font-size: var(--font-size-xxs);
   cursor: pointer;
   transition: var(--transition-colors);
-  background: var(--color-background);
 }
 
 .detailsButton:hover {
@@ -207,7 +258,6 @@
   color: var(--color-surface);
 }
 
-/* Responsividade */
 @media (max-width: 480px) {
   .cardHeader {
     gap: var(--spacing-sm);

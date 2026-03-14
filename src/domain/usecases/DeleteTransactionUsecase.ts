@@ -10,50 +10,30 @@ export class DeleteTransactionUsecase {
 
   async execute(transaction: Transaction) {
     try {
-      const transactionId = transaction.id;
-      if (!transactionId) {
-        throw new Error("Transaction ID is required for deletion");
-      }
-
       const { items, type } = transaction;
 
+      // Reverter estoque para vendas (normal e fiado) e compras
       if (
-        type !== "purchase" &&
-        type !== "payment" &&
-        type !== "sale" &&
-        type !== "service" &&
-        type !== "aporte"
+        (type === "sale" || type === "credit_sale" || type === "purchase") &&
+        items.length > 0
       ) {
-        throw new Error(
-          "Invalid transaction type. Must be: purchase, payment, sale, service or aporte"
-        );
+        for (const item of items) {
+          const product = await this.productRepository.getById(item.productId);
+
+          if (!product) continue;
+
+          // Reverter: venda devolve ao estoque, compra retira do estoque
+          if (type === "sale" || type === "credit_sale") {
+            product.updateStock(item.quantity, "purchase");
+          } else {
+            product.updateStock(item.quantity, "sale");
+          }
+
+          await this.productRepository.update(product);
+        }
       }
 
-      for (const item of items) {
-        const product = await this.productRepository.getById(item.productId);
-
-        if (!product) {
-          throw new Error(`Product with ID ${item.productId} not found`);
-        }
-
-        const quantityChange =
-          type === "purchase" ? -item.quantity : item.quantity;
-        const quantityCurrentStock = product.stock || 0;
-
-        if (quantityChange > quantityCurrentStock && type === "purchase") {
-          throw new Error(
-            "Stock cannot be negative. Please verify the sales with the product(s) in the transaction."
-          );
-        }
-
-        product.updateStock(quantityChange, "purchase");
-
-        await this.productRepository.update(product);
-
-        await this.productRepository.update(product);
-      }
-
-      return this.transactionRepository.delete(transactionId);
+      await this.transactionRepository.delete(transaction.id!);
     } catch (error) {
       throw new Error(
         `Error deleting transaction: ${

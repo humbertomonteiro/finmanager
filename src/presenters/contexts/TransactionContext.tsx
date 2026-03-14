@@ -26,6 +26,7 @@ type TransactionContextType = {
   createTransaction: (transaction: Transaction) => Promise<string>;
   deleteTransaction: (transaction: Transaction) => Promise<string | void>;
   updateTransaction: (transaction: Transaction) => Promise<void>;
+  markAsPaid: (transactionId: string) => Promise<void>;
 };
 
 export const TransactionContext = createContext<
@@ -75,6 +76,15 @@ export const TransactionProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const markAsPaid = async (transactionId: string) => {
+    try {
+      await transactionRepository.markAsPaid(transactionId);
+      await fetchTransactions();
+    } catch (error) {
+      throw new Error(`${error}`);
+    }
+  };
+
   useEffect(() => {
     fetchTransactions();
   }, []);
@@ -87,6 +97,7 @@ export const TransactionProvider: React.FC<{ children: React.ReactNode }> = ({
         createTransaction,
         deleteTransaction,
         updateTransaction,
+        markAsPaid,
       }}
     >
       {children}

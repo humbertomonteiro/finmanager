@@ -6,4 +6,5 @@ export interface ITransactionRepository {
   getAll(): Promise<Transaction[]>;
   update(transaction: Transaction): Promise<void>;
   delete(id: string): Promise<void>;
+  markAsPaid(id: string): Promise<void>;
 }

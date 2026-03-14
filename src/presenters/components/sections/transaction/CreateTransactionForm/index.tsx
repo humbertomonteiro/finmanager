@@ -18,51 +18,32 @@ interface CreateTransactionFormProps {
   handleActiveView: (activeView: ActiveViewProps, dataEditing?: any) => void;
 }
 
-// Função auxiliar para converter entrada monetária
 const parseMoneyInput = (value: string): number => {
   if (!value) return 0;
-
-  // Remove espaços em branco
   let cleaned = value.trim();
-
-  // Remove o símbolo R$ se existir
   cleaned = cleaned.replace(/R\$\s?/g, "");
-
-  // Conta quantos pontos e vírgulas existem
   const dotCount = (cleaned.match(/\./g) || []).length;
   const commaCount = (cleaned.match(/,/g) || []).length;
-
-  // Se tem vírgula e ponto, determina qual é o separador decimal
   if (dotCount > 0 && commaCount > 0) {
     const lastDot = cleaned.lastIndexOf(".");
     const lastComma = cleaned.lastIndexOf(",");
-
     if (lastDot > lastComma) {
-      // Formato: 1.234,56 -> remove pontos (milhares) e troca vírgula por ponto
       cleaned = cleaned.replace(/\./g, "").replace(",", ".");
     } else {
-      // Formato: 1,234.56 -> remove vírgulas (milhares)
       cleaned = cleaned.replace(/,/g, "");
     }
   } else if (commaCount > 0) {
-    // Só tem vírgulas
     if (commaCount === 1) {
-      // Pode ser decimal brasileiro (10,50) ou milhares americano (1,234)
       const parts = cleaned.split(",");
       if (parts[1] && parts[1].length <= 2) {
-        // Provavelmente decimal brasileiro
         cleaned = cleaned.replace(",", ".");
       } else {
-        // Provavelmente separador de milhares
         cleaned = cleaned.replace(/,/g, "");
       }
     } else {
-      // Múltiplas vírgulas = separador de milhares
       cleaned = cleaned.replace(/,/g, "");
     }
   }
-  // Se só tem pontos, mantém como está (formato americano padrão)
-
   const parsed = parseFloat(cleaned);
   return isNaN(parsed) ? 0 : parsed;
 };
@@ -82,6 +63,7 @@ export const CreateTransactionForm = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [customerName, setCustomerName] = useState("");
 
   const isEditing = !!transaction;
 
@@ -92,12 +74,14 @@ export const CreateTransactionForm = ({
       setValue(transaction.value.toString());
       setDiscount(transaction.discount ? transaction.discount.toString() : "");
       setItems(transaction.items || []);
+      setCustomerName(transaction.customerName || "");
     } else {
       setType("sale");
       setDescription("");
       setValue("");
       setDiscount("");
       setItems([]);
+      setCustomerName("");
     }
   }, [transaction]);
 
@@ -107,17 +91,24 @@ export const CreateTransactionForm = ({
     setError("");
 
     try {
-      // Validar estoque para vendas
-      if (type === "sale") {
+      if (type === "sale" || type === "credit_sale") {
         for (const item of items) {
           const product = products.find((p) => p.id === item.productId);
-          if (product && product.stock && product.stock < item.quantity) {
+          if (
+            product &&
+            product.stock !== undefined &&
+            product.stock < item.quantity
+          ) {
             throw new Error(
               `Estoque insuficiente para ${product.name}. ` +
                 `Disponível: ${product.stock}, Solicitado: ${item.quantity}`
             );
           }
         }
+      }
+
+      if (type === "credit_sale" && customerName.trim().length < 2) {
+        throw new Error("Nome do cliente é obrigatório para venda fiado.");
       }
 
       const parsedValue = parseMoneyInput(value);
@@ -136,6 +127,8 @@ export const CreateTransactionForm = ({
               ) - parsedDiscount,
         items: type === "aporte" || type === "service" ? [] : items,
         discount: parsedDiscount,
+        customerName: type === "credit_sale" ? customerName.trim() : undefined,
+        isPaid: type === "credit_sale" ? false : true,
       });
 
       if (isEditing) {
@@ -171,7 +164,10 @@ export const CreateTransactionForm = ({
       return;
     }
 
-    const unitPrice = type === "sale" ? product.salePrice : product.costPrice;
+    const unitPrice =
+      type === "sale" || type === "credit_sale"
+        ? product.salePrice
+        : product.costPrice;
 
     const newItem: TransactionItem = {
       productId: product.id!,
@@ -186,13 +182,12 @@ export const CreateTransactionForm = ({
 
   const handleTypeChange = (newType: TransactionType) => {
     setType(newType);
-
     setItems([]);
     setDiscount("");
     setValue("");
+    setCustomerName("");
   };
 
-  // Calcular valores
   const subtotal = items.reduce(
     (acc, item) => acc + item.quantity * item.unitPrice,
     0
@@ -205,6 +200,10 @@ export const CreateTransactionForm = ({
     type === "aporte" || type === "service" || type === "payment"
       ? parsedValue - parsedDiscount
       : subtotal - parsedDiscount;
+
+  const isSaleType = type === "sale" || type === "credit_sale";
+  const hasProducts =
+    type === "sale" || type === "credit_sale" || type === "purchase";
 
   return (
     <div className={styles.overlay}>
@@ -233,11 +232,30 @@ export const CreateTransactionForm = ({
                   required
                 >
                   <option value="sale">Venda</option>
+                  <option value="credit_sale">Venda Fiado</option>
                   <option value="purchase">Compra</option>
                   <option value="aporte">Aporte</option>
                   <option value="service">Serviço</option>
                   <option value="payment">Pagamento</option>
                 </select>
+              </div>
+            )}
+
+            {/* Nome do cliente — apenas para fiado */}
+            {type === "credit_sale" && (
+              <div className={styles.formGroup}>
+                <label htmlFor="customerName" className={styles.label}>
+                  Nome do Cliente *
+                </label>
+                <input
+                  type="text"
+                  id="customerName"
+                  placeholder="Nome de quem vai pagar depois"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  className={styles.input}
+                  required
+                />
               </div>
             )}
 
@@ -266,8 +284,7 @@ export const CreateTransactionForm = ({
               </div>
             )}
 
-            {/* Mostrar campos de produtos apenas para vendas e compras */}
-            {(type === "sale" || type === "purchase") && !isEditing && (
+            {hasProducts && !isEditing && (
               <>
                 <div className={styles.formGroup}>
                   <label htmlFor="product" className={styles.label}>
@@ -276,7 +293,7 @@ export const CreateTransactionForm = ({
                   <ProductSearchInput
                     products={products}
                     onProductSelect={handleProductSelect}
-                    type={type}
+                    type={isSaleType ? "sale" : (type as any)}
                     placeholder="Digite o nome ou código do produto..."
                   />
                 </div>
@@ -299,15 +316,14 @@ export const CreateTransactionForm = ({
                 <TransactionItemsList
                   items={items}
                   products={products}
-                  transactionType={type}
+                  transactionType={isSaleType ? "sale" : (type as any)}
                   onUpdateQuantity={handleUpdateQuantity}
                   onRemoveItem={handleRemoveItem}
                 />
               </>
             )}
 
-            {/* Permitir desconto para todos os tipos exceto os que não fazem sentido */}
-            {(type === "sale" || type === "purchase" || type === "service") && (
+            {(isSaleType || type === "purchase" || type === "service") && (
               <div className={styles.formGroup}>
                 <label htmlFor="discount" className={styles.label}>
                   Desconto (R$)
@@ -339,8 +355,7 @@ export const CreateTransactionForm = ({
           </div>
 
           <div className={styles.summary}>
-            {/* Mostrar subtotal apenas para vendas e compras */}
-            {(type === "sale" || type === "purchase") && (
+            {hasProducts && (
               <div className={styles.summaryRow}>
                 <span className={styles.summaryLabel}>Subtotal:</span>
                 <span className={styles.summaryValue}>
@@ -349,7 +364,6 @@ export const CreateTransactionForm = ({
               </div>
             )}
 
-            {/* Mostrar desconto apenas se houver e for aplicável */}
             {parsedDiscount > 0 && type !== "aporte" && (
               <div className={styles.summaryRow}>
                 <span className={styles.summaryLabel}>Desconto:</span>
@@ -365,6 +379,14 @@ export const CreateTransactionForm = ({
                 R$ {totalValue.toFixed(2).replace(".", ",")}
               </span>
             </div>
+
+            {type === "credit_sale" && (
+              <div className={styles.creditSaleNotice}>
+                ⚠️ Esta venda será registrada como <strong>fiado</strong> — o
+                estoque será descontado agora, mas o valor ficará{" "}
+                <strong>pendente de recebimento</strong>.
+              </div>
+            )}
           </div>
 
           {error && <div className={styles.errorMessage}>{error}</div>}

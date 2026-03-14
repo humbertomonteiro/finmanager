@@ -3,7 +3,8 @@ export type TransactionType =
   | "purchase"
   | "aporte"
   | "service"
-  | "payment";
+  | "payment"
+  | "credit_sale";
 
 export interface TransactionItem {
   productId: string;
@@ -21,6 +22,10 @@ export interface TransactionProps {
   discount?: number;
   date?: Date;
   updatedAt?: Date;
+  // Campos para venda fiado
+  customerName?: string;
+  isPaid?: boolean;
+  paidAt?: Date;
 }
 
 export class Transaction {
@@ -31,6 +36,7 @@ export class Transaction {
       ...props,
       date: props.date || new Date(),
       updatedAt: props.updatedAt || new Date(),
+      isPaid: props.type === "credit_sale" ? props.isPaid ?? false : true,
     };
     this.validate();
   }
@@ -41,15 +47,27 @@ export class Transaction {
     }
 
     if (
-      !["sale", "purchase", "aporte", "service", "payment"].includes(
-        this.props.type
-      )
+      ![
+        "sale",
+        "purchase",
+        "aporte",
+        "service",
+        "payment",
+        "credit_sale",
+      ].includes(this.props.type)
     ) {
       throw new Error("Invalid transaction type. ");
     }
 
     if (
-      this.props.type === "sale" &&
+      this.props.type === "credit_sale" &&
+      (!this.props.customerName || this.props.customerName.trim().length < 2)
+    ) {
+      throw new Error("Nome do cliente é obrigatório para venda fiado.");
+    }
+
+    if (
+      (this.props.type === "sale" || this.props.type === "credit_sale") &&
       this.props.items &&
       this.props.items.length <= 0
     ) {
@@ -88,6 +106,24 @@ export class Transaction {
   }
   get updatedAt() {
     return this.props.updatedAt;
+  }
+  get customerName() {
+    return this.props.customerName;
+  }
+  get isPaid() {
+    return this.props.isPaid;
+  }
+  get paidAt() {
+    return this.props.paidAt;
+  }
+
+  public markAsPaid() {
+    if (this.props.type !== "credit_sale") {
+      throw new Error("Apenas vendas fiado podem ser marcadas como pagas.");
+    }
+    this.props.isPaid = true;
+    this.props.paidAt = new Date();
+    this.props.updatedAt = new Date();
   }
 
   public toDTO(): TransactionProps {

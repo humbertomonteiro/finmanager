@@ -12,15 +12,17 @@ export class CreateTransactionUsecase {
     try {
       const { items, type } = transaction;
 
-      if (
-        type !== "purchase" &&
-        type !== "sale" &&
-        type !== "aporte" &&
-        type !== "service" &&
-        type !== "payment"
-      ) {
+      const validTypes = [
+        "purchase",
+        "sale",
+        "aporte",
+        "service",
+        "payment",
+        "credit_sale",
+      ];
+      if (!validTypes.includes(type)) {
         throw new Error(
-          "Invalid transaction type. Must be: purchase, payment, sale, service or aporte"
+          "Invalid transaction type. Must be: purchase, payment, sale, service, aporte or credit_sale"
         );
       }
 
@@ -28,16 +30,23 @@ export class CreateTransactionUsecase {
         return this.transactionRepository.save(transaction);
       }
 
-      for (const item of items) {
-        const product = await this.productRepository.getById(item.productId);
+      // Venda normal e venda fiado: ambas descontam o estoque
+      if (type === "sale" || type === "credit_sale" || type === "purchase") {
+        for (const item of items) {
+          const product = await this.productRepository.getById(item.productId);
 
-        if (!product) {
-          throw new Error(`Product with ID ${item.productId} not found`);
+          if (!product) {
+            throw new Error(`Product with ID ${item.productId} not found`);
+          }
+
+          // Para compra aumenta, para venda (normal ou fiado) diminui
+          product.updateStock(
+            item.quantity,
+            type === "purchase" ? "purchase" : "sale"
+          );
+
+          await this.productRepository.update(product);
         }
-
-        product.updateStock(item.quantity, type);
-
-        await this.productRepository.update(product);
       }
 
       return this.transactionRepository.save(transaction);

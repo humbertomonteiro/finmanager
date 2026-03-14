@@ -8,7 +8,11 @@ import { TbMoneybag, TbReportMoney } from "react-icons/tb";
 import { IoCartOutline } from "react-icons/io5";
 import { GrTransaction } from "react-icons/gr";
 import { ActiveViewProps } from "../../../../pages/Dashboard";
-import { FaMoneyBillTransfer, FaPersonDigging } from "react-icons/fa6";
+import {
+  FaMoneyBillTransfer,
+  FaPersonDigging,
+  FaHandshake,
+} from "react-icons/fa6";
 
 interface TransactionCardProps {
   transaction: Transaction;
@@ -26,6 +30,8 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
     switch (type) {
       case "sale":
         return { label: "Venda", color: "success", icon: <TbMoneybag /> };
+      case "credit_sale":
+        return { label: "Fiado", color: "credit", icon: <FaHandshake /> };
       case "purchase":
         return { label: "Compra", color: "warning", icon: <IoCartOutline /> };
       case "payment":
@@ -58,21 +64,29 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
     minute: "2-digit",
   });
 
-  const handleViewDetails = () => {
-    setShowDetails(true);
-  };
-
-  const handleCloseDetails = () => {
-    setShowDetails(false);
-  };
+  const isCreditSale = transaction.type === "credit_sale";
+  const isPending = isCreditSale && !transaction.isPaid;
 
   return (
     <>
-      <div className={`${styles.card} ${styles[typeConfig.color]}`}>
+      <div
+        className={`${styles.card} ${styles[typeConfig.color]} ${
+          isPending ? styles.pendingCard : ""
+        }`}
+      >
         <div className={styles.cardHeader}>
           <div className={styles.typeBadge}>
             <span className={styles.typeIcon}>{typeConfig.icon}</span>
             <span className={styles.typeLabel}>{typeConfig.label}</span>
+            {isCreditSale && (
+              <span
+                className={`${styles.paymentBadge} ${
+                  transaction.isPaid ? styles.paidBadge : styles.pendingBadge
+                }`}
+              >
+                {transaction.isPaid ? "Pago" : "Pendente"}
+              </span>
+            )}
           </div>
 
           <div className={styles.transactionInfo}>
@@ -82,6 +96,10 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
         </div>
 
         <div className={styles.cardContent}>
+          {isCreditSale && transaction.customerName && (
+            <p className={styles.customerName}>👤 {transaction.customerName}</p>
+          )}
+
           {transaction.description && (
             <p className={styles.description}>{transaction.description}</p>
           )}
@@ -98,8 +116,8 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
                 </div>
                 {showListItems && (
                   <ul className={styles.litsItems}>
-                    {transaction.items.map((item) => (
-                      <li>
+                    {transaction.items.map((item, idx) => (
+                      <li key={idx}>
                         <div>{item.name}</div> <div>{item.quantity}</div>
                       </li>
                     ))}
@@ -119,7 +137,11 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
 
             <div className={styles.detailRow}>
               <span className={styles.detailLabel}>Valor:</span>
-              <span className={styles.amount}>
+              <span
+                className={`${styles.amount} ${
+                  isPending ? styles.pendingAmount : ""
+                }`}
+              >
                 {formatBRL(transaction.value)}
               </span>
             </div>
@@ -127,7 +149,10 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
         </div>
 
         <div className={styles.cardFooter}>
-          <button className={styles.detailsButton} onClick={handleViewDetails}>
+          <button
+            className={styles.detailsButton}
+            onClick={() => setShowDetails(true)}
+          >
             Ver Detalhes
           </button>
         </div>
@@ -137,8 +162,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
         <TransactionDetails
           transaction={transaction}
           handleActiveView={handleActiveView}
-          // onDelete={onDelete}
-          onClose={handleCloseDetails}
+          onClose={() => setShowDetails(false)}
         />
       )}
     </>

@@ -3,8 +3,12 @@ export type TransactionType =
   | "purchase"
   | "aporte"
   | "service"
-  | "payment";
+  | "payment"
+  | "credit_sale";
+
 export type ProductStockFilter = "all" | "low" | "out";
+
+export type PaymentStatus = "all" | "pending" | "paid";
 
 export type SortField =
   | "date"
@@ -25,6 +29,7 @@ export interface FilterState {
   sortOrder: SortOrder;
   startDate?: string;
   endDate?: string;
+  paymentStatus?: PaymentStatus;
 }
 
 export interface FiltersTransactionsProps {

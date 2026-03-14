@@ -43,6 +43,9 @@ export class TransactionRepository implements ITransactionRepository {
         updatedAt: transactionDTO.updatedAt
           ? transactionDTO.updatedAt.toISOString()
           : new Date().toISOString(),
+        paidAt: transactionDTO.paidAt
+          ? transactionDTO.paidAt.toISOString()
+          : undefined,
       });
 
       await setDoc(docRef, cleanedTransaction, { merge: true });
@@ -90,11 +93,30 @@ export class TransactionRepository implements ITransactionRepository {
 
       const docRef = doc(db, this.collectionName, transaction.id);
 
-      const cleanedDTO = this.cleanObject(transactionDTO);
+      const cleanedDTO = this.cleanObject({
+        ...transactionDTO,
+        paidAt: transactionDTO.paidAt
+          ? transactionDTO.paidAt.toISOString()
+          : undefined,
+      });
       await updateDoc(docRef, cleanedDTO);
     } catch (error) {
       console.error(`Error updating transaction ${transaction.id}:`, error);
       throw new Error("Error updating transaction");
+    }
+  }
+
+  async markAsPaid(id: string): Promise<void> {
+    try {
+      const docRef = doc(db, this.collectionName, id);
+      await updateDoc(docRef, {
+        isPaid: true,
+        paidAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error(`Error marking transaction ${id} as paid:`, error);
+      throw new Error("Error marking transaction as paid");
     }
   }
 
@@ -119,11 +141,18 @@ export class TransactionRepository implements ITransactionRepository {
         ? data.updatedAt.toDate()
         : new Date(data.updatedAt ?? Date.now());
 
+    const paidAt = data.paidAt
+      ? data.paidAt instanceof Timestamp
+        ? data.paidAt.toDate()
+        : new Date(data.paidAt)
+      : undefined;
+
     return new Transaction({
       ...data,
       id,
       date,
       updatedAt,
+      paidAt,
     } as TransactionProps);
   }
 }

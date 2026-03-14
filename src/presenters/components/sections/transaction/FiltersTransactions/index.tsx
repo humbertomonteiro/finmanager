@@ -5,6 +5,7 @@ import {
   SortField,
   SortOrder,
   TransactionType,
+  PaymentStatus,
 } from "../../../../../types/filters";
 import styles from "./filtersTransactions.module.css";
 import { FaArrowDown, FaArrowsUpDown, FaArrowUp } from "react-icons/fa6";
@@ -32,10 +33,10 @@ const FiltersTransactions: React.FC<FiltersTransactionsProps> = ({
     sortOrder: "desc",
     startDate: "",
     endDate: "",
+    paymentStatus: "all",
     ...initialFilters,
   });
 
-  // Configurar datas padrão (início e fim do mês atual)
   useEffect(() => {
     const now = new Date();
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -48,7 +49,6 @@ const FiltersTransactions: React.FC<FiltersTransactionsProps> = ({
     }));
   }, []);
 
-  // Notificar mudanças nos filtros
   useEffect(() => {
     onFiltersChange(filters);
   }, [filters, onFiltersChange]);
@@ -90,6 +90,7 @@ const FiltersTransactions: React.FC<FiltersTransactionsProps> = ({
       sortOrder: "desc",
       startDate: firstDay.toISOString().split("T")[0],
       endDate: lastDay.toISOString().split("T")[0],
+      paymentStatus: "all",
     });
   };
 
@@ -119,10 +120,11 @@ const FiltersTransactions: React.FC<FiltersTransactionsProps> = ({
         </div>
       </div>
 
+      {/* Busca — aceita nome do cliente também */}
       <div className={styles.searchBox}>
         <input
           type="text"
-          placeholder="Buscar transações por descrição ou ID..."
+          placeholder="Buscar por descrição, cliente, item ou ID..."
           value={filters.searchTerm}
           onChange={(e) => handleFilterChange("searchTerm", e.target.value)}
           className={styles.searchInput}
@@ -139,6 +141,7 @@ const FiltersTransactions: React.FC<FiltersTransactionsProps> = ({
       </div>
 
       <div className={styles.filterRow}>
+        {/* Tipo de transação */}
         <div className={styles.filterGroup}>
           <label htmlFor="typeFilter" className={styles.filterLabel}>
             Tipo:
@@ -156,6 +159,7 @@ const FiltersTransactions: React.FC<FiltersTransactionsProps> = ({
           >
             <option value="all">Todos os tipos</option>
             <option value="sale">Vendas</option>
+            <option value="credit_sale">Fiado</option>
             <option value="purchase">Compras</option>
             <option value="aporte">Aportes</option>
             <option value="service">Serviços</option>
@@ -163,6 +167,29 @@ const FiltersTransactions: React.FC<FiltersTransactionsProps> = ({
           </select>
         </div>
 
+        {/* Status de pagamento — relevante para fiado */}
+        <div className={styles.filterGroup}>
+          <label htmlFor="paymentStatus" className={styles.filterLabel}>
+            Status:
+          </label>
+          <select
+            id="paymentStatus"
+            value={filters.paymentStatus}
+            onChange={(e) =>
+              handleFilterChange(
+                "paymentStatus",
+                e.target.value as PaymentStatus
+              )
+            }
+            className={styles.filterSelect}
+          >
+            <option value="all">Todos</option>
+            <option value="pending">Fiado pendente</option>
+            <option value="paid">Pagos / Normais</option>
+          </select>
+        </div>
+
+        {/* Data início */}
         <div className={styles.filterGroup}>
           <label htmlFor="startDate" className={styles.filterLabel}>
             De:
@@ -176,6 +203,7 @@ const FiltersTransactions: React.FC<FiltersTransactionsProps> = ({
           />
         </div>
 
+        {/* Data fim */}
         <div className={styles.filterGroup}>
           <label htmlFor="endDate" className={styles.filterLabel}>
             Até:

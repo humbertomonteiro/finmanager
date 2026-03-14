@@ -27,11 +27,12 @@ export const useTransactionFilters = (
     sortOrder: "desc",
     startDate: "",
     endDate: "",
+    paymentStatus: "all",
   });
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Configurar datas padrão
+  // Configurar datas padrão para o mês atual
   useEffect(() => {
     const now = new Date();
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -44,12 +45,22 @@ export const useTransactionFilters = (
     }));
   }, []);
 
-  // Filtrar e ordenar transações
   const filteredTransactions = useMemo(() => {
     let filtered = transactions.filter((transaction) => {
       // Filtro por tipo
       const matchesType =
         filters.type === "all" || transaction.type === filters.type;
+
+      // Filtro por status de pagamento (para fiados)
+      let matchesPaymentStatus = true;
+      if (filters.paymentStatus === "pending") {
+        matchesPaymentStatus =
+          transaction.type === "credit_sale" && !transaction.isPaid;
+      } else if (filters.paymentStatus === "paid") {
+        matchesPaymentStatus =
+          transaction.type !== "credit_sale" ||
+          (transaction.type === "credit_sale" && !!transaction.isPaid);
+      }
 
       // Filtro por termo de busca
       const matchesSearch =
@@ -58,6 +69,9 @@ export const useTransactionFilters = (
           ?.toLowerCase()
           .includes(filters.searchTerm.toLowerCase()) ||
         transaction.id
+          ?.toLowerCase()
+          .includes(filters.searchTerm.toLowerCase()) ||
+        transaction.customerName
           ?.toLowerCase()
           .includes(filters.searchTerm.toLowerCase()) ||
         transaction.items?.some((item) =>
@@ -79,7 +93,9 @@ export const useTransactionFilters = (
         matchesDate = matchesDate && transactionDate <= end;
       }
 
-      return matchesType && matchesSearch && matchesDate;
+      return (
+        matchesType && matchesSearch && matchesDate && matchesPaymentStatus
+      );
     });
 
     // Ordenação
@@ -104,20 +120,25 @@ export const useTransactionFilters = (
           bValue = new Date(b.date!).getTime();
       }
 
+      if (typeof aValue === "string") {
+        return filters.sortOrder === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+
       return filters.sortOrder === "asc" ? aValue - bValue : bValue - aValue;
     });
 
     return filtered;
   }, [transactions, filters]);
 
-  // Paginação
   const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+
   const paginatedTransactions = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filteredTransactions.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredTransactions, currentPage, itemsPerPage]);
 
-  // Resetar para a primeira página quando os filtros mudarem
   useEffect(() => {
     setCurrentPage(1);
   }, [
@@ -127,6 +148,7 @@ export const useTransactionFilters = (
     filters.sortOrder,
     filters.startDate,
     filters.endDate,
+    filters.paymentStatus,
   ]);
 
   const updateFilters = (newFilters: FilterState) => {
