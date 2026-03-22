@@ -1,4 +1,4 @@
-// src/components/sections/CreateTransactionForm.tsx
+// src/presenters/components/sections/transaction/CreateTransactionForm/index.tsx
 import React, { useState, useEffect } from "react";
 import { useTransaction } from "../../../../contexts/TransactionContext";
 import { useProduct } from "../../../../contexts/ProductContext";
@@ -7,65 +7,76 @@ import {
   TransactionItem,
   TransactionType,
 } from "../../../../../domain/entities/Transaction";
-import styles from "./createTransactionForm.module.css";
+import { formatCurrency } from "../../../../../utils/formatCurrency";
 import { ProductSearchInput } from "../../product/ProductSearchInput";
 import { TransactionItemsList } from "../TransactionItemsList";
 import { ActiveViewProps } from "../../../../pages/Dashboard";
-import { GrTransaction } from "react-icons/gr";
+import styles from "./createTransactionForm.module.css";
 
-interface CreateTransactionFormProps {
+import { GrTransaction } from "react-icons/gr";
+import { IoClose } from "react-icons/io5";
+import { TbMoneybag, TbReportMoney } from "react-icons/tb";
+import { IoCartOutline } from "react-icons/io5";
+import {
+  FaHandshake,
+  FaMoneyBillTransfer,
+  FaPersonDigging,
+} from "react-icons/fa6";
+
+interface Props {
   transaction?: Transaction;
-  handleActiveView: (activeView: ActiveViewProps, dataEditing?: any) => void;
+  handleActiveView: (view: ActiveViewProps, data?: any) => void;
+  onClose?: () => void;
 }
 
 const parseMoneyInput = (value: string): number => {
   if (!value) return 0;
-  let cleaned = value.trim();
-  cleaned = cleaned.replace(/R\$\s?/g, "");
-  const dotCount = (cleaned.match(/\./g) || []).length;
-  const commaCount = (cleaned.match(/,/g) || []).length;
-  if (dotCount > 0 && commaCount > 0) {
-    const lastDot = cleaned.lastIndexOf(".");
-    const lastComma = cleaned.lastIndexOf(",");
-    if (lastDot > lastComma) {
-      cleaned = cleaned.replace(/\./g, "").replace(",", ".");
-    } else {
-      cleaned = cleaned.replace(/,/g, "");
-    }
-  } else if (commaCount > 0) {
-    if (commaCount === 1) {
-      const parts = cleaned.split(",");
-      if (parts[1] && parts[1].length <= 2) {
-        cleaned = cleaned.replace(",", ".");
-      } else {
-        cleaned = cleaned.replace(/,/g, "");
-      }
-    } else {
-      cleaned = cleaned.replace(/,/g, "");
-    }
+  let c = value.trim().replace(/R\$\s?/g, "");
+  const dots = (c.match(/\./g) || []).length;
+  const commas = (c.match(/,/g) || []).length;
+  if (dots > 0 && commas > 0) {
+    if (c.lastIndexOf(".") > c.lastIndexOf(","))
+      c = c.replace(/\./g, "").replace(",", ".");
+    else c = c.replace(/,/g, "");
+  } else if (commas === 1 && c.split(",")[1]?.length <= 2) {
+    c = c.replace(",", ".");
+  } else if (commas > 1) {
+    c = c.replace(/,/g, "");
   }
-  const parsed = parseFloat(cleaned);
-  return isNaN(parsed) ? 0 : parsed;
+  return parseFloat(c) || 0;
 };
 
-export const CreateTransactionForm = ({
+const TYPE_OPTIONS: { value: TransactionType; label: string; icon: React.ReactNode; desc: string }[] = [
+  { value: "sale",         label: "Venda",      icon: <TbMoneybag />,        desc: "Venda com produtos" },
+  { value: "credit_sale",  label: "Fiado",      icon: <FaHandshake />,       desc: "Pagar depois" },
+  { value: "purchase",     label: "Compra",     icon: <IoCartOutline />,     desc: "Entrada de produtos" },
+  { value: "aporte",       label: "Aporte",     icon: <TbReportMoney />,     desc: "Entrada de capital" },
+  { value: "service",      label: "Serviço",    icon: <FaPersonDigging />,   desc: "Prestação de serviço" },
+  { value: "payment",      label: "Pagamento",  icon: <FaMoneyBillTransfer />, desc: "Saída de caixa" },
+];
+
+export const CreateTransactionForm: React.FC<Props> = ({
   transaction,
   handleActiveView,
-}: CreateTransactionFormProps) => {
+  onClose,
+}) => {
   const { createTransaction, updateTransaction } = useTransaction();
   const { products, fetchProducts } = useProduct();
 
   const [type, setType] = useState<TransactionType>("sale");
   const [description, setDescription] = useState("");
-  const [value, setValue] = useState<string>("");
-  const [discount, setDiscount] = useState<string>("");
+  const [value, setValue] = useState("");
+  const [discount, setDiscount] = useState("");
   const [items, setItems] = useState<TransactionItem[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const isEditing = !!transaction;
+  const hasProducts = ["sale", "credit_sale", "purchase"].includes(type);
+  const needsValue  = ["aporte", "service", "payment"].includes(type);
+  const isSaleType  = type === "sale" || type === "credit_sale";
 
   useEffect(() => {
     if (transaction) {
@@ -75,15 +86,42 @@ export const CreateTransactionForm = ({
       setDiscount(transaction.discount ? transaction.discount.toString() : "");
       setItems(transaction.items || []);
       setCustomerName(transaction.customerName || "");
-    } else {
-      setType("sale");
-      setDescription("");
-      setValue("");
-      setDiscount("");
-      setItems([]);
-      setCustomerName("");
     }
   }, [transaction]);
+
+  const subtotal = items.reduce((s, i) => s + i.quantity * i.unitPrice, 0);
+  const parsedDiscount = parseMoneyInput(discount);
+  const parsedValue = parseMoneyInput(value);
+  const totalValue = needsValue
+    ? parsedValue - parsedDiscount
+    : subtotal - parsedDiscount;
+
+  const handleTypeChange = (t: TransactionType) => {
+    setType(t);
+    setItems([]);
+    setDiscount("");
+    setValue("");
+    setCustomerName("");
+    setError("");
+  };
+
+  const handleProductSelect = (product: any) => {
+    const unitPrice = isSaleType ? product.salePrice : product.costPrice;
+    const existing = items.findIndex((i) => i.productId === product.id);
+    if (existing >= 0) {
+      setItems((prev) =>
+        prev.map((item, idx) =>
+          idx === existing ? { ...item, quantity: item.quantity + quantity } : item
+        )
+      );
+    } else {
+      setItems((prev) => [
+        { productId: product.id!, name: product.name, quantity, unitPrice },
+        ...prev,
+      ]);
+    }
+    setQuantity(1);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,54 +129,47 @@ export const CreateTransactionForm = ({
     setError("");
 
     try {
-      if (type === "sale" || type === "credit_sale") {
+      // Stock validation
+      if (isSaleType) {
         for (const item of items) {
-          const product = products.find((p) => p.id === item.productId);
-          if (
-            product &&
-            product.stock !== undefined &&
-            product.stock < item.quantity
-          ) {
+          const prod = products.find((p) => p.id === item.productId);
+          if (prod && (prod.stock ?? 0) < item.quantity) {
             throw new Error(
-              `Estoque insuficiente para ${product.name}. ` +
-                `Disponível: ${product.stock}, Solicitado: ${item.quantity}`
+              `Estoque insuficiente para "${prod.name}". Disponível: ${prod.stock}, Solicitado: ${item.quantity}`
             );
           }
         }
       }
 
       if (type === "credit_sale" && customerName.trim().length < 2) {
-        throw new Error("Nome do cliente é obrigatório para venda fiado.");
+        throw new Error("Nome do cliente é obrigatório (mínimo 2 caracteres).");
       }
 
-      const parsedValue = parseMoneyInput(value);
-      const parsedDiscount = parseMoneyInput(discount);
+      const finalValue = needsValue ? parsedValue - parsedDiscount : subtotal - parsedDiscount;
 
-      const transactionData = new Transaction({
-        id: isEditing ? transaction.id : undefined,
+      if (finalValue <= 0 && type !== "adjustment") {
+        throw new Error("O valor total deve ser maior que zero.");
+      }
+
+      const tx = new Transaction({
+        id: isEditing ? transaction!.id : undefined,
         type,
         description: description || "",
-        value:
-          type === "aporte" || type === "service" || type === "payment"
-            ? parsedValue - parsedDiscount
-            : items.reduce(
-                (acc, item) => acc + item.quantity * item.unitPrice,
-                0
-              ) - parsedDiscount,
-        items: type === "aporte" || type === "service" ? [] : items,
-        discount: parsedDiscount,
+        value: finalValue,
+        items: hasProducts ? items : [],
+        discount: parsedDiscount || 0,
         customerName: type === "credit_sale" ? customerName.trim() : undefined,
         isPaid: type === "credit_sale" ? false : true,
       });
 
       if (isEditing) {
-        await updateTransaction(transactionData);
+        await updateTransaction(tx);
       } else {
-        await createTransaction(transactionData);
+        await createTransaction(tx);
       }
 
       await fetchProducts();
-      handleActiveView("dashboard");
+      onClose ? onClose() : handleActiveView("dashboard");
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -146,277 +177,222 @@ export const CreateTransactionForm = ({
     }
   };
 
-  const handleRemoveItem = (index: number) => {
-    setItems((prev) => prev.filter((_, i) => i !== index));
+  const handleClose = () => {
+    onClose ? onClose() : handleActiveView("dashboard");
   };
-
-  const handleUpdateQuantity = (index: number, newQuantity: number) => {
-    setItems((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  const handleProductSelect = (product: any) => {
-    if (type === "aporte" || type === "service") {
-      setError("Transações de aporte e serviço não podem ter itens de produto");
-      return;
-    }
-
-    const unitPrice =
-      type === "sale" || type === "credit_sale"
-        ? product.salePrice
-        : product.costPrice;
-
-    const newItem: TransactionItem = {
-      productId: product.id!,
-      name: product.name,
-      quantity: quantity,
-      unitPrice: unitPrice,
-    };
-
-    setItems((prev) => [newItem, ...prev]);
-    setQuantity(1);
-  };
-
-  const handleTypeChange = (newType: TransactionType) => {
-    setType(newType);
-    setItems([]);
-    setDiscount("");
-    setValue("");
-    setCustomerName("");
-  };
-
-  const subtotal = items.reduce(
-    (acc, item) => acc + item.quantity * item.unitPrice,
-    0
-  );
-
-  const parsedValue = parseMoneyInput(value);
-  const parsedDiscount = parseMoneyInput(discount);
-
-  const totalValue =
-    type === "aporte" || type === "service" || type === "payment"
-      ? parsedValue - parsedDiscount
-      : subtotal - parsedDiscount;
-
-  const isSaleType = type === "sale" || type === "credit_sale";
-  const hasProducts =
-    type === "sale" || type === "credit_sale" || type === "purchase";
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.formContainer}>
-        <div className={styles.formHeader}>
-          <h2 className={styles.formTitle}>
-            <GrTransaction />{" "}
-            {isEditing ? "Editar Transação" : "Nova Transação"}
-          </h2>
+    <div className={styles.container}>
+      {/* Header */}
+      <div className={styles.panelHeader}>
+        <div className={styles.panelHeaderLeft}>
+          <div className={styles.headerIcon}>
+            <GrTransaction />
+          </div>
+          <div>
+            <div className={styles.panelTitle}>
+              {isEditing ? "Editar Transação" : "Nova Transação"}
+            </div>
+            <div className={styles.panelSub}>
+              {isEditing ? "Atualize os dados abaixo" : "Preencha os dados da transação"}
+            </div>
+          </div>
         </div>
+        <button className={styles.closeBtn} onClick={handleClose}>
+          <IoClose />
+        </button>
+      </div>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.formGrid}>
-            {!isEditing && (
-              <div className={styles.formGroup}>
-                <label htmlFor="type" className={styles.label}>
-                  Tipo de Transação *
-                </label>
-                <select
-                  id="type"
-                  value={type}
-                  onChange={(e) =>
-                    handleTypeChange(e.target.value as TransactionType)
-                  }
-                  className={styles.select}
-                  required
+      <form onSubmit={handleSubmit} className={styles.form}>
+        {/* Type selector */}
+        {!isEditing && (
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>Tipo de transação</div>
+            <div className={styles.typePills}>
+              {TYPE_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  className={`${styles.typePill} ${type === opt.value ? styles.typePillActive : ""}`}
+                  onClick={() => handleTypeChange(opt.value)}
                 >
-                  <option value="sale">Venda</option>
-                  <option value="credit_sale">Venda Fiado</option>
-                  <option value="purchase">Compra</option>
-                  <option value="aporte">Aporte</option>
-                  <option value="service">Serviço</option>
-                  <option value="payment">Pagamento</option>
-                </select>
-              </div>
-            )}
+                  <span className={styles.pillIcon}>{opt.icon}</span>
+                  <span className={styles.pillLabel}>{opt.label}</span>
+                  <span className={styles.pillDesc}>{opt.desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
-            {/* Nome do cliente — apenas para fiado */}
-            {type === "credit_sale" && (
-              <div className={styles.formGroup}>
-                <label htmlFor="customerName" className={styles.label}>
-                  Nome do Cliente *
-                </label>
-                <input
-                  type="text"
-                  id="customerName"
-                  placeholder="Nome de quem vai pagar depois"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  className={styles.input}
-                  required
-                />
-              </div>
-            )}
-
-            {(type === "aporte" ||
-              type === "service" ||
-              type === "payment") && (
-              <div className={styles.formGroup}>
-                <label htmlFor="value" className={styles.label}>
-                  Valor do{" "}
-                  {type === "service"
-                    ? "Serviço"
-                    : type === "aporte"
-                    ? "Aporte"
-                    : "Pagamento"}{" "}
-                  (R$) *
-                </label>
-                <input
-                  type="text"
-                  id="value"
-                  placeholder="0,00 ou 0.00"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  className={styles.input}
-                  required
-                />
-              </div>
-            )}
-
-            {hasProducts && !isEditing && (
-              <>
-                <div className={styles.formGroup}>
-                  <label htmlFor="product" className={styles.label}>
-                    Produto
-                  </label>
-                  <ProductSearchInput
-                    products={products}
-                    onProductSelect={handleProductSelect}
-                    type={isSaleType ? "sale" : (type as any)}
-                    placeholder="Digite o nome ou código do produto..."
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="quantity" className={styles.label}>
-                    Quantidade Inicial
-                  </label>
-                  <input
-                    type="number"
-                    id="quantity"
-                    min="1"
-                    placeholder="Quantidade"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                    className={styles.input}
-                  />
-                </div>
-
-                <TransactionItemsList
-                  items={items}
-                  products={products}
-                  transactionType={isSaleType ? "sale" : (type as any)}
-                  onUpdateQuantity={handleUpdateQuantity}
-                  onRemoveItem={handleRemoveItem}
-                />
-              </>
-            )}
-
-            {(isSaleType || type === "purchase" || type === "service") && (
-              <div className={styles.formGroup}>
-                <label htmlFor="discount" className={styles.label}>
-                  Desconto (R$)
-                </label>
-                <input
-                  type="text"
-                  id="discount"
-                  placeholder="0,00 ou 0.00"
-                  value={discount}
-                  onChange={(e) => setDiscount(e.target.value)}
-                  className={styles.input}
-                />
-              </div>
-            )}
-
+        {/* Customer name (credit_sale) */}
+        {type === "credit_sale" && (
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>Cliente</div>
             <div className={styles.formGroup}>
-              <label htmlFor="description" className={styles.label}>
-                Descrição
-              </label>
-              <textarea
-                id="description"
-                placeholder="Descrição da transação (opcional)"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className={styles.textarea}
-                rows={3}
+              <label className={styles.label}>Nome do cliente *</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="Nome de quem vai pagar depois..."
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                required
+                autoFocus
               />
             </div>
           </div>
+        )}
 
+        {/* Value (aporte / service / payment) */}
+        {needsValue && (
+          <div className={styles.section}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                Valor do{" "}
+                {type === "service" ? "Serviço" : type === "aporte" ? "Aporte" : "Pagamento"}{" "}
+                (R$) *
+              </label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="0,00"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Products section */}
+        {hasProducts && !isEditing && (
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>Produtos</div>
+            <div className={styles.formRow}>
+              <div className={styles.formGroup} style={{ flex: 3 }}>
+                <label className={styles.label}>Buscar produto</label>
+                <ProductSearchInput
+                  products={products}
+                  onProductSelect={handleProductSelect}
+                  type={isSaleType ? "sale" : (type as any)}
+                  placeholder="Nome ou código do produto..."
+                />
+              </div>
+              <div className={styles.formGroup} style={{ flex: 1 }}>
+                <label className={styles.label}>Qtd</label>
+                <input
+                  type="number"
+                  className={styles.input}
+                  min={1}
+                  value={quantity}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                />
+              </div>
+            </div>
+            {items.length > 0 && (
+              <TransactionItemsList
+                items={items}
+                products={products}
+                transactionType={isSaleType ? "sale" : (type as any)}
+                onUpdateQuantity={(idx, qty) =>
+                  setItems((prev) =>
+                    prev.map((it, i) => (i === idx ? { ...it, quantity: qty } : it))
+                  )
+                }
+                onRemoveItem={(idx) => setItems((prev) => prev.filter((_, i) => i !== idx))}
+              />
+            )}
+          </div>
+        )}
+
+        {/* Discount + description */}
+        <div className={styles.section}>
+          {["sale", "credit_sale", "purchase", "service"].includes(type) && (
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Desconto (R$)</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="0,00"
+                value={discount}
+                onChange={(e) => setDiscount(e.target.value)}
+              />
+            </div>
+          )}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Descrição (opcional)</label>
+            <textarea
+              className={styles.textarea}
+              placeholder="Anotações sobre a transação..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+            />
+          </div>
+        </div>
+
+        {/* Summary */}
+        {(hasProducts ? items.length > 0 : parsedValue > 0) && (
           <div className={styles.summary}>
             {hasProducts && (
               <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>Subtotal:</span>
-                <span className={styles.summaryValue}>
-                  R$ {subtotal.toFixed(2).replace(".", ",")}
-                </span>
+                <span className={styles.summaryLabel}>Subtotal</span>
+                <span className={styles.summaryValue}>{formatCurrency(subtotal)}</span>
               </div>
             )}
-
-            {parsedDiscount > 0 && type !== "aporte" && (
+            {parsedDiscount > 0 && (
               <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>Desconto:</span>
-                <span className={styles.summaryDiscount}>
-                  -R$ {parsedDiscount.toFixed(2).replace(".", ",")}
+                <span className={styles.summaryLabel}>Desconto</span>
+                <span className={`${styles.summaryValue} ${styles.discount}`}>
+                  − {formatCurrency(parsedDiscount)}
                 </span>
               </div>
             )}
-
-            <div className={styles.summaryRow}>
-              <span className={styles.summaryLabel}>Valor Total:</span>
-              <span className={styles.summaryTotal}>
-                R$ {totalValue.toFixed(2).replace(".", ",")}
-              </span>
+            <div className={`${styles.summaryRow} ${styles.summaryTotal}`}>
+              <span className={styles.summaryLabel}>Total</span>
+              <span className={styles.summaryValueTotal}>{formatCurrency(totalValue)}</span>
             </div>
-
-            {type === "credit_sale" && (
-              <div className={styles.creditSaleNotice}>
-                ⚠️ Esta venda será registrada como <strong>fiado</strong> — o
-                estoque será descontado agora, mas o valor ficará{" "}
-                <strong>pendente de recebimento</strong>.
-              </div>
-            )}
           </div>
+        )}
 
-          {error && <div className={styles.errorMessage}>{error}</div>}
-
-          <div className={styles.formActions}>
-            <button
-              type="button"
-              className={styles.cancelButton}
-              onClick={() => handleActiveView("dashboard")}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className={styles.submitButton}
-              disabled={
-                loading ||
-                (type !== "aporte" &&
-                  type !== "service" &&
-                  type !== "payment" &&
-                  items.length === 0)
-              }
-            >
-              {loading
-                ? "Processando..."
-                : (isEditing ? "Atualizar" : "Criar") + " Transação"}
-            </button>
+        {/* Fiado notice */}
+        {type === "credit_sale" && (
+          <div className={styles.notice}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}>
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Venda registrada como <strong>fiado</strong> — estoque debitado agora, recebimento pendente.
           </div>
-        </form>
-      </div>
+        )}
+
+        {/* Error */}
+        {error && <div className={styles.error}>{error}</div>}
+
+        {/* Actions */}
+        <div className={styles.actions}>
+          <button type="button" className={styles.btnCancel} onClick={handleClose}>
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            className={styles.btnSubmit}
+            disabled={
+              loading ||
+              (hasProducts && items.length === 0) ||
+              (needsValue && !parsedValue)
+            }
+          >
+            {loading
+              ? "Processando…"
+              : isEditing
+              ? "Atualizar Transação"
+              : "Criar Transação"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

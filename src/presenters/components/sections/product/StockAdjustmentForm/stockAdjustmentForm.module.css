@@ -1,0 +1,204 @@
+/* stockAdjustmentForm.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Header ── */
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerIcon {
+  width: 36px;
+  height: 36px;
+  background: var(--amber-subtle);
+  border: 1px solid var(--amber-border);
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--amber);
+  flex-shrink: 0;
+}
+
+.pageTitle { font-size: 17px; font-weight: 600; letter-spacing: -0.2px; }
+.pageSub   { font-size: 12px; color: var(--text-3); margin-top: 1px; }
+
+/* ── Search ── */
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 9px 14px;
+}
+
+.searchBar input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-1);
+  font-size: 13px;
+  width: 100%;
+  padding: 0;
+}
+
+.searchBar input::placeholder { color: var(--text-3); }
+
+/* ── List ── */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--text-3);
+  font-size: 13px;
+}
+
+/* ── Row ── */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 13px 15px;
+  transition: border-color var(--t-fast);
+}
+
+.row:hover { border-color: var(--border-2); }
+
+/* Product info */
+.prodInfo { flex: 1; min-width: 0; }
+
+.prodName {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prodMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--text-3);
+  flex-wrap: wrap;
+}
+
+.prodCode { font-family: var(--font-mono); }
+.separator { opacity: 0.4; }
+.supplier  { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.stockStatus { font-weight: 500; }
+.status_ok  { color: var(--green);  }
+.status_low { color: var(--amber);  }
+.status_out { color: var(--red);    }
+
+/* Price */
+.prodPrice {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--green);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  min-width: 70px;
+  text-align: right;
+}
+
+/* Adjust control */
+.adjControl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.diff {
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 32px;
+  text-align: center;
+}
+
+.diffPos { color: var(--green); }
+.diffNeg { color: var(--red);   }
+
+.adjInput {
+  width: 72px;
+  text-align: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 7px 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+  outline: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.adjInput:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-subtle);
+}
+
+.saveBtn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  border-radius: var(--r-md);
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--t-fast);
+  white-space: nowrap;
+}
+
+.saveBtn:hover:not(:disabled) {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.saveBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.saveBtnSaved {
+  background: var(--green-subtle) !important;
+  border-color: var(--green-border) !important;
+  color: var(--green) !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .prodPrice { display: none; }
+  .row       { flex-wrap: wrap; }
+  .prodInfo  { width: 100%; }
+  .adjControl { justify-content: flex-end; width: 100%; }
+}

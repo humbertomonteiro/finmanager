@@ -1,14 +1,16 @@
-// src/components/sections/ProductCard.tsx
-import { Product } from "../../../../../domain/entities/Product";
-import styles from "./productCard.module.css";
-import { useProduct } from "../../../../contexts/ProductContext";
+// src/presenters/components/sections/product/ProductCard/index.tsx
 import { useState } from "react";
-import { MdDelete, MdModeEdit } from "react-icons/md";
+import { Product } from "../../../../../domain/entities/Product";
+import { formatCurrency } from "../../../../../utils/formatCurrency";
+import { useProduct } from "../../../../contexts/ProductContext";
 import { ActiveViewProps } from "../../../../pages/Dashboard";
+import styles from "./productCard.module.css";
+import { MdEdit, MdDelete } from "react-icons/md";
+import { FaBox } from "react-icons/fa6";
 
 interface ProductCardProps {
   product: Product;
-  handleActiveView: (activeView: ActiveViewProps, dataEditing?: any) => void;
+  handleActiveView: (view: ActiveViewProps, data?: any) => void;
 }
 
 export default function ProductCard({
@@ -16,94 +18,109 @@ export default function ProductCard({
   handleActiveView,
 }: ProductCardProps) {
   const { deleteProduct } = useProduct();
-  const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
   const profit = product.salePrice - product.costPrice;
-  const profitMargin =
-    product.costPrice > 0 ? (profit / product.costPrice) * 100 : 0;
+  const margin =
+    product.costPrice > 0
+      ? ((profit / product.costPrice) * 100).toFixed(1)
+      : "0";
+
+  const stock = product.stock ?? 0;
+  const stockStatus = stock === 0 ? "out" : stock <= 10 ? "low" : "ok";
+  const stockLabel =
+    stock === 0
+      ? "Sem estoque"
+      : stock <= 10
+      ? `Baixo — ${stock} unid.`
+      : `${stock} unid.`;
 
   const handleDelete = async () => {
+    if (!confirm(`Excluir "${product.name}"? Esta ação não pode ser desfeita.`))
+      return;
+    setDeleting(true);
     try {
-      const productId = product.id;
-      if (!productId) {
-        throw new Error("Product id not found");
-      }
-      deleteProduct(productId);
-    } catch (error) {
-      setError(`${error}`);
+      await deleteProduct(product.id!);
+    } catch (err: any) {
+      alert(`Erro: ${err.message}`);
+    } finally {
+      setDeleting(false);
     }
   };
 
   return (
-    <div className={styles.card}>
-      <div className={styles.cardHeader}>
-        <h3 className={styles.name}>{product.name}</h3>
+    <div
+      className={`${styles.card} ${
+        stockStatus === "out" ? styles.cardOut : ""
+      }`}
+    >
+      {/* Header */}
+      <div className={styles.header}>
+        <div className={styles.nameBlock}>
+          <div className={styles.name}>{product.name}</div>
+          <div className={styles.code}>#{product.code}</div>
+        </div>
         <div className={styles.actions}>
           <button
-            className={styles.editButton}
+            className={styles.actionBtn}
             onClick={() => handleActiveView("new-product", product)}
-            aria-label="Editar produto"
+            title="Editar produto"
           >
-            <MdModeEdit />
+            <MdEdit />
           </button>
           <button
-            className={styles.deleteButton}
+            className={`${styles.actionBtn} ${styles.actionDelete}`}
             onClick={handleDelete}
-            aria-label="Excluir produto"
+            disabled={deleting}
+            title="Excluir produto"
           >
             <MdDelete />
           </button>
         </div>
       </div>
-      {error && <div className={styles.errorMessage}>{error}</div>}
 
-      <p className={styles.description}>
-        {product.description || "Sem descrição"}
-      </p>
+      {product.description && (
+        <p className={styles.description}>{product.description}</p>
+      )}
 
-      <div className={styles.details}>
-        <div className={styles.detailRow}>
-          <span className={styles.label}>Código:</span>
-          <span className={styles.value}>{product.code}</span>
+      {/* Price grid */}
+      <div className={styles.priceGrid}>
+        <div className={styles.priceItem}>
+          <div className={styles.priceLabel}>Custo</div>
+          <div className={`${styles.priceValue} ${styles.priceCost}`}>
+            {formatCurrency(product.costPrice)}
+          </div>
         </div>
-
-        <div className={styles.detailRow}>
-          <span className={styles.label}>Custo:</span>
-          <span className={styles.costPrice}>
-            R$ {product.costPrice.toFixed(2)}
-          </span>
+        <div className={styles.priceItem}>
+          <div className={styles.priceLabel}>Venda</div>
+          <div className={`${styles.priceValue} ${styles.priceSale}`}>
+            {formatCurrency(product.salePrice)}
+          </div>
         </div>
-
-        <div className={styles.detailRow}>
-          <span className={styles.label}>Venda:</span>
-          <span className={styles.salePrice}>
-            R$ {product.salePrice.toFixed(2)}
-          </span>
-        </div>
-
-        <div className={styles.detailRow}>
-          <span className={styles.label}>Lucro:</span>
-          <span className={profit > 0 ? styles.profit : styles.loss}>
-            R$ {profit.toFixed(2)} ({profitMargin.toFixed(1)}%)
-          </span>
-        </div>
-
-        <div className={styles.detailRow}>
-          <span className={styles.label}>Estoque:</span>
-          <span
-            className={
-              product.stock && product.stock > 10
-                ? styles.stockOk
-                : styles.stockLow
-            }
+        <div className={styles.priceItem}>
+          <div className={styles.priceLabel}>Lucro</div>
+          <div
+            className={`${styles.priceValue} ${
+              profit >= 0 ? styles.priceProfit : styles.priceLoss
+            }`}
           >
-            {product.stock} unid.
-          </span>
+            {margin}%
+          </div>
         </div>
+      </div>
 
-        {product.supplier && (
-          <div className={styles.detailRow}>
-            <span className={styles.label}>Fornecedor:</span>
-            <span className={styles.supplier}>{product.supplier}</span>
+      {/* Footer */}
+      <div className={styles.footer}>
+        <div
+          className={`${styles.stockPill} ${styles["stock_" + stockStatus]}`}
+        >
+          <div className={styles.stockDot} />
+          {stockLabel}
+        </div>
+        {product.supplier && product.supplier !== "Desconhecido" && (
+          <div className={styles.supplier}>
+            <FaBox />
+            {product.supplier}
           </div>
         )}
       </div>

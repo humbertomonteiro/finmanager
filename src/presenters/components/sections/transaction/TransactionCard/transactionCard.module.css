@@ -1,277 +1,130 @@
 /* transactionCard.module.css */
 
 .card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
-  padding: var(--s-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-3);
-  transition: border-color var(--t-base), transform var(--t-base),
-    box-shadow var(--t-base);
+  padding: 13px 15px;
+  cursor: pointer;
+  transition: border-color var(--t-fast), background var(--t-fast);
   position: relative;
-  overflow: hidden;
-}
-
-.card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: transparent;
-  transition: background var(--t-base);
 }
 
 .card:hover {
   border-color: var(--border-2);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.card.success::before {
-  background: var(--green);
-}
-.card.warning::before {
-  background: var(--orange);
-}
-.card.primary::before {
-  background: var(--accent);
-}
-.card.credit::before {
-  background: var(--amber);
-}
-.card.secondary::before {
-  background: var(--ink-400);
+.card.cardPending {
+  border-left: 3px solid var(--amber);
 }
 
-.pendingCard {
-  border-color: var(--amber-border);
-}
-
-.cardHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s-2);
-}
-
-.typeBadge {
-  display: flex;
-  align-items: center;
-  gap: var(--s-2);
-  flex-wrap: wrap;
-}
-
-.typeIcon {
+/* ── Type Badge ── */
+.badge {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--r-sm);
-  font-size: 13px;
+  font-size: 16px;
   flex-shrink: 0;
 }
 
-.card.success .typeIcon {
-  background: var(--green-subtle);
-  color: var(--green);
-}
-.card.warning .typeIcon {
-  background: var(--orange-subtle);
-  color: var(--orange);
-}
-.card.primary .typeIcon {
-  background: var(--accent-subtle);
-  color: var(--accent);
-}
-.card.credit .typeIcon {
-  background: var(--amber-subtle);
-  color: var(--amber);
-}
-.card.secondary .typeIcon {
-  background: var(--surface-2);
-  color: var(--text-2);
+.sale,
+.service    { background: var(--green-subtle); color: var(--green); }
+.credit     { background: var(--purple-subtle); color: var(--purple); }
+.purchase,
+.payment    { background: var(--amber-subtle); color: var(--amber); }
+.aporte     { background: var(--accent-subtle); color: var(--accent); }
+.default    { background: var(--surface-2); color: var(--text-2); }
+
+/* ── Info ── */
+.info {
+  flex: 1;
+  min-width: 0;
 }
 
-.typeLabel {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  color: var(--text-2);
-}
-.card.success .typeLabel {
-  color: var(--green);
-}
-.card.warning .typeLabel {
-  color: var(--orange);
-}
-.card.primary .typeLabel {
-  color: var(--accent);
-}
-.card.credit .typeLabel {
-  color: var(--amber);
+.name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.paymentBadge {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: var(--r-full);
-}
-.paidBadge {
-  background: var(--green-subtle);
-  color: var(--green);
-  border: 1px solid var(--green-border);
-}
-.pendingBadge {
-  background: var(--amber-subtle);
-  color: var(--amber);
-  border: 1px solid var(--amber-border);
+.customerIcon {
+  margin-right: 2px;
 }
 
-.transactionInfo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 1px;
-}
-.date {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-2);
-  font-variant-numeric: tabular-nums;
-}
-.time {
+.meta {
   font-size: 11px;
   color: var(--text-3);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.cardContent {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-2);
-  flex: 1;
-}
-
-.customerName {
+/* ── Right ── */
+.right {
   display: flex;
   align-items: center;
-  gap: var(--s-2);
-  font-size: 13px;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* ── Tags ── */
+.tag {
+  font-size: 10px;
   font-weight: 600;
-  color: var(--amber);
-  background: var(--amber-subtle);
-  border: 1px solid var(--amber-border);
-  border-radius: var(--r-md);
-  padding: 5px var(--s-3);
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
-.description {
-  font-size: 13px;
-  color: var(--text-3);
-  line-height: 1.4;
-}
+.tag_sale,
+.tag_service { background: var(--green-subtle); color: var(--green); }
+.tag_credit  { background: var(--purple-subtle); color: var(--purple); }
+.tag_purchase,
+.tag_payment { background: var(--amber-subtle); color: var(--amber); }
+.tag_aporte  { background: var(--accent-subtle); color: var(--accent); }
+.tag_default { background: var(--surface-2); color: var(--text-2); }
 
-.details {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-1);
-  margin-top: auto;
-}
+.tagPending  { background: var(--amber-subtle); color: var(--amber); }
 
-.contentItem {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-1);
-}
-
-.buttonShowItems {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px var(--s-2);
-  border-radius: var(--r-sm);
-  background: var(--surface-2);
-  font-size: 12px;
-  color: var(--text-3);
-  cursor: pointer;
-  transition: background var(--t-fast), color var(--t-fast);
-}
-.buttonShowItems:hover {
-  background: var(--surface-3);
-  color: var(--text-1);
-}
-
-.litsItems {
-  list-style: none;
-  padding: var(--s-1) 0;
-}
-.litsItems li {
-  display: flex;
-  justify-content: space-between;
-  padding: 3px var(--s-2);
-  font-size: 12px;
-  color: var(--text-3);
-  border-bottom: 1px solid var(--border);
-}
-.litsItems li:last-child {
-  border-bottom: none;
-}
-
-.detailRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 0;
-  border-bottom: 1px solid var(--border);
-}
-.detailRow:last-child {
-  border-bottom: none;
-}
-
-.detailLabel {
-  font-size: 12px;
-  color: var(--text-3);
-}
-
+/* ── Amount ── */
 .amount {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--text-1);
-  font-variant-numeric: tabular-nums;
-}
-.pendingAmount {
-  color: var(--amber);
-}
-.discount {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--red);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
 }
 
-.cardFooter {
-  border-top: 1px solid var(--border);
-  padding-top: var(--s-3);
+.amountPositive { color: var(--green); }
+.amountNegative { color: var(--red); }
+.amountPending  { color: var(--amber); }
+
+.discount {
+  font-size: 10px;
+  color: var(--text-3);
+  text-align: right;
+  margin-top: 2px;
 }
 
-.detailsButton {
-  width: 100%;
-  padding: 7px;
-  background: transparent;
-  border: 1px solid var(--border-2);
-  border-radius: var(--r-md);
-  color: var(--text-2);
-  font-size: 12px;
-  font-weight: 500;
-  transition: background var(--t-fast), color var(--t-fast),
-    border-color var(--t-fast);
-}
-.detailsButton:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .tag {
+    display: none;
+  }
+
+  .right {
+    gap: 6px;
+  }
 }

@@ -1,22 +1,39 @@
-// src/components/sections/TransactionCard.tsx
+// src/presenters/components/sections/transaction/TransactionCard/index.tsx
 import React, { useState } from "react";
 import { Transaction } from "../../../../../domain/entities/Transaction";
-import styles from "./transactionCard.module.css";
-import { formatBRL } from "../../../../../utils/formatCurrency";
+import { formatCurrency } from "../../../../../utils/formatCurrency";
 import { TransactionDetails } from "../TransactionDetails";
+import { ActiveViewProps } from "../../../../pages/Dashboard";
+import styles from "./transactionCard.module.css";
+
 import { TbMoneybag, TbReportMoney } from "react-icons/tb";
 import { IoCartOutline } from "react-icons/io5";
+import { FaHandshake, FaMoneyBillTransfer } from "react-icons/fa6";
+import { FaPersonDigging } from "react-icons/fa6";
 import { GrTransaction } from "react-icons/gr";
-import { ActiveViewProps } from "../../../../pages/Dashboard";
-import {
-  FaMoneyBillTransfer,
-  FaPersonDigging,
-  FaHandshake,
-} from "react-icons/fa6";
 
 interface TransactionCardProps {
   transaction: Transaction;
-  handleActiveView: (activeView: ActiveViewProps, dataEditing?: any) => void;
+  handleActiveView: (view: ActiveViewProps, data?: any) => void;
+}
+
+function getTypeConfig(type: string) {
+  switch (type) {
+    case "sale":
+      return { label: "Venda", variant: "sale", icon: <TbMoneybag />, sign: 1 };
+    case "credit_sale":
+      return { label: "Fiado", variant: "credit", icon: <FaHandshake />, sign: 0 };
+    case "purchase":
+      return { label: "Compra", variant: "purchase", icon: <IoCartOutline />, sign: -1 };
+    case "payment":
+      return { label: "Pagamento", variant: "payment", icon: <FaMoneyBillTransfer />, sign: -1 };
+    case "aporte":
+      return { label: "Aporte", variant: "aporte", icon: <TbReportMoney />, sign: 1 };
+    case "service":
+      return { label: "Serviço", variant: "service", icon: <FaPersonDigging />, sign: 1 };
+    default:
+      return { label: "Transação", variant: "default", icon: <GrTransaction />, sign: 1 };
+  }
 }
 
 const TransactionCard: React.FC<TransactionCardProps> = ({
@@ -24,137 +41,77 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
   handleActiveView,
 }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const [showListItems, setShowListItems] = useState(false);
+  const cfg = getTypeConfig(transaction.type);
+  const isPending = transaction.type === "credit_sale" && !transaction.isPaid;
 
-  const getTypeConfig = (type: string) => {
-    switch (type) {
-      case "sale":
-        return { label: "Venda", color: "success", icon: <TbMoneybag /> };
-      case "credit_sale":
-        return { label: "Fiado", color: "credit", icon: <FaHandshake /> };
-      case "purchase":
-        return { label: "Compra", color: "warning", icon: <IoCartOutline /> };
-      case "payment":
-        return {
-          label: "Pagamento",
-          color: "warning",
-          icon: <FaMoneyBillTransfer />,
-        };
-      case "aporte":
-        return { label: "Aporte", color: "primary", icon: <TbReportMoney /> };
-      case "service":
-        return {
-          label: "Serviço",
-          color: "success",
-          icon: <FaPersonDigging />,
-        };
-      default:
-        return {
-          label: "Transação",
-          color: "secondary",
-          icon: <GrTransaction />,
-        };
-    }
-  };
+  const date = new Date(transaction.date as Date);
+  const dateStr = date.toLocaleDateString("pt-BR");
+  const timeStr = date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
 
-  const typeConfig = getTypeConfig(transaction.type);
-  const date = new Date(transaction?.date as Date).toLocaleDateString("pt-BR");
-  const time = new Date(transaction?.date as Date).toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  // Build description line
+  const desc =
+    transaction.customerName
+      ? transaction.customerName
+      : transaction.description ||
+        (transaction.items?.length
+          ? transaction.items.map((i) => i.name).join(", ")
+          : cfg.label);
 
-  const isCreditSale = transaction.type === "credit_sale";
-  const isPending = isCreditSale && !transaction.isPaid;
+  const amountClass =
+    cfg.sign > 0
+      ? isPending
+        ? styles.amountPending
+        : styles.amountPositive
+      : styles.amountNegative;
+
+  const tagLabel =
+    transaction.type === "credit_sale"
+      ? transaction.isPaid
+        ? "Pago"
+        : "Pendente"
+      : cfg.label;
 
   return (
     <>
       <div
-        className={`${styles.card} ${styles[typeConfig.color]} ${
-          isPending ? styles.pendingCard : ""
-        }`}
+        className={`${styles.card} ${isPending ? styles.cardPending : ""}`}
+        onClick={() => setShowDetails(true)}
       >
-        <div className={styles.cardHeader}>
-          <div className={styles.typeBadge}>
-            <span className={styles.typeIcon}>{typeConfig.icon}</span>
-            <span className={styles.typeLabel}>{typeConfig.label}</span>
-            {isCreditSale && (
-              <span
-                className={`${styles.paymentBadge} ${
-                  transaction.isPaid ? styles.paidBadge : styles.pendingBadge
-                }`}
-              >
-                {transaction.isPaid ? "Pago" : "Pendente"}
-              </span>
-            )}
-          </div>
+        {/* Type badge */}
+        <div className={`${styles.badge} ${styles[cfg.variant]}`}>
+          {cfg.icon}
+        </div>
 
-          <div className={styles.transactionInfo}>
-            <span className={styles.date}>{date}</span>
-            <span className={styles.time}>{time}</span>
+        {/* Info */}
+        <div className={styles.info}>
+          <div className={styles.name} title={desc}>
+            {transaction.customerName && (
+              <span className={styles.customerIcon}>👤 </span>
+            )}
+            {desc}
+          </div>
+          <div className={styles.meta}>
+            {dateStr} · {timeStr}
+            {transaction.items?.length ? ` · ${transaction.items.length} ${transaction.items.length === 1 ? "item" : "itens"}` : ""}
           </div>
         </div>
 
-        <div className={styles.cardContent}>
-          {isCreditSale && transaction.customerName && (
-            <p className={styles.customerName}>👤 {transaction.customerName}</p>
-          )}
-
-          {transaction.description && (
-            <p className={styles.description}>{transaction.description}</p>
-          )}
-
-          <div className={styles.details}>
-            {transaction.items && transaction.items.length > 0 && (
-              <div className={styles.contentItem}>
-                <div
-                  className={styles.buttonShowItems}
-                  onClick={() => setShowListItems(!showListItems)}
-                >
-                  <span>Ver itens:</span>
-                  <span>{transaction.items.length}</span>
-                </div>
-                {showListItems && (
-                  <ul className={styles.litsItems}>
-                    {transaction.items.map((item, idx) => (
-                      <li key={idx}>
-                        <div>{item.name}</div> <div>{item.quantity}</div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
-
-            {transaction.discount! > 0 && (
-              <div className={styles.detailRow}>
-                <span className={styles.detailLabel}>Desconto:</span>
-                <span className={styles.discount}>
-                  -{formatBRL(transaction.discount!)}
-                </span>
-              </div>
-            )}
-
-            <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>Valor:</span>
-              <span
-                className={`${styles.amount} ${
-                  isPending ? styles.pendingAmount : ""
-                }`}
-              >
-                {formatBRL(transaction.value)}
-              </span>
+        {/* Right side */}
+        <div className={styles.right}>
+          <span className={`${styles.tag} ${styles["tag_" + cfg.variant]} ${isPending ? styles.tagPending : ""}`}>
+            {tagLabel}
+          </span>
+          <div>
+            <div className={`${styles.amount} ${amountClass}`}>
+              {cfg.sign < 0 && "− "}
+              {formatCurrency(transaction.value)}
             </div>
+            {transaction.discount && transaction.discount > 0 ? (
+              <div className={styles.discount}>
+                -{formatCurrency(transaction.discount)} desc.
+              </div>
+            ) : null}
           </div>
-        </div>
-
-        <div className={styles.cardFooter}>
-          <button
-            className={styles.detailsButton}
-            onClick={() => setShowDetails(true)}
-          >
-            Ver Detalhes
-          </button>
         </div>
       </div>
 

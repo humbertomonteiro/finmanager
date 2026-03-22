@@ -1,17 +1,15 @@
-// src/components/sections/TransactionItemsList.tsx
+// src/presenters/components/sections/transaction/TransactionItemsList/index.tsx
 import React from "react";
 import { TransactionItem } from "../../../../../domain/entities/Transaction";
 import { Product } from "../../../../../domain/entities/Product";
+import { formatCurrency } from "../../../../../utils/formatCurrency";
 import styles from "./transactionItemsList.module.css";
-import { formatBRL } from "../../../../../utils/formatCurrency";
-import { FaPlus } from "react-icons/fa";
-import { FaMinus } from "react-icons/fa6";
 
 interface TransactionItemsListProps {
   items: TransactionItem[];
   products: Product[];
   transactionType: "sale" | "purchase" | "aporte";
-  onUpdateQuantity: (index: number, newQuantity: number) => void;
+  onUpdateQuantity: (index: number, newQty: number) => void;
   onRemoveItem: (index: number) => void;
 }
 
@@ -22,140 +20,104 @@ export const TransactionItemsList: React.FC<TransactionItemsListProps> = ({
   onUpdateQuantity,
   onRemoveItem,
 }) => {
-  const getProduct = (productId: string) => {
-    return products.find((p) => p.id === productId);
+  const getProduct = (id: string) => products.find((p) => p.id === id);
+
+  const changeQty = (idx: number, delta: number) => {
+    const newQty = items[idx].quantity + delta;
+    if (newQty <= 0) onRemoveItem(idx);
+    else onUpdateQuantity(idx, newQty);
   };
 
-  const handleQuantityChange = (index: number, change: number) => {
-    const currentItem = items[index];
-    const newQuantity = currentItem.quantity + change;
+  const subtotal = items.reduce((s, i) => s + i.quantity * i.unitPrice, 0);
+  const totalQty = items.reduce((s, i) => s + i.quantity, 0);
 
-    if (newQuantity > 0) {
-      onUpdateQuantity(index, newQuantity);
-    } else if (newQuantity === 0) {
-      onRemoveItem(index);
-    }
-  };
-
-  const handleInputChange = (index: number, value: string) => {
-    const numericValue = parseInt(value);
-    if (!isNaN(numericValue) && numericValue > 0) {
-      onUpdateQuantity(index, numericValue);
-    } else if (value === "") {
-      onUpdateQuantity(index, 1);
-    }
-  };
-
-  if (items.length === 0) {
-    return (
-      <div className={styles.emptyState}>
-        <p>Nenhum item adicionado à transação</p>
-      </div>
-    );
-  }
+  if (items.length === 0) return null;
 
   return (
-    <div className={styles.itemsSection}>
-      <h3 className={styles.itemsTitle}>
-        {transactionType === "sale" && "Itens de Venda"}
-        {transactionType === "purchase" && "Itens de Compra"}
-        {transactionType === "aporte" && "Itens de Aporte"}
-      </h3>
+    <div className={styles.wrapper}>
+      <div className={styles.header}>
+        <span className={styles.headerTitle}>
+          {items.length} {items.length === 1 ? "item" : "itens"} · {totalQty} unid.
+        </span>
+        <span className={styles.headerSubtotal}>{formatCurrency(subtotal)}</span>
+      </div>
 
-      <ul className={styles.itemsList}>
-        {items.map((item, index) => {
+      <div className={styles.list}>
+        {items.map((item, i) => {
           const product = getProduct(item.productId);
-          const totalPrice = item.quantity * item.unitPrice;
+          const lineTotal = item.quantity * item.unitPrice;
+          const stockOk =
+            transactionType !== "sale" ||
+            !product ||
+            (product.stock ?? 0) >= item.quantity;
 
           return (
-            <li key={index} className={styles.item}>
-              <div className={styles.itemMain}>
-                <div className={styles.itemInfo}>
-                  <span className={styles.itemName}>
-                    {product?.name || item.name}
-                  </span>
-                  <span className={styles.itemUnitPrice}>
-                    R$ {formatBRL(item.unitPrice)}/un
-                  </span>
+            <div
+              key={i}
+              className={`${styles.row} ${!stockOk ? styles.rowWarning : ""}`}
+            >
+              {/* Name + stock */}
+              <div className={styles.info}>
+                <div className={styles.name}>{item.name}</div>
+                <div className={styles.meta}>
+                  {formatCurrency(item.unitPrice)}/un
                   {product && (
-                    <span className={styles.stockInfo}>
-                      Estoque: {product.stock} uni
-                      {transactionType === "sale" &&
-                        product.stock &&
-                        product.stock < item.quantity && (
-                          <span className={styles.stockWarning}>
-                            ⚠️ Estoque insuficiente
-                          </span>
-                        )}
+                    <span className={`${styles.stock} ${!stockOk ? styles.stockWarn : ""}`}>
+                      · {!stockOk ? `⚠️ Estoque: ${product.stock}` : `Estoque: ${product.stock}`}
                     </span>
                   )}
                 </div>
-
-                <div className={styles.quantityControls}>
-                  <button
-                    type="button"
-                    className={styles.quantityButton}
-                    onClick={() => handleQuantityChange(index, -1)}
-                    aria-label="Reduzir quantidade"
-                  >
-                    <FaMinus />
-                  </button>
-
-                  <input
-                    type="number"
-                    min="1"
-                    value={item.quantity}
-                    onChange={(e) => handleInputChange(index, e.target.value)}
-                    className={styles.quantityInput}
-                    aria-label="Quantidade"
-                  />
-
-                  <button
-                    type="button"
-                    className={styles.quantityButton}
-                    onClick={() => handleQuantityChange(index, 1)}
-                    aria-label="Aumentar quantidade"
-                  >
-                    <FaPlus />
-                  </button>
-                </div>
               </div>
 
-              <div className={styles.itemFooter}>
-                <span className={styles.itemTotal}>
-                  R$ {totalPrice.toFixed(2)}
-                </span>
-
+              {/* Qty controls */}
+              <div className={styles.controls}>
                 <button
                   type="button"
-                  className={styles.removeButton}
-                  onClick={() => onRemoveItem(index)}
-                  aria-label="Remover item"
+                  className={styles.qtyBtn}
+                  onClick={() => changeQty(i, -1)}
+                  aria-label="Reduzir"
                 >
-                  🗑️ Remover
+                  −
+                </button>
+                <input
+                  type="number"
+                  className={styles.qtyInput}
+                  value={item.quantity}
+                  min={1}
+                  onChange={(e) => {
+                    const v = parseInt(e.target.value);
+                    if (!isNaN(v) && v > 0) onUpdateQuantity(i, v);
+                  }}
+                  aria-label="Quantidade"
+                />
+                <button
+                  type="button"
+                  className={styles.qtyBtn}
+                  onClick={() => changeQty(i, 1)}
+                  aria-label="Aumentar"
+                >
+                  +
                 </button>
               </div>
-            </li>
+
+              {/* Line total */}
+              <div className={styles.total}>{formatCurrency(lineTotal)}</div>
+
+              {/* Remove */}
+              <button
+                type="button"
+                className={styles.removeBtn}
+                onClick={() => onRemoveItem(i)}
+                aria-label="Remover item"
+                title="Remover"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           );
         })}
-      </ul>
-
-      <div className={styles.itemsSummary}>
-        <div className={styles.summaryRow}>
-          <span>Subtotal:</span>
-          <span>
-            R${" "}
-            {items
-              .reduce((sum, item) => sum + item.quantity * item.unitPrice, 0)
-              .toFixed(2)}
-          </span>
-        </div>
-        <div className={styles.summaryRow}>
-          <span>Total de itens:</span>
-          <span>
-            {items.reduce((sum, item) => sum + item.quantity, 0)} unidades
-          </span>
-        </div>
       </div>
     </div>
   );

@@ -1,112 +1,150 @@
 /* productSearchInput.module.css */
 
-.searchContainer {
+.wrapper {
   position: relative;
   width: 100%;
 }
 
-.searchInput {
-  width: 100%;
-  padding: 9px 13px;
-  background: var(--surface-2);
-  border: 1px solid var(--border-2);
+/* ── Input box ── */
+.inputBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
   border-radius: var(--r-md);
-  font-size: 14px;
-  color: var(--text-1);
-  font-family: var(--font);
+  padding: 9px 12px;
   transition: border-color var(--t-base), box-shadow var(--t-base);
-  outline: none;
 }
 
-.searchInput:focus {
+.inputBox:focus-within,
+.inputBoxOpen {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-subtle);
 }
 
-.searchInput::placeholder {
-  color: var(--text-3);
+.inputBox input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-1);
+  font-size: 14px;
+  width: 100%;
+  padding: 0;
 }
 
+.inputBox input::placeholder { color: var(--text-3); }
+
+.clearBtn {
+  background: none;
+  border: none;
+  color: var(--text-3);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color var(--t-fast);
+}
+
+.clearBtn:hover { color: var(--text-1); }
+
+/* ── Dropdown ── */
 .dropdown {
   position: absolute;
-  top: calc(100% + 5px);
+  top: calc(100% + 4px);
   left: 0;
   right: 0;
   background: var(--surface-2);
   border: 1px solid var(--border-2);
   border-radius: var(--r-lg);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
-  z-index: 1000;
-  max-height: 300px;
+  z-index: 100;
+  max-height: 280px;
   overflow-y: auto;
+  box-shadow: var(--shadow-md);
+  animation: dropIn 0.12s ease;
 }
 
-.dropdownList {
-  list-style: none;
-  padding: var(--s-1);
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.dropdownItem {
+/* ── Item ── */
+.item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: var(--s-3) var(--s-3);
-  border-radius: var(--r-md);
+  justify-content: space-between;
+  padding: 11px 14px;
   cursor: pointer;
   transition: background var(--t-fast);
+  border-bottom: 1px solid var(--border);
 }
 
-.dropdownItem:hover,
-.dropdownItem.selected {
-  background: var(--surface-3);
+.item:last-child { border-bottom: none; }
+
+.item:hover,
+.itemActive {
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.productInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
+/* Left side */
+.itemLeft { flex: 1; min-width: 0; }
 
-.productName {
-  font-size: 14px;
+.itemName {
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.productCode {
+.itemMeta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 3px;
   font-size: 11px;
-  color: var(--text-3);
-  font-family: var(--font-mono);
 }
 
-.productDetails {
+.itemCode     { color: var(--text-3); font-family: var(--font-mono); }
+.itemSupplier { color: var(--text-3); }
+
+.itemStock { font-weight: 500; }
+.stock_ok  { color: var(--green);  }
+.stock_low { color: var(--amber);  }
+.stock_out { color: var(--red);    }
+
+/* Right side */
+.itemRight {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 3px;
+  flex-shrink: 0;
+  margin-left: 12px;
 }
 
-.productPrice {
-  font-size: 13px;
+.itemPrice {
+  font-size: 14px;
   font-weight: 700;
-  color: var(--accent);
   font-variant-numeric: tabular-nums;
 }
 
-.productStock {
-  font-size: 11px;
+.priceSale     { color: var(--green); }
+.pricePurchase { color: var(--amber); }
+
+.itemPriceLabel {
+  font-size: 10px;
   color: var(--text-3);
-  background: var(--surface-3);
-  padding: 2px 7px;
-  border-radius: var(--r-full);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-top: 1px;
 }
 
+/* No results */
 .noResults {
-  padding: var(--s-4);
+  padding: 14px;
   text-align: center;
   font-size: 13px;
   color: var(--text-3);

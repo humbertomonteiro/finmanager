@@ -1,0 +1,294 @@
+/* creditSalesList.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Summary ── */
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.summaryCard {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 14px;
+}
+
+.summaryPending { border-color: var(--amber-border); }
+.summaryPaid    { border-color: var(--green-border);  }
+
+.summaryLabel {
+  font-size: 11px;
+  color: var(--text-3);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.summaryCount {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.countPending { color: var(--amber); }
+.countPaid    { color: var(--green);  }
+
+.summaryAmount {
+  font-size: 12px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Debtors ── */
+.debtorsSection { display: flex; flex-direction: column; gap: 8px; }
+
+.sectionTitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.debtorsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.debtorChip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-1);
+  border: 1px solid var(--amber-border);
+  border-radius: var(--r-lg);
+  padding: 12px;
+}
+
+.debtorAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--amber-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--amber);
+  flex-shrink: 0;
+}
+
+.debtorName   { font-size: 13px; font-weight: 600; }
+.debtorMeta   { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+.debtorAmount { margin-left: auto; font-size: 14px; font-weight: 700; color: var(--amber); font-variant-numeric: tabular-nums; }
+
+/* ── Controls ── */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  padding: 3px;
+}
+
+.tab {
+  padding: 7px 14px;
+  border-radius: var(--r-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-3);
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all var(--t-fast);
+  white-space: nowrap;
+}
+
+.tab:hover   { color: var(--text-2); }
+
+.tabActive {
+  background: var(--surface-1);
+  color: var(--text-1);
+  border: 1px solid var(--border);
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 7px 12px;
+  flex: 1;
+  min-width: 160px;
+  color: var(--text-3);
+}
+
+.searchBox input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-1);
+  font-size: 13px;
+  width: 100%;
+  padding: 0;
+}
+
+/* ── List ── */
+.list { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Card ── */
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 15px;
+  transition: border-color var(--t-fast);
+}
+
+.cardPending {
+  border-left: 3px solid var(--amber);
+}
+
+.cardPaid {
+  border-left: 3px solid var(--green);
+  opacity: 0.65;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.customerInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--purple-subtle, rgba(167,139,250,0.12));
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--purple, #a78bfa);
+  flex-shrink: 0;
+}
+
+.customerName { font-size: 14px; font-weight: 600; }
+.cardDate     { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+.amount {
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.amountPending { color: var(--amber); }
+.amountPaid    { color: var(--green);  }
+
+/* Items chips */
+.itemsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.itemChip {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 3px 8px;
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+.description {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+/* Footer */
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.btnPay {
+  background: var(--green);
+  color: white;
+  border: none;
+  border-radius: var(--r-full);
+  padding: 7px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--t-fast), transform var(--t-fast);
+}
+
+.btnPay:hover    { opacity: 0.9; }
+.btnPay:active   { transform: scale(0.98); }
+.btnPay:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.paidBadge {
+  background: var(--green-subtle);
+  color: var(--green);
+  border-radius: var(--r-full);
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ── Empty ── */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 20px;
+  gap: 8px;
+  text-align: center;
+}
+
+.emptyIcon  { font-size: 40px; }
+.emptyTitle { font-size: 15px; font-weight: 500; color: var(--text-2); }
+.emptySub   { font-size: 13px; color: var(--text-3); }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .summaryGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .controls    { flex-direction: column; align-items: stretch; }
+}

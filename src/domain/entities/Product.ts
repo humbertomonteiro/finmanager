@@ -72,6 +72,15 @@ export class Product {
     this.props.updatedAt = new Date();
   }
 
+  // Método para ajuste manual de estoque (usado em ajustes e resets)
+  public setStock(newStock: number) {
+    if (newStock < 0) {
+      throw new Error("Stock cannot be negative.");
+    }
+    this.props.stock = newStock;
+    this.props.updatedAt = new Date();
+  }
+
   public changeSalePrice(newPrice: number) {
     if (newPrice <= 0) throw new Error("Sale price must be greater than 0.");
     this.props.lastSalePrice = this.props.salePrice;

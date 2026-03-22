@@ -1,57 +1,66 @@
-// src/components/templates/Header.tsx
+// src/presenters/components/templates/Header/index.tsx
 import React from "react";
 import styles from "./header.module.css";
-
 import { RxHamburgerMenu } from "react-icons/rx";
 import { ActiveViewProps } from "../../../pages/Dashboard";
+import { GrTransaction } from "react-icons/gr";
+import { FaBox } from "react-icons/fa6";
 
 interface HeaderProps {
   onToggleSidebar: () => void;
-  handleActiveView: (activeView: ActiveViewProps, dataEditing?: any) => void;
+  handleActiveView: (view: ActiveViewProps, data?: any) => void;
+  activeView: ActiveViewProps;
 }
+
+const VIEW_TITLES: Record<string, string> = {
+  dashboard: "Dashboard",
+  transactions: "Transações",
+  products: "Produtos",
+  "adjust-stock": "Estoque",
+  "credit-sales": "Vendas Fiado",
+  "system-settings": "Configurações",
+  "new-transaction": "Nova Transação",
+  "new-product": "Novo Produto",
+};
 
 const Header: React.FC<HeaderProps> = ({
   onToggleSidebar,
   handleActiveView,
+  activeView,
 }) => {
   return (
     <header className={styles.header}>
-      <div className={styles.headerStart}>
-        {/* <button
-          className={styles.menuButton}
+      {/* Left */}
+      <div className={styles.left}>
+        <button
+          className={styles.menuBtn}
           onClick={onToggleSidebar}
           aria-label="Abrir menu"
         >
-          <span className={styles.menuIcon}>
-            <RxHamburgerMenu />
-          </span>
-        </button> */}
-        <h1
-          onClick={() => handleActiveView("dashboard")}
-          className={styles.title}
-        >
-          FinManager
-        </h1>
+          <RxHamburgerMenu />
+        </button>
+        <span className={styles.pageTitle}>
+          {VIEW_TITLES[activeView] ?? "FinManager"}
+        </span>
       </div>
 
-      <div className={styles.headerEnd}>
-        {/* <button className={styles.notificationButton} aria-label="Notificações">
-          <span className={styles.notificationIcon}>🔔</span>
-          <span className={styles.notificationBadge}>3</span>
-        </button> */}
-
-        {/* <div className={styles.userMenu}>
-          <div className={styles.userAvatar}></div>
-        </div> */}
-
+      {/* Right */}
+      <div className={styles.right}>
         <button
-          className={styles.menuButton}
-          onClick={onToggleSidebar}
-          aria-label="Abrir menu"
+          className={styles.quickBtn}
+          onClick={() => handleActiveView("new-transaction")}
+          title="Nova Transação"
         >
-          <span className={styles.menuIcon}>
-            <RxHamburgerMenu />
-          </span>
+          <GrTransaction />
+          <span className={styles.quickLabel}>Nova Transação</span>
+        </button>
+        <button
+          className={styles.quickBtn}
+          onClick={() => handleActiveView("new-product")}
+          title="Novo Produto"
+        >
+          <FaBox />
+          <span className={styles.quickLabel}>Produto</span>
         </button>
       </div>
     </header>

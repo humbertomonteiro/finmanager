@@ -1,213 +1,160 @@
 /* transactionItemsList.module.css */
 
-.itemsSection {
-  grid-column: span 2;
-  background: var(--surface-2);
-  border: 1px solid var(--border-2);
-  border-radius: var(--r-lg);
-  padding: var(--s-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-3);
-}
-
-.itemsTitle {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--text-3);
-  margin: 0;
-}
-
-.itemsList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-2);
-}
-
-.item {
+.wrapper {
   background: var(--surface-1);
   border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-lg);
+  overflow: hidden;
 }
 
-.itemMain {
+/* ── Header ── */
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--s-3);
-  margin-bottom: var(--s-3);
+  padding: 9px 13px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
 }
 
-.itemInfo {
+.headerTitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.headerSubtotal {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── List ── */
+.list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  flex: 1;
-  min-width: 0;
 }
 
-.itemName {
-  font-size: 14px;
+/* ── Row ── */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--t-fast);
+}
+
+.row:last-child { border-bottom: none; }
+.row:hover      { background: rgba(255,255,255,0.02); }
+
+.rowWarning {
+  background: rgba(245, 158, 11, 0.05);
+  border-left: 2px solid var(--amber);
+}
+
+/* Info */
+.info { flex: 1; min-width: 0; }
+
+.name {
+  font-size: 13px;
   font-weight: 600;
-  color: var(--text-1);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.itemUnitPrice {
-  font-size: 12px;
-  color: var(--text-3);
-}
-
-.stockInfo {
+.meta {
   font-size: 11px;
   color: var(--text-3);
-}
-
-.stockWarning {
-  color: var(--red);
-  font-weight: 600;
-  margin-left: var(--s-2);
-}
-
-.quantityControls {
+  margin-top: 2px;
   display: flex;
   align-items: center;
-  gap: var(--s-2);
+  gap: 4px;
+}
+
+.stock      { color: var(--text-3); }
+.stockWarn  { color: var(--amber); font-weight: 500; }
+
+/* Controls */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   flex-shrink: 0;
 }
 
-.quantityButton {
-  width: 30px;
-  height: 30px;
+.qtyBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-size: 15px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--surface-2);
-  border: 1px solid var(--border-2);
-  border-radius: var(--r-sm);
-  color: var(--text-2);
-  font-size: 12px;
   cursor: pointer;
-  transition: background var(--t-fast), color var(--t-fast),
-    border-color var(--t-fast);
+  transition: all var(--t-fast);
+  line-height: 1;
 }
 
-.quantityButton:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
+.qtyBtn:hover {
+  border-color: var(--border-2);
+  color: var(--text-1);
 }
 
-.quantityInput {
-  width: 52px;
-  height: 30px;
-  padding: 0 var(--s-1);
-  background: var(--surface-2);
-  border: 1px solid var(--border-2);
-  border-radius: var(--r-sm);
+.qtyInput {
+  width: 44px;
   text-align: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 4px 4px;
   font-size: 13px;
   font-weight: 600;
   color: var(--text-1);
   outline: none;
-  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 
-.quantityInput:focus {
+.qtyInput:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-subtle);
 }
 
-.itemFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: var(--s-2);
-  border-top: 1px solid var(--border);
-}
-
-.itemTotal {
-  font-size: 15px;
+/* Total */
+.total {
+  font-size: 13px;
   font-weight: 700;
-  color: var(--text-1);
   font-variant-numeric: tabular-nums;
-}
-
-.removeButton {
-  display: flex;
-  align-items: center;
-  gap: var(--s-1);
-  padding: 5px var(--s-3);
-  background: transparent;
-  border: 1px solid var(--red-border);
-  border-radius: var(--r-md);
-  color: var(--red);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background var(--t-fast), color var(--t-fast);
-}
-
-.removeButton:hover {
-  background: var(--red);
-  color: #fff;
-}
-
-.itemsSummary {
-  margin-top: var(--s-2);
-  padding-top: var(--s-3);
-  border-top: 1px solid var(--border-2);
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-1);
-}
-
-.summaryRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
-  color: var(--text-3);
-  font-weight: 500;
-}
-
-.summaryRow:last-child {
-  font-size: 14px;
-  font-weight: 700;
   color: var(--text-1);
+  min-width: 64px;
+  text-align: right;
+  flex-shrink: 0;
 }
 
-.emptyState {
-  text-align: center;
-  padding: var(--s-5);
-  font-size: 13px;
+/* Remove */
+.removeBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--text-3);
+  cursor: pointer;
+  transition: all var(--t-fast);
+  flex-shrink: 0;
+  border: 1px solid transparent;
 }
 
-@media (max-width: 600px) {
-  .itemMain {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .quantityControls {
-    justify-content: center;
-  }
-  .itemFooter {
-    flex-direction: column;
-    gap: var(--s-2);
-    align-items: stretch;
-  }
-  .removeButton {
-    text-align: center;
-    justify-content: center;
-  }
+.removeBtn:hover {
+  background: var(--red-subtle);
+  border-color: var(--red-border);
+  color: var(--red);
 }

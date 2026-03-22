@@ -1,26 +1,26 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap");
 
+/* ─── Design Tokens ─── */
 :root {
-  /* — Base palette — */
-  --ink-900: #0a0c0f;
-  --ink-800: #111318;
-  --ink-700: #1c1f27;
-  --ink-600: #252832;
-  --ink-500: #363b49;
-  --ink-400: #4e5566;
-  --ink-300: #6b7280;
-  --ink-200: #9aa0ad;
-  --ink-100: #c8cdd6;
+  /* Palette */
+  --ink-900: #0d0f14;
+  --ink-800: #141720;
+  --ink-700: #1a1e28;
+  --ink-600: #21263a;
+  --ink-500: #2c3245;
+  --ink-400: #3d4558;
+  --ink-300: #5c6475;
+  --ink-200: #9aa3b2;
+  --ink-100: #c4cad6;
   --ink-50: #eceef2;
-  --ink-0: #f7f8fa;
 
-  /* — Accent — */
-  --accent: #4f7fff;
-  --accent-hover: #3b6ef0;
-  --accent-subtle: rgba(79, 127, 255, 0.12);
-  --accent-border: rgba(79, 127, 255, 0.3);
+  /* Accent */
+  --accent: #5b7fff;
+  --accent-hover: #4a6bf0;
+  --accent-subtle: rgba(91, 127, 255, 0.14);
+  --accent-border: rgba(91, 127, 255, 0.28);
 
-  /* — Semantic — */
+  /* Semantic */
   --green: #22c55e;
   --green-subtle: rgba(34, 197, 94, 0.12);
   --green-border: rgba(34, 197, 94, 0.28);
@@ -33,28 +33,28 @@
   --red-subtle: rgba(239, 68, 68, 0.12);
   --red-border: rgba(239, 68, 68, 0.28);
 
-  --orange: #f97316;
-  --orange-subtle: rgba(249, 115, 22, 0.12);
-  --orange-border: rgba(249, 115, 22, 0.28);
+  --purple: #a78bfa;
+  --purple-subtle: rgba(167, 139, 250, 0.12);
+  --purple-border: rgba(167, 139, 250, 0.22);
 
-  /* — Surfaces — */
+  /* Surfaces */
   --bg: var(--ink-900);
   --surface-1: var(--ink-800);
   --surface-2: var(--ink-700);
   --surface-3: var(--ink-600);
   --border: rgba(255, 255, 255, 0.07);
-  --border-2: rgba(255, 255, 255, 0.12);
+  --border-2: rgba(255, 255, 255, 0.13);
 
-  /* — Text — */
-  --text-1: #f0f2f5;
+  /* Text */
+  --text-1: #eef0f5;
   --text-2: var(--ink-200);
   --text-3: var(--ink-300);
 
-  /* — Typography — */
+  /* Typography */
   --font: "DM Sans", system-ui, sans-serif;
   --font-mono: "DM Mono", monospace;
 
-  /* — Spacing — */
+  /* Spacing */
   --s-1: 4px;
   --s-2: 8px;
   --s-3: 12px;
@@ -65,80 +65,40 @@
   --s-10: 40px;
   --s-12: 48px;
 
-  /* — Radius — */
-  --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 14px;
-  --r-xl: 20px;
+  /* Radius */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-2xl: 20px;
   --r-full: 9999px;
 
-  /* — Shadows — */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
-  --shadow-glow: 0 0 0 1px var(--accent-border),
-    0 4px 16px rgba(79, 127, 255, 0.15);
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.55);
 
-  /* — Transitions — */
+  /* Transitions */
   --t-fast: 120ms ease;
   --t-base: 200ms ease;
   --t-slow: 320ms ease;
 
-  /* — Sidebar — */
-  --sidebar-w: 240px;
+  /* Layout */
+  --sidebar-w: 220px;
+  --topbar-h: 52px;
+  --panel-w: 480px;
 
-  /* Compat aliases for existing components */
+  /* Compat aliases (mantidos para não quebrar componentes existentes) */
   --color-primary: var(--accent);
   --color-primary-dark: var(--accent-hover);
-  --color-primary-light: #6b93ff;
-  --color-secondary: var(--ink-300);
-  --color-accent: var(--amber);
   --color-success: var(--green);
-  --color-warning: var(--orange);
+  --color-warning: var(--amber);
   --color-error: var(--red);
   --color-background: var(--bg);
   --color-surface: var(--surface-1);
-  --color-on-primary: #fff;
   --color-on-surface: var(--text-1);
   --color-on-surface-variant: var(--text-2);
   --color-border: var(--border);
-  --color-neutral-dark: var(--ink-700);
-
-  --gradient-primary: linear-gradient(
-    135deg,
-    var(--accent),
-    var(--accent-hover)
-  );
-  --gradient-secondary: linear-gradient(135deg, var(--ink-400), var(--ink-500));
-  --gradient-sidebar: linear-gradient(180deg, var(--surface-1), var(--ink-900));
-
-  --font-family-base: var(--font);
-  --font-family-heading: var(--font);
-  --font-size-xxs: 0.69rem;
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-xxl: 1.5rem;
-  --font-size-xxxl: 2rem;
-  --spacing-xs: var(--s-1);
-  --spacing-sm: var(--s-2);
-  --spacing-md: var(--s-4);
-  --spacing-lg: var(--s-6);
-  --spacing-xl: var(--s-8);
-  --spacing-xxl: var(--s-12);
-  --radius-sm: var(--r-sm);
-  --radius-md: var(--r-md);
-  --radius-lg: var(--r-lg);
-  --radius-xl: var(--r-xl);
-  --radius-full: var(--r-full);
-  --shadow-md: var(--shadow-sm);
-  --shadow-lg: var(--shadow-md);
-  --shadow-xl: var(--shadow-lg);
-  --transition-base: all var(--t-base);
-  --transition-colors: color var(--t-base), background-color var(--t-base),
-    border-color var(--t-base);
 }
 
 /* ─── Reset ─── */
@@ -152,14 +112,16 @@
 
 html {
   -webkit-font-smoothing: antialiased;
+  height: 100%;
 }
 
 body {
   font-family: var(--font);
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.55;
   background: var(--bg);
   color: var(--text-1);
+  height: 100%;
 }
 
 h1,
@@ -172,19 +134,7 @@ h6 {
   font-weight: 600;
   line-height: 1.3;
   color: var(--text-1);
-}
-
-h1 {
-  font-size: 2rem;
-}
-h2 {
-  font-size: 1.5rem;
-}
-h3 {
-  font-size: 1.25rem;
-}
-h4 {
-  font-size: 1.125rem;
+  letter-spacing: -0.2px;
 }
 
 input,
@@ -209,6 +159,11 @@ select:focus {
   box-shadow: 0 0 0 3px var(--accent-subtle);
 }
 
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-3);
+}
+
 select option {
   background: var(--surface-2);
 }
@@ -216,22 +171,66 @@ select option {
 button {
   font-family: var(--font);
   cursor: pointer;
+  border: none;
+  background: none;
 }
 
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--ink-500);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 99px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--ink-400);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ─── Animations ─── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.fadeUp {
+  animation: fadeUp 0.2s ease forwards;
+}
+.slideIn {
+  animation: slideIn 0.2s ease forwards;
+}
+.slideUp {
+  animation: slideUp 0.2s ease forwards;
 }
 
 /* ─── Utilities ─── */
@@ -247,17 +246,6 @@ button {
   border: 0;
 }
 
-/* ─── Fade-in animation ─── */
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.fadeUp {
-  animation: fadeUp 0.3s ease forwards;
+.tabular {
+  font-variant-numeric: tabular-nums;
 }

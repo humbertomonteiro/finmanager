@@ -1,31 +1,98 @@
-/* src/pages/dashboard.module.css */
-.dashboard {
-  min-height: 100vh;
+/* dashboard.module.css */
+
+.app {
   display: flex;
-  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
 }
 
-.layout {
-  display: flex;
+.sidebarOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  backdrop-filter: blur(2px);
+}
+
+.main {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .content {
   flex: 1;
-  padding: var(--spacing-lg);
-  background-color: var(--color-background);
+  overflow-y: auto;
+  padding: 20px;
+  scroll-behavior: smooth;
 }
 
-/* Desktop */
-@media (min-width: 769px) {
-  .content {
-    padding: var(--spacing-xl);
-  }
+.view {
+  min-height: 100%;
 }
 
-/* Mobile */
+/* ── Panel (slide-in from right) ── */
+.panelOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.panel {
+  width: min(var(--panel-w, 480px), 100vw);
+  height: 100%;
+  background: var(--surface-1);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Mobile FAB ── */
+.fab {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: white;
+  border: none;
+  font-size: 20px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md), 0 0 0 1px var(--accent-border);
+  z-index: 90;
+  transition: background var(--t-fast), transform var(--t-fast);
+}
+
+.fab:hover {
+  background: var(--accent-hover);
+  transform: scale(1.05);
+}
+
+.fab:active {
+  transform: scale(0.97);
+}
+
+/* ── Responsive ── */
 @media (max-width: 768px) {
   .content {
-    padding: var(--spacing-md);
+    padding: 14px;
+    padding-bottom: 80px; /* space for FAB */
+  }
+
+  .fab {
+    display: flex;
   }
 }

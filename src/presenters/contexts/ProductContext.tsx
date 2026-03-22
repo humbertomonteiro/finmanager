@@ -1,10 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { ProductService } from "../../domain/services/ProductService";
 import { ProductRepository } from "../../infrastructure/repositories/FirebaseProductRepository";
+import { TransactionRepository } from "../../infrastructure/repositories/FirebaseTransactionRepository";
 import { Product } from "../../domain/entities/Product";
+import { AdjustStockUsecase, StockAdjustment } from "../../domain/usecases/AdjustStockUsecase";
+import { ResetSystemUsecase, ResetType } from "../../domain/usecases/ResetSystemUsecase";
 
 const productRepository = new ProductRepository();
+const transactionRepository = new TransactionRepository();
 const productService = new ProductService(productRepository);
+const adjustStockUsecase = new AdjustStockUsecase(productRepository, transactionRepository);
+const resetSystemUsecase = new ResetSystemUsecase(productRepository, transactionRepository);
 
 type ProductContextType = {
   products: Product[];
@@ -12,6 +18,9 @@ type ProductContextType = {
   createProduct: (product: Product) => Promise<string>;
   updateProduct: (product: Product) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
+  adjustStock: (adjustment: StockAdjustment) => Promise<void>;
+  adjustStockBatch: (adjustments: StockAdjustment[]) => Promise<void>;
+  resetSystem: (resetType: ResetType) => Promise<void>;
 };
 
 export const ProductContext = createContext<ProductContextType | undefined>(
@@ -61,6 +70,33 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const adjustStock = async (adjustment: StockAdjustment) => {
+    try {
+      await adjustStockUsecase.execute(adjustment);
+      fetchProducts();
+    } catch (error) {
+      throw new Error(`${error}`);
+    }
+  };
+
+  const adjustStockBatch = async (adjustments: StockAdjustment[]) => {
+    try {
+      await adjustStockUsecase.executeBatch(adjustments);
+      fetchProducts();
+    } catch (error) {
+      throw new Error(`${error}`);
+    }
+  };
+
+  const resetSystem = async (resetType: ResetType) => {
+    try {
+      await resetSystemUsecase.execute(resetType);
+      fetchProducts();
+    } catch (error) {
+      throw new Error(`${error}`);
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -73,6 +109,9 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
         createProduct,
         updateProduct,
         deleteProduct,
+        adjustStock,
+        adjustStockBatch,
+        resetSystem,
       }}
     >
       {children}
