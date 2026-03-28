@@ -29,7 +29,7 @@ export type ActiveViewProps =
 
 const Dashboard: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeView, setActiveView] = useState<ActiveViewProps>("dashboard");
+  const [activeView, setActiveView] = useState<ActiveViewProps>("transactions");
   const [dataEditing, setDataEditing] = useState<any>(null);
   const [panelOpen, setPanelOpen] = useState(false);
   const [panelType, setPanelType] = useState<"transaction" | "product" | null>(
@@ -68,16 +68,16 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const sidebarItems = [
-    {
-      id: "dashboard",
-      label: "Dashboard",
-      icon: <MdDashboard />,
-      group: "Principal",
-      onClick: () => {
-        setActiveView("dashboard");
-        setIsSidebarOpen(false);
-      },
-    },
+    // {
+    //   id: "dashboard",
+    //   label: "Dashboard",
+    //   icon: <MdDashboard />,
+    //   group: "Principal",
+    //   onClick: () => {
+    //     setActiveView("dashboard");
+    //     setIsSidebarOpen(false);
+    //   },
+    // },
     {
       id: "transactions",
       label: "Transações",
@@ -133,8 +133,8 @@ const Dashboard: React.FC = () => {
 
   const renderMainContent = () => {
     switch (activeView) {
-      case "dashboard":
-        return <TransactionContent handleActiveView={handleActiveView} />;
+      // case "dashboard":
+      //   return <TransactionContent handleActiveView={handleActiveView} />;
       case "transactions":
         return (
           <TransactionContent handleActiveView={handleActiveView} showAll />

@@ -21,7 +21,7 @@ export default function Metrics({
     const totals = filteredTransactions.reduce(
       (acc, t) => {
         if (t.type === "sale") acc.sales += t.value;
-        else if (t.type === "credit_sale") {
+        else if (t.type === "credit_sale" || t.type === "credit_service") {
           if (t.isPaid) acc.creditPaid += t.value;
           else acc.creditPending += t.value;
         } else if (t.type === "purchase") acc.purchases += t.value;
@@ -46,7 +46,11 @@ export default function Metrics({
     const expenses = totals.purchases + totals.payments;
     const balance = revenue - expenses;
     const creditPendingTotal = transactions
-      .filter((t) => t.type === "credit_sale" && !t.isPaid)
+      .filter(
+        (t) =>
+          (t.type === "credit_sale" && !t.isPaid) ||
+          (t.type === "credit_service" && !t.isPaid)
+      )
       .reduce((s, t) => s + t.value, 0);
 
     return { totals, revenue, expenses, balance, creditPendingTotal };
