@@ -287,24 +287,23 @@ export const CreateTransactionForm: React.FC<Props> = ({
         )}
 
         {/* Customer name (credit_sale) */}
-        {type === "credit_sale" ||
-          (type === "credit_service" && (
-            <div className={styles.section}>
-              <div className={styles.sectionTitle}>Cliente</div>
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Nome do cliente *</label>
-                <input
-                  type="text"
-                  className={styles.input}
-                  placeholder="Nome de quem vai pagar depois..."
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  required
-                  autoFocus
-                />
-              </div>
+        {(type === "credit_sale" || type === "credit_service") && (
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>Cliente</div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Nome do cliente *</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="Nome de quem vai pagar depois..."
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                required
+                autoFocus
+              />
             </div>
-          ))}
+          </div>
+        )}
 
         {/* Value (aporte / service / payment) */}
         {needsValue && (
