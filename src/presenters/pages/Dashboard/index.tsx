@@ -61,7 +61,7 @@ const Dashboard: React.FC = () => {
     // Retorna ao view anterior relevante
     setActiveView((prev) =>
       prev === "new-transaction"
-        ? "dashboard"
+        ? "transactions"
         : prev === "new-product"
         ? "products"
         : prev

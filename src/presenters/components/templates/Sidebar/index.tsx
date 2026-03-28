@@ -79,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {groupItems.map((item) => {
               const isActive =
                 activeView === item.id ||
-                (item.id === "dashboard" && activeView === "dashboard") ||
+                // (item.id === "dashboard" && activeView === "dashboard") ||
                 (item.id === "transactions" && activeView === "transactions");
 
               const badge =
