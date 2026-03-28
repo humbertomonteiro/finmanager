@@ -12,7 +12,8 @@ import { CreditSalesList } from "../../components/sections/transaction/CreditSal
 import { SystemResetSettings } from "../../components/sections/product/SystemResetSettings";
 import styles from "./dashboard.module.css";
 
-import { MdDashboard, MdSettings } from "react-icons/md";
+// import { MdDashboard, MdSettings } from "react-icons/md";
+import { MdSettings } from "react-icons/md";
 import { FaBox, FaBoxes, FaUsers } from "react-icons/fa";
 import { GrTransaction } from "react-icons/gr";
 import { FaPlus } from "react-icons/fa6";
