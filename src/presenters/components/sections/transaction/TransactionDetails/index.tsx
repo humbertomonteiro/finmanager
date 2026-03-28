@@ -16,12 +16,13 @@ interface TransactionDetailsProps {
 
 function getTypeConfig(type: string) {
   const map: Record<string, { label: string; variant: string }> = {
-    sale:        { label: "Venda",      variant: "sale" },
-    credit_sale: { label: "Fiado",      variant: "credit" },
-    purchase:    { label: "Compra",     variant: "purchase" },
-    payment:     { label: "Pagamento",  variant: "payment" },
-    aporte:      { label: "Aporte",     variant: "aporte" },
-    service:     { label: "Serviço",    variant: "service" },
+    sale: { label: "Venda", variant: "sale" },
+    credit_sale: { label: "Fiado", variant: "credit" },
+    credit_service: { label: "Serviço Fiado", variant: "credit" },
+    purchase: { label: "Compra", variant: "purchase" },
+    payment: { label: "Pagamento", variant: "payment" },
+    aporte: { label: "Aporte", variant: "aporte" },
+    service: { label: "Serviço", variant: "service" },
   };
   return map[type] ?? { label: type, variant: "default" };
 }
@@ -36,13 +37,23 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   const cfg = getTypeConfig(transaction.type);
 
   const fmtDate = (d?: Date) =>
-    d ? new Date(d).toLocaleDateString("pt-BR", {
-      day: "2-digit", month: "2-digit", year: "numeric",
-      hour: "2-digit", minute: "2-digit",
-    }) : "—";
+    d
+      ? new Date(d).toLocaleDateString("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "—";
 
   const handleDelete = async () => {
-    if (!confirm("Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita.")) return;
+    if (
+      !confirm(
+        "Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita."
+      )
+    )
+      return;
     setLoading(true);
     try {
       await deleteTransaction(transaction);
@@ -55,7 +66,8 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   };
 
   const handleMarkPaid = async () => {
-    if (!confirm(`Confirmar recebimento de ${transaction.customerName}?`)) return;
+    if (!confirm(`Confirmar recebimento de ${transaction.customerName}?`))
+      return;
     setLoading(true);
     try {
       transaction.markAsPaid();
@@ -68,10 +80,17 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
     }
   };
 
-  const isPending = transaction.type === "credit_sale" && !transaction.isPaid;
+  const isPending =
+    (transaction.type === "credit_sale" && !transaction.isPaid) ||
+    (transaction.type === "credit_service" && !transaction.isPaid);
 
   return (
-    <div className={styles.overlay} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div
+      className={styles.overlay}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className={styles.modal}>
         {/* Header */}
         <div className={styles.header}>
@@ -79,25 +98,38 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
             <div className={`${styles.typeBadge} ${styles[cfg.variant]}`}>
               {cfg.label}
             </div>
-            {transaction.type === "credit_sale" && (
-              <span className={`${styles.statusBadge} ${isPending ? styles.statusPending : styles.statusPaid}`}>
+            {(transaction.type === "credit_sale" ||
+              transaction.type === "credit_service") && (
+              <span
+                className={`${styles.statusBadge} ${
+                  isPending ? styles.statusPending : styles.statusPaid
+                }`}
+              >
                 {isPending ? "⏳ Pendente" : "✓ Pago"}
               </span>
             )}
           </div>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Fechar">
+          <button
+            className={styles.closeBtn}
+            onClick={onClose}
+            aria-label="Fechar"
+          >
             <IoClose />
           </button>
         </div>
 
         {/* Amount hero */}
         <div className={styles.amountHero}>
-          <div className={`${styles.amountValue} ${isPending ? styles.amountPending : ""}`}>
+          <div
+            className={`${styles.amountValue} ${
+              isPending ? styles.amountPending : ""
+            }`}
+          >
             {formatCurrency(transaction.value)}
           </div>
-          {transaction.discount && transaction.discount > 0 && (
+          {(transaction.discount ?? 0) > 0 && (
             <div className={styles.amountDiscount}>
-              Desconto de {formatCurrency(transaction.discount)} aplicado
+              Desconto de {formatCurrency(transaction.discount || 0)} aplicado
             </div>
           )}
         </div>
@@ -110,8 +142,12 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
                 {transaction.customerName.slice(0, 2).toUpperCase()}
               </div>
               <div>
-                <div className={styles.customerName}>{transaction.customerName}</div>
-                <div className={styles.customerLabel}>Cliente — venda fiado</div>
+                <div className={styles.customerName}>
+                  {transaction.customerName}
+                </div>
+                <div className={styles.customerLabel}>
+                  Cliente — venda fiado
+                </div>
               </div>
             </div>
           )}
@@ -130,7 +166,9 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
             {transaction.isPaid && transaction.paidAt && (
               <div className={styles.row}>
                 <span className={styles.rowKey}>Pago em</span>
-                <span className={styles.rowVal}>{fmtDate(transaction.paidAt)}</span>
+                <span className={styles.rowVal}>
+                  {fmtDate(transaction.paidAt)}
+                </span>
               </div>
             )}
           </div>
@@ -139,7 +177,8 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
           {transaction.items && transaction.items.length > 0 && (
             <div className={styles.itemsSection}>
               <div className={styles.itemsTitle}>
-                {transaction.items.length} {transaction.items.length === 1 ? "item" : "itens"}
+                {transaction.items.length}{" "}
+                {transaction.items.length === 1 ? "item" : "itens"}
               </div>
               <div className={styles.itemsList}>
                 {transaction.items.map((item, i) => (
@@ -171,7 +210,10 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
           )}
           <button
             className={styles.btnEdit}
-            onClick={() => { onClose(); handleActiveView("new-transaction", transaction); }}
+            onClick={() => {
+              onClose();
+              handleActiveView("new-transaction", transaction);
+            }}
           >
             <MdEdit /> Editar
           </button>

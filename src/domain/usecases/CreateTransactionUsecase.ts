@@ -18,12 +18,13 @@ export class CreateTransactionUsecase {
         "aporte",
         "service",
         "payment",
+        "credit_service",
         "credit_sale",
-        "adjustment", // Ajustes de estoque não afetam caixa
+        "adjustment",
       ];
       if (!validTypes.includes(type)) {
         throw new Error(
-          "Invalid transaction type. Must be: purchase, payment, sale, service, aporte, credit_sale or adjustment"
+          "Invalid transaction type. Must be: purchase, payment, sale, service, aporte, credit_sale, credit_service or adjustment"
         );
       }
 
@@ -32,7 +33,12 @@ export class CreateTransactionUsecase {
         return this.transactionRepository.save(transaction);
       }
 
-      if (type === "aporte" || type === "service" || type === "payment") {
+      if (
+        type === "aporte" ||
+        type === "service" ||
+        type === "payment" ||
+        type === "credit_service"
+      ) {
         return this.transactionRepository.save(transaction);
       }
 

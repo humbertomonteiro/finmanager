@@ -46,13 +46,54 @@ const parseMoneyInput = (value: string): number => {
   return parseFloat(c) || 0;
 };
 
-const TYPE_OPTIONS: { value: TransactionType; label: string; icon: React.ReactNode; desc: string }[] = [
-  { value: "sale",         label: "Venda",      icon: <TbMoneybag />,        desc: "Venda com produtos" },
-  { value: "credit_sale",  label: "Fiado",      icon: <FaHandshake />,       desc: "Pagar depois" },
-  { value: "purchase",     label: "Compra",     icon: <IoCartOutline />,     desc: "Entrada de produtos" },
-  { value: "aporte",       label: "Aporte",     icon: <TbReportMoney />,     desc: "Entrada de capital" },
-  { value: "service",      label: "Serviço",    icon: <FaPersonDigging />,   desc: "Prestação de serviço" },
-  { value: "payment",      label: "Pagamento",  icon: <FaMoneyBillTransfer />, desc: "Saída de caixa" },
+const TYPE_OPTIONS: {
+  value: TransactionType;
+  label: string;
+  icon: React.ReactNode;
+  desc: string;
+}[] = [
+  {
+    value: "sale",
+    label: "Venda",
+    icon: <TbMoneybag />,
+    desc: "Venda com produtos",
+  },
+  {
+    value: "credit_sale",
+    label: "Fiado",
+    icon: <FaHandshake />,
+    desc: "Pagar depois",
+  },
+  {
+    value: "credit_service",
+    label: "Serviço Fiado",
+    icon: <FaHandshake />,
+    desc: "Pagar depois",
+  },
+  {
+    value: "purchase",
+    label: "Compra",
+    icon: <IoCartOutline />,
+    desc: "Entrada de produtos",
+  },
+  {
+    value: "aporte",
+    label: "Aporte",
+    icon: <TbReportMoney />,
+    desc: "Entrada de capital",
+  },
+  {
+    value: "service",
+    label: "Serviço",
+    icon: <FaPersonDigging />,
+    desc: "Prestação de serviço",
+  },
+  {
+    value: "payment",
+    label: "Pagamento",
+    icon: <FaMoneyBillTransfer />,
+    desc: "Saída de caixa",
+  },
 ];
 
 export const CreateTransactionForm: React.FC<Props> = ({
@@ -75,8 +116,13 @@ export const CreateTransactionForm: React.FC<Props> = ({
 
   const isEditing = !!transaction;
   const hasProducts = ["sale", "credit_sale", "purchase"].includes(type);
-  const needsValue  = ["aporte", "service", "payment"].includes(type);
-  const isSaleType  = type === "sale" || type === "credit_sale";
+  const needsValue = [
+    "aporte",
+    "service",
+    "payment",
+    "credit_service",
+  ].includes(type);
+  const isSaleType = type === "sale" || type === "credit_sale";
 
   useEffect(() => {
     if (transaction) {
@@ -111,7 +157,9 @@ export const CreateTransactionForm: React.FC<Props> = ({
     if (existing >= 0) {
       setItems((prev) =>
         prev.map((item, idx) =>
-          idx === existing ? { ...item, quantity: item.quantity + quantity } : item
+          idx === existing
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
         )
       );
     } else {
@@ -141,11 +189,16 @@ export const CreateTransactionForm: React.FC<Props> = ({
         }
       }
 
-      if (type === "credit_sale" && customerName.trim().length < 2) {
+      if (
+        (type === "credit_sale" && customerName.trim().length < 2) ||
+        (type === "credit_sale" && customerName.trim().length < 2)
+      ) {
         throw new Error("Nome do cliente é obrigatório (mínimo 2 caracteres).");
       }
 
-      const finalValue = needsValue ? parsedValue - parsedDiscount : subtotal - parsedDiscount;
+      const finalValue = needsValue
+        ? parsedValue - parsedDiscount
+        : subtotal - parsedDiscount;
 
       if (finalValue <= 0 && type !== "adjustment") {
         throw new Error("O valor total deve ser maior que zero.");
@@ -158,8 +211,12 @@ export const CreateTransactionForm: React.FC<Props> = ({
         value: finalValue,
         items: hasProducts ? items : [],
         discount: parsedDiscount || 0,
-        customerName: type === "credit_sale" ? customerName.trim() : undefined,
-        isPaid: type === "credit_sale" ? false : true,
+        customerName:
+          type === "credit_sale" || type === "credit_service"
+            ? customerName.trim()
+            : undefined,
+        isPaid:
+          type === "credit_sale" || type === "credit_service" ? false : true,
       });
 
       if (isEditing) {
@@ -194,7 +251,9 @@ export const CreateTransactionForm: React.FC<Props> = ({
               {isEditing ? "Editar Transação" : "Nova Transação"}
             </div>
             <div className={styles.panelSub}>
-              {isEditing ? "Atualize os dados abaixo" : "Preencha os dados da transação"}
+              {isEditing
+                ? "Atualize os dados abaixo"
+                : "Preencha os dados da transação"}
             </div>
           </div>
         </div>
@@ -213,7 +272,9 @@ export const CreateTransactionForm: React.FC<Props> = ({
                 <button
                   key={opt.value}
                   type="button"
-                  className={`${styles.typePill} ${type === opt.value ? styles.typePillActive : ""}`}
+                  className={`${styles.typePill} ${
+                    type === opt.value ? styles.typePillActive : ""
+                  }`}
                   onClick={() => handleTypeChange(opt.value)}
                 >
                   <span className={styles.pillIcon}>{opt.icon}</span>
@@ -226,23 +287,24 @@ export const CreateTransactionForm: React.FC<Props> = ({
         )}
 
         {/* Customer name (credit_sale) */}
-        {type === "credit_sale" && (
-          <div className={styles.section}>
-            <div className={styles.sectionTitle}>Cliente</div>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Nome do cliente *</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="Nome de quem vai pagar depois..."
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                required
-                autoFocus
-              />
+        {type === "credit_sale" ||
+          (type === "credit_service" && (
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>Cliente</div>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Nome do cliente *</label>
+                <input
+                  type="text"
+                  className={styles.input}
+                  placeholder="Nome de quem vai pagar depois..."
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  required
+                  autoFocus
+                />
+              </div>
             </div>
-          </div>
-        )}
+          ))}
 
         {/* Value (aporte / service / payment) */}
         {needsValue && (
@@ -250,7 +312,13 @@ export const CreateTransactionForm: React.FC<Props> = ({
             <div className={styles.formGroup}>
               <label className={styles.label}>
                 Valor do{" "}
-                {type === "service" ? "Serviço" : type === "aporte" ? "Aporte" : "Pagamento"}{" "}
+                {type === "service"
+                  ? "Serviço"
+                  : type === "aporte"
+                  ? "Aporte"
+                  : type === "credit_service"
+                  ? "Serviço fiado"
+                  : "Pagamento"}{" "}
                 (R$) *
               </label>
               <input
@@ -297,10 +365,14 @@ export const CreateTransactionForm: React.FC<Props> = ({
                 transactionType={isSaleType ? "sale" : (type as any)}
                 onUpdateQuantity={(idx, qty) =>
                   setItems((prev) =>
-                    prev.map((it, i) => (i === idx ? { ...it, quantity: qty } : it))
+                    prev.map((it, i) =>
+                      i === idx ? { ...it, quantity: qty } : it
+                    )
                   )
                 }
-                onRemoveItem={(idx) => setItems((prev) => prev.filter((_, i) => i !== idx))}
+                onRemoveItem={(idx) =>
+                  setItems((prev) => prev.filter((_, i) => i !== idx))
+                }
               />
             )}
           </div>
@@ -338,7 +410,9 @@ export const CreateTransactionForm: React.FC<Props> = ({
             {hasProducts && (
               <div className={styles.summaryRow}>
                 <span className={styles.summaryLabel}>Subtotal</span>
-                <span className={styles.summaryValue}>{formatCurrency(subtotal)}</span>
+                <span className={styles.summaryValue}>
+                  {formatCurrency(subtotal)}
+                </span>
               </div>
             )}
             {parsedDiscount > 0 && (
@@ -351,7 +425,9 @@ export const CreateTransactionForm: React.FC<Props> = ({
             )}
             <div className={`${styles.summaryRow} ${styles.summaryTotal}`}>
               <span className={styles.summaryLabel}>Total</span>
-              <span className={styles.summaryValueTotal}>{formatCurrency(totalValue)}</span>
+              <span className={styles.summaryValueTotal}>
+                {formatCurrency(totalValue)}
+              </span>
             </div>
           </div>
         )}
@@ -359,12 +435,21 @@ export const CreateTransactionForm: React.FC<Props> = ({
         {/* Fiado notice */}
         {type === "credit_sale" && (
           <div className={styles.notice}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}>
-              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-              <line x1="12" y1="9" x2="12" y2="13"/>
-              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              style={{ flexShrink: 0, marginTop: 1 }}
+            >
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
-            Venda registrada como <strong>fiado</strong> — estoque debitado agora, recebimento pendente.
+            Venda registrada como <strong>fiado</strong> — estoque debitado
+            agora, recebimento pendente.
           </div>
         )}
 
@@ -373,7 +458,11 @@ export const CreateTransactionForm: React.FC<Props> = ({
 
         {/* Actions */}
         <div className={styles.actions}>
-          <button type="button" className={styles.btnCancel} onClick={handleClose}>
+          <button
+            type="button"
+            className={styles.btnCancel}
+            onClick={handleClose}
+          >
             Cancelar
           </button>
           <button

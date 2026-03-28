@@ -5,6 +5,7 @@ export type TransactionType =
   | "service"
   | "payment"
   | "credit_sale"
+  | "credit_service"
   | "adjustment";
 
 export interface TransactionItem {
@@ -37,7 +38,10 @@ export class Transaction {
       ...props,
       date: props.date || new Date(),
       updatedAt: props.updatedAt || new Date(),
-      isPaid: props.type === "credit_sale" ? props.isPaid ?? false : true,
+      isPaid:
+        props.type === "credit_sale" || props.type === "credit_service"
+          ? props.isPaid ?? false
+          : true,
     };
     this.validate();
   }
@@ -54,6 +58,7 @@ export class Transaction {
         "aporte",
         "service",
         "payment",
+        "credit_service",
         "credit_sale",
         "adjustment",
       ].includes(this.props.type)
@@ -69,6 +74,13 @@ export class Transaction {
     }
 
     if (
+      this.props.type === "credit_service" &&
+      (!this.props.description || this.props.description.trim().length < 3)
+    ) {
+      throw new Error("Descrição do serviço é obrigatória.");
+    }
+
+    if (
       (this.props.type === "sale" || this.props.type === "credit_sale") &&
       this.props.items &&
       this.props.items.length <= 0
@@ -77,9 +89,8 @@ export class Transaction {
     }
 
     if (
-      this.props.type === "purchase" &&
-      this.props.items &&
-      this.props.items.length <= 0
+      (this.props.type === "sale" || this.props.type === "credit_sale") &&
+      (!this.props.items || this.props.items.length === 0)
     ) {
       throw new Error("Transaction items cannot be empty");
     }
@@ -120,7 +131,10 @@ export class Transaction {
   }
 
   public markAsPaid() {
-    if (this.props.type !== "credit_sale") {
+    if (
+      this.props.type !== "credit_sale" &&
+      this.props.type !== "credit_service"
+    ) {
       throw new Error("Apenas vendas fiado podem ser marcadas como pagas.");
     }
     this.props.isPaid = true;

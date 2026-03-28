@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { useTransaction } from "../../../../contexts/TransactionContext";
 import { useProduct } from "../../../../contexts/ProductContext";
-// import { ResetSystemUsecase } from "../../../../../domain/usecases/ResetSystemUsecase";
 import styles from "./systemResetSettings.module.css";
 
 export const SystemResetSettings: React.FC = () => {

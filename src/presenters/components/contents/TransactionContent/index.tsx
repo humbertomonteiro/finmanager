@@ -19,18 +19,10 @@ export default function TransactionContent({
   showAll = false,
 }: TransactionContentProps) {
   const { transactions } = useTransaction();
-  const {
-    // filters,
-    filteredTransactions,
-    // paginatedTransactions,
-    // currentPage,
-    // totalPages,
-    // updateFilters,
-    // updateSort,
-    // setCurrentPage,
-    // goToNextPage,
-    // goToPrevPage,
-  } = useTransactionFilters(transactions, ITEMS_PER_PAGE);
+  const { filteredTransactions } = useTransactionFilters(
+    transactions,
+    ITEMS_PER_PAGE
+  );
 
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
@@ -149,6 +141,7 @@ export default function TransactionContent({
           <option value="purchase">Compra</option>
           <option value="aporte">Aporte</option>
           <option value="service">Serviço</option>
+          <option value="credit_service">Serviço Fiado</option>
           <option value="payment">Pagamento</option>
         </select>
 

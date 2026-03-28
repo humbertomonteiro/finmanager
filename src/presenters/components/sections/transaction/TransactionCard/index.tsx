@@ -22,17 +22,54 @@ function getTypeConfig(type: string) {
     case "sale":
       return { label: "Venda", variant: "sale", icon: <TbMoneybag />, sign: 1 };
     case "credit_sale":
-      return { label: "Fiado", variant: "credit", icon: <FaHandshake />, sign: 0 };
+      return {
+        label: "Fiado",
+        variant: "credit",
+        icon: <FaHandshake />,
+        sign: 0,
+      };
     case "purchase":
-      return { label: "Compra", variant: "purchase", icon: <IoCartOutline />, sign: -1 };
+      return {
+        label: "Compra",
+        variant: "purchase",
+        icon: <IoCartOutline />,
+        sign: -1,
+      };
     case "payment":
-      return { label: "Pagamento", variant: "payment", icon: <FaMoneyBillTransfer />, sign: -1 };
+      return {
+        label: "Pagamento",
+        variant: "payment",
+        icon: <FaMoneyBillTransfer />,
+        sign: -1,
+      };
     case "aporte":
-      return { label: "Aporte", variant: "aporte", icon: <TbReportMoney />, sign: 1 };
+      return {
+        label: "Aporte",
+        variant: "aporte",
+        icon: <TbReportMoney />,
+        sign: 1,
+      };
     case "service":
-      return { label: "Serviço", variant: "service", icon: <FaPersonDigging />, sign: 1 };
+      return {
+        label: "Serviço",
+        variant: "service",
+        icon: <FaPersonDigging />,
+        sign: 1,
+      };
+    case "credit_service":
+      return {
+        label: "Serviço fiado",
+        variant: "credit_service",
+        icon: <FaPersonDigging />,
+        sign: 1,
+      };
     default:
-      return { label: "Transação", variant: "default", icon: <GrTransaction />, sign: 1 };
+      return {
+        label: "Transação",
+        variant: "default",
+        icon: <GrTransaction />,
+        sign: 1,
+      };
   }
 }
 
@@ -42,20 +79,24 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
 }) => {
   const [showDetails, setShowDetails] = useState(false);
   const cfg = getTypeConfig(transaction.type);
-  const isPending = transaction.type === "credit_sale" && !transaction.isPaid;
+  const isPending =
+    (transaction.type === "credit_sale" && !transaction.isPaid) ||
+    (transaction.type === "credit_service" && !transaction.isPaid);
 
   const date = new Date(transaction.date as Date);
   const dateStr = date.toLocaleDateString("pt-BR");
-  const timeStr = date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  const timeStr = date.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   // Build description line
-  const desc =
-    transaction.customerName
-      ? transaction.customerName
-      : transaction.description ||
-        (transaction.items?.length
-          ? transaction.items.map((i) => i.name).join(", ")
-          : cfg.label);
+  const desc = transaction.customerName
+    ? transaction.customerName
+    : transaction.description ||
+      (transaction.items?.length
+        ? transaction.items.map((i) => i.name).join(", ")
+        : cfg.label);
 
   const amountClass =
     cfg.sign > 0
@@ -92,13 +133,21 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
           </div>
           <div className={styles.meta}>
             {dateStr} · {timeStr}
-            {transaction.items?.length ? ` · ${transaction.items.length} ${transaction.items.length === 1 ? "item" : "itens"}` : ""}
+            {transaction.items?.length
+              ? ` · ${transaction.items.length} ${
+                  transaction.items.length === 1 ? "item" : "itens"
+                }`
+              : ""}
           </div>
         </div>
 
         {/* Right side */}
         <div className={styles.right}>
-          <span className={`${styles.tag} ${styles["tag_" + cfg.variant]} ${isPending ? styles.tagPending : ""}`}>
+          <span
+            className={`${styles.tag} ${styles["tag_" + cfg.variant]} ${
+              isPending ? styles.tagPending : ""
+            }`}
+          >
             {tagLabel}
           </span>
           <div>
