@@ -1,5 +1,5 @@
 // src/presenters/components/sections/transaction/CreditSalesList/index.tsx
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useTransaction } from "../../../../contexts/TransactionContext";
 import { Transaction } from "../../../../../domain/entities/Transaction";
 import { formatCurrency } from "../../../../../utils/formatCurrency";
@@ -24,28 +24,43 @@ export const CreditSalesList: React.FC = () => {
   const pending = useMemo(() => credits.filter((t) => !t.isPaid), [credits]);
   const paid = useMemo(() => credits.filter((t) => t.isPaid), [credits]);
 
-  const totalPending = useMemo(
-    () => pending.reduce((s, t) => s + t.value, 0),
-    [pending]
-  );
-  const totalPaid = useMemo(
-    () => paid.reduce((s, t) => s + t.value, 0),
-    [paid]
-  );
-
+  // Lista filtrada por aba + busca
   const displayed = useMemo(() => {
     let list =
       activeTab === "pending" ? pending : activeTab === "paid" ? paid : credits;
+
     if (search.trim()) {
+      const q = search.toLowerCase();
       list = list.filter((t) =>
-        (t.customerName || "").toLowerCase().includes(search.toLowerCase())
+        (t.customerName || "").toLowerCase().includes(q)
       );
     }
+
     return [...list].sort(
       (a, b) =>
         new Date(b.date as Date).getTime() - new Date(a.date as Date).getTime()
     );
   }, [activeTab, pending, paid, credits, search]);
+
+  // Totais calculados sobre a lista visível (reagem à busca)
+  const displayedPending = useMemo(
+    () => displayed.filter((t) => !t.isPaid),
+    [displayed]
+  );
+  const displayedPaid = useMemo(
+    () => displayed.filter((t) => t.isPaid),
+    [displayed]
+  );
+
+  const totalPending = useMemo(
+    () => displayedPending.reduce((s, t) => s + t.value, 0),
+    [displayedPending]
+  );
+  const totalPaid = useMemo(
+    () => displayedPaid.reduce((s, t) => s + t.value, 0),
+    [displayedPaid]
+  );
+  const totalAll = totalPending + totalPaid;
 
   const handleMarkPaid = async (t: Transaction) => {
     if (
@@ -70,55 +85,64 @@ export const CreditSalesList: React.FC = () => {
   const fmtDate = (d?: Date) =>
     d ? new Date(d).toLocaleDateString("pt-BR") : "—";
 
-  // Group pending by customer
+  // Maiores devedores calculados sobre a lista pendente visível
   const byCustomer = useMemo(() => {
-    return pending.reduce<Record<string, { total: number; count: number }>>(
-      (acc, t) => {
-        const name = t.customerName || "Sem nome";
-        if (!acc[name]) acc[name] = { total: 0, count: 0 };
-        acc[name].total += t.value;
-        acc[name].count += 1;
-        return acc;
-      },
-      {}
-    );
-  }, [pending]);
+    return displayedPending.reduce<
+      Record<string, { total: number; count: number }>
+    >((acc, t) => {
+      const name = t.customerName || "Sem nome";
+      if (!acc[name]) acc[name] = { total: 0, count: 0 };
+      acc[name].total += t.value;
+      acc[name].count += 1;
+      return acc;
+    }, {});
+  }, [displayedPending]);
+
+  const isFiltering = search.trim().length > 0;
 
   return (
     <div className={styles.container}>
-      {/* Summary cards */}
+      {/* Summary cards — refletem a busca atual */}
       <div className={styles.summaryGrid}>
         <div className={`${styles.summaryCard} ${styles.summaryPending}`}>
-          <div className={styles.summaryLabel}>Pendentes</div>
+          <div className={styles.summaryLabel}>
+            Pendentes{isFiltering ? " (filtrado)" : ""}
+          </div>
           <div className={`${styles.summaryCount} ${styles.countPending}`}>
-            {pending.length}
+            {displayedPending.length}
           </div>
           <div className={styles.summaryAmount}>
             {formatCurrency(totalPending)}
           </div>
         </div>
+
         <div className={`${styles.summaryCard} ${styles.summaryPaid}`}>
-          <div className={styles.summaryLabel}>Recebidas</div>
+          <div className={styles.summaryLabel}>
+            Recebidas{isFiltering ? " (filtrado)" : ""}
+          </div>
           <div className={`${styles.summaryCount} ${styles.countPaid}`}>
-            {paid.length}
+            {displayedPaid.length}
           </div>
           <div className={styles.summaryAmount}>
             {formatCurrency(totalPaid)}
           </div>
         </div>
+
         <div className={styles.summaryCard}>
-          <div className={styles.summaryLabel}>Total geral</div>
-          <div className={styles.summaryCount}>{credits.length}</div>
-          <div className={styles.summaryAmount}>
-            {formatCurrency(totalPending + totalPaid)}
+          <div className={styles.summaryLabel}>
+            Total{isFiltering ? " (filtrado)" : " geral"}
           </div>
+          <div className={styles.summaryCount}>{displayed.length}</div>
+          <div className={styles.summaryAmount}>{formatCurrency(totalAll)}</div>
         </div>
       </div>
 
-      {/* Top debtors (only when on pending tab) */}
+      {/* Maiores devedores (filtragem reativa) */}
       {activeTab === "pending" && Object.keys(byCustomer).length > 0 && (
         <div className={styles.debtorsSection}>
-          <div className={styles.sectionTitle}>Maiores devedores</div>
+          <div className={styles.sectionTitle}>
+            Maiores devedores{isFiltering ? " (resultado da busca)" : ""}
+          </div>
           <div className={styles.debtorsList}>
             {Object.entries(byCustomer)
               .sort((a, b) => b[1].total - a[1].total)
@@ -131,7 +155,8 @@ export const CreditSalesList: React.FC = () => {
                   <div>
                     <div className={styles.debtorName}>{name}</div>
                     <div className={styles.debtorMeta}>
-                      {data.count} {data.count === 1 ? "venda" : "vendas"}
+                      {data.count}{" "}
+                      {data.count === 1 ? "pendência" : "pendências"}
                     </div>
                   </div>
                   <div className={styles.debtorAmount}>
@@ -180,6 +205,23 @@ export const CreditSalesList: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              style={{
+                background: "none",
+                border: "none",
+                color: "var(--text-3)",
+                cursor: "pointer",
+                fontSize: 16,
+                lineHeight: 1,
+                padding: "0 2px",
+              }}
+              aria-label="Limpar busca"
+            >
+              ×
+            </button>
+          )}
         </div>
       </div>
 
@@ -188,12 +230,18 @@ export const CreditSalesList: React.FC = () => {
         <div className={styles.empty}>
           <div className={styles.emptyIcon}>💸</div>
           <div className={styles.emptyTitle}>
-            {activeTab === "pending"
-              ? "Nenhuma venda pendente"
-              : "Nenhuma venda encontrada"}
+            {isFiltering
+              ? `Nenhum resultado para "${search}"`
+              : activeTab === "pending"
+              ? "Nenhuma pendência"
+              : "Nenhum registro encontrado"}
           </div>
           <div className={styles.emptySub}>
-            {activeTab === "pending" ? "Todas as contas estão em dia!" : ""}
+            {isFiltering
+              ? "Tente buscar por outro nome."
+              : activeTab === "pending"
+              ? "Todas as contas estão em dia!"
+              : ""}
           </div>
         </div>
       ) : (
