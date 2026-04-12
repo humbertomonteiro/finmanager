@@ -7,6 +7,7 @@ import {
   TransactionItem,
   TransactionType,
 } from "../../../../../domain/entities/Transaction";
+import { Product } from "../../../../../domain/entities/Product";
 import { formatCurrency } from "../../../../../utils/formatCurrency";
 import { ProductSearchInput } from "../../product/ProductSearchInput";
 import { TransactionItemsList } from "../TransactionItemsList";
@@ -102,7 +103,7 @@ export const CreateTransactionForm: React.FC<Props> = ({
   onClose,
 }) => {
   const { createTransaction, updateTransaction } = useTransaction();
-  const { products, fetchProducts } = useProduct();
+  const { products, fetchProducts, updateProduct } = useProduct();
 
   const [type, setType] = useState<TransactionType>("sale");
   const [description, setDescription] = useState("");
@@ -113,6 +114,10 @@ export const CreateTransactionForm: React.FC<Props> = ({
   const [customerName, setCustomerName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // Preços a atualizar no cadastro ao salvar uma compra
+  const [priceUpdates, setPriceUpdates] = useState<
+    Record<string, { costPrice: string; salePrice: string }>
+  >({});
 
   const isEditing = !!transaction;
   const hasProducts = ["sale", "credit_sale", "purchase"].includes(type);
@@ -149,6 +154,7 @@ export const CreateTransactionForm: React.FC<Props> = ({
     setValue("");
     setCustomerName("");
     setError("");
+    setPriceUpdates({});
   };
 
   const handleProductSelect = (product: any) => {
@@ -167,8 +173,52 @@ export const CreateTransactionForm: React.FC<Props> = ({
         { productId: product.id!, name: product.name, quantity, unitPrice },
         ...prev,
       ]);
+      // Inicializa campos de preço para compras
+      if (type === "purchase") {
+        setPriceUpdates((prev) => ({
+          ...prev,
+          [product.id!]: {
+            costPrice: product.costPrice.toString(),
+            salePrice: product.salePrice.toString(),
+          },
+        }));
+      }
     }
     setQuantity(1);
+  };
+
+  const handleRemoveItem = (idx: number) => {
+    const removed = items[idx];
+    setItems((prev) => prev.filter((_, i) => i !== idx));
+    if (type === "purchase" && removed) {
+      setPriceUpdates((prev) => {
+        const next = { ...prev };
+        delete next[removed.productId];
+        return next;
+      });
+    }
+  };
+
+  const handlePriceChange = (
+    productId: string,
+    field: "costPrice" | "salePrice",
+    val: string
+  ) => {
+    setPriceUpdates((prev) => ({
+      ...prev,
+      [productId]: { ...prev[productId], [field]: val },
+    }));
+    // Mantém unitPrice do item em sincronia com o novo custo
+    if (field === "costPrice") {
+      const parsed = parseMoneyInput(val);
+      setItems((prev) =>
+        prev.map((item) =>
+          item.productId === productId
+            ? { ...item, unitPrice: parsed || item.unitPrice }
+            : item
+        )
+      );
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -223,6 +273,26 @@ export const CreateTransactionForm: React.FC<Props> = ({
         await updateTransaction(tx);
       } else {
         await createTransaction(tx);
+      }
+
+      // Atualiza preços dos produtos comprados se houve alteração
+      if (type === "purchase" && Object.keys(priceUpdates).length > 0) {
+        for (const [productId, prices] of Object.entries(priceUpdates)) {
+          const product = products.find((p) => p.id === productId);
+          if (!product) continue;
+          const newCost = parseMoneyInput(prices.costPrice);
+          const newSale = parseMoneyInput(prices.salePrice);
+          const costChanged = newCost > 0 && newCost !== product.costPrice;
+          const saleChanged = newSale > 0 && newSale !== product.salePrice;
+          if (costChanged || saleChanged) {
+            const updated = new Product({
+              ...product.toDTO(),
+              costPrice: newCost > 0 ? newCost : product.costPrice,
+              salePrice: newSale > 0 ? newSale : product.salePrice,
+            });
+            await updateProduct(updated);
+          }
+        }
       }
 
       await fetchProducts();
@@ -369,10 +439,58 @@ export const CreateTransactionForm: React.FC<Props> = ({
                     )
                   )
                 }
-                onRemoveItem={(idx) =>
-                  setItems((prev) => prev.filter((_, i) => i !== idx))
-                }
+                onRemoveItem={handleRemoveItem}
               />
+            )}
+
+            {/* Atualização de preços — só para compras */}
+            {type === "purchase" && items.length > 0 && (
+              <div className={styles.priceUpdateSection}>
+                <div className={styles.priceUpdateTitle}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                  </svg>
+                  Atualizar preços dos produtos
+                </div>
+                <p className={styles.priceUpdateHint}>
+                  Os valores serão salvos no cadastro de cada produto ao confirmar a compra.
+                </p>
+                {items.map((item) => {
+                  const update = priceUpdates[item.productId];
+                  if (!update) return null;
+                  return (
+                    <div key={item.productId} className={styles.priceUpdateRow}>
+                      <div className={styles.priceUpdateName}>{item.name}</div>
+                      <div className={styles.priceUpdateFields}>
+                        <div className={styles.priceUpdateField}>
+                          <label className={styles.priceUpdateLabel}>Preço de custo (R$)</label>
+                          <input
+                            type="text"
+                            className={styles.input}
+                            value={update.costPrice}
+                            onChange={(e) =>
+                              handlePriceChange(item.productId, "costPrice", e.target.value)
+                            }
+                            placeholder="0,00"
+                          />
+                        </div>
+                        <div className={styles.priceUpdateField}>
+                          <label className={styles.priceUpdateLabel}>Preço de venda (R$)</label>
+                          <input
+                            type="text"
+                            className={styles.input}
+                            value={update.salePrice}
+                            onChange={(e) =>
+                              handlePriceChange(item.productId, "salePrice", e.target.value)
+                            }
+                            placeholder="0,00"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
         )}

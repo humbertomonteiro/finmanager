@@ -287,8 +287,142 @@
 .emptyTitle { font-size: 15px; font-weight: 500; color: var(--text-2); }
 .emptySub   { font-size: 13px; color: var(--text-3); }
 
+/* ── Botão Selecionar ── */
+.btnSelect {
+  padding: 7px 15px;
+  border-radius: var(--r-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  transition: all var(--t-fast);
+  flex-shrink: 0;
+}
+
+.btnSelect:hover { border-color: var(--border-2); color: var(--text-1); }
+
+.btnSelectActive {
+  color: var(--red);
+  border-color: var(--red-border);
+  background: var(--red-subtle);
+}
+
+/* ── Barra de seleção múltipla ── */
+.selectionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--r-lg);
+  padding: 12px 16px;
+  flex-wrap: wrap;
+}
+
+.selectionBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.selectionInfo {
+  font-size: 13px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.selectionTotal {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--green);
+  font-variant-numeric: tabular-nums;
+}
+
+.btnBulkPay {
+  background: var(--green);
+  color: white;
+  border: none;
+  border-radius: var(--r-full);
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--t-fast), transform var(--t-fast);
+  white-space: nowrap;
+}
+
+.btnBulkPay:hover    { opacity: 0.9; }
+.btnBulkPay:active   { transform: scale(0.98); }
+.btnBulkPay:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Checkbox (barra + card) ── */
+.checkboxBtn {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--r-sm);
+  border: 2px solid var(--border-2);
+  background: var(--surface-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--t-fast);
+  color: white;
+}
+
+.checkboxBtn:hover { border-color: var(--accent); }
+
+.checkboxBtn.checkboxChecked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--r-sm);
+  border: 2px solid var(--border-2);
+  background: var(--surface-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--t-fast);
+  color: white;
+}
+
+.checkbox.checkboxChecked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ── Card em modo seleção ── */
+.cardSelectable {
+  cursor: pointer;
+}
+
+.cardSelectable:hover {
+  border-color: var(--accent-border);
+}
+
+.cardSelected {
+  border-color: var(--accent) !important;
+  background: rgba(91, 127, 255, 0.05);
+}
+
+.selectionHint {
+  font-size: 12px;
+  color: var(--text-3);
+  font-style: italic;
+}
+
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .summaryGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .controls    { flex-direction: column; align-items: stretch; }
+  .selectionBar { flex-direction: column; align-items: stretch; }
+  .btnBulkPay  { text-align: center; }
 }

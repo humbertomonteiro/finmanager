@@ -5,6 +5,7 @@ import Sidebar from "../../components/templates/Sidebar";
 import Header from "../../components/templates/Header";
 import TransactionContent from "../../components/contents/TransactionContent";
 import ProductContent from "../../components/contents/ProductContent";
+import { DashboardContent } from "../../components/contents/DashboardContent";
 import { CreateTransactionForm } from "../../components/sections/transaction/CreateTransactionForm";
 import { CreateProductForm } from "../../components/sections/product/CreateProductForm";
 import { StockAdjustmentForm } from "../../components/sections/product/StockAdjustmentForm";
@@ -12,8 +13,7 @@ import { CreditSalesList } from "../../components/sections/transaction/CreditSal
 import { SystemResetSettings } from "../../components/sections/product/SystemResetSettings";
 import styles from "./dashboard.module.css";
 
-// import { MdDashboard, MdSettings } from "react-icons/md";
-import { MdSettings } from "react-icons/md";
+import { MdDashboard, MdSettings } from "react-icons/md";
 import { FaBox, FaBoxes, FaUsers } from "react-icons/fa";
 import { GrTransaction } from "react-icons/gr";
 import { FaPlus } from "react-icons/fa6";
@@ -30,7 +30,7 @@ export type ActiveViewProps =
 
 const Dashboard: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeView, setActiveView] = useState<ActiveViewProps>("transactions");
+  const [activeView, setActiveView] = useState<ActiveViewProps>("dashboard");
   const [dataEditing, setDataEditing] = useState<any>(null);
   const [panelOpen, setPanelOpen] = useState(false);
   const [panelType, setPanelType] = useState<"transaction" | "product" | null>(
@@ -69,16 +69,16 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const sidebarItems = [
-    // {
-    //   id: "dashboard",
-    //   label: "Dashboard",
-    //   icon: <MdDashboard />,
-    //   group: "Principal",
-    //   onClick: () => {
-    //     setActiveView("dashboard");
-    //     setIsSidebarOpen(false);
-    //   },
-    // },
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: <MdDashboard />,
+      group: "Principal",
+      onClick: () => {
+        setActiveView("dashboard");
+        setIsSidebarOpen(false);
+      },
+    },
     {
       id: "transactions",
       label: "Transações",
@@ -134,8 +134,8 @@ const Dashboard: React.FC = () => {
 
   const renderMainContent = () => {
     switch (activeView) {
-      // case "dashboard":
-      //   return <TransactionContent handleActiveView={handleActiveView} />;
+      case "dashboard":
+        return <DashboardContent handleActiveView={handleActiveView} />;
       case "transactions":
         return (
           <TransactionContent handleActiveView={handleActiveView} showAll />

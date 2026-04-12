@@ -1,0 +1,701 @@
+/* dashboardContent.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-8);
+}
+
+/* ── Caixa Card ── */
+.caixaCard {
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  padding: var(--s-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.caixaPositive { border-color: var(--green-border); }
+.caixaNegative { border-color: var(--red-border); }
+
+.caixaTop {
+  display: flex;
+  gap: var(--s-8);
+  align-items: flex-start;
+}
+
+.caixaLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 200px;
+}
+
+.caixaLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--text-3);
+}
+
+.caixaValue {
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.caixaValuePositive { color: var(--green); }
+.caixaValueNegative { color: var(--red); }
+
+.caixaMeta {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.caixaRight {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+}
+
+.caixaSummaryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+
+.caixaSummaryLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.caixaSummaryValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.caixaSummaryRed   { color: var(--red); }
+.caixaSummaryAmber { font-size: 14px; font-weight: 600; color: var(--amber); font-variant-numeric: tabular-nums; }
+
+.caixaDivider {
+  height: 1px;
+  background: var(--border);
+}
+
+.dotGreen { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.dotRed   { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--red);   flex-shrink: 0; }
+.dotAmber { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
+
+.caixaToggle {
+  font-size: 12px;
+  color: var(--text-3);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: color var(--t-fast);
+}
+
+.caixaToggle:hover { color: var(--text-2); }
+
+.caixaDetail {
+  display: flex;
+  gap: var(--s-6);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--border);
+}
+
+.caixaDetailCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.caixaDetailTitle {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+  margin-bottom: 2px;
+}
+
+.caixaDetailDivider {
+  width: 1px;
+  background: var(--border);
+  align-self: stretch;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s-4);
+}
+
+.detailLabel {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.detailValue {
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.detailGreen { color: var(--green); }
+.detailRed   { color: var(--red); }
+
+@media (max-width: 640px) {
+  .caixaTop {
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+  .caixaLeft { min-width: unset; }
+  .caixaValue { font-size: 28px; }
+  .caixaDetail { flex-direction: column; }
+  .caixaDetailDivider { width: 100%; height: 1px; }
+}
+
+/* ── Page Header ── */
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+}
+
+.pageTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -0.4px;
+}
+
+.pageSubtitle {
+  font-size: 13px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.periodTabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface-2);
+  border-radius: var(--r-lg);
+  padding: 4px;
+  border: 1px solid var(--border);
+}
+
+.periodBtn {
+  padding: 5px 13px;
+  border-radius: var(--r-md);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-3);
+  background: none;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+
+.periodBtn:hover {
+  color: var(--text-2);
+  background: var(--surface-3);
+}
+
+.periodActive {
+  background: var(--surface-3) !important;
+  color: var(--text-1) !important;
+}
+
+/* ── Section ── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.sectionLink {
+  font-size: 12px;
+  color: var(--accent);
+  background: none;
+  padding: 0;
+  transition: opacity var(--t-fast);
+}
+
+.sectionLink:hover {
+  opacity: 0.75;
+}
+
+/* ── KPI Grid ── */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-4);
+}
+
+.kpiCard {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color var(--t-base);
+}
+
+.kpiTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kpiLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kpiIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpiValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.kpiValueCount {
+  font-size: 28px;
+}
+
+.kpiSub {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* KPI variants */
+.kpi_green .kpiIcon {
+  background: var(--green-subtle);
+  color: var(--green);
+}
+.kpi_green {
+  border-color: var(--green-border);
+}
+
+.kpi_red .kpiIcon {
+  background: var(--red-subtle);
+  color: var(--red);
+}
+.kpi_red {
+  border-color: var(--red-border);
+}
+
+.kpi_amber .kpiIcon {
+  background: var(--amber-subtle);
+  color: var(--amber);
+}
+.kpi_amber {
+  border-color: var(--amber-border);
+}
+
+.kpi_accent .kpiIcon {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+.kpi_accent {
+  border-color: var(--accent-border);
+}
+
+.kpi_purple .kpiIcon {
+  background: var(--purple-subtle);
+  color: var(--purple);
+}
+.kpi_purple {
+  border-color: var(--purple-border);
+}
+
+/* ── Stock Grid ── */
+.stockGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--s-4);
+}
+
+.stockCard {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.stockCardLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-3);
+}
+
+.stockCardValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -0.4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.stockCardBigNum {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stockCardSub {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.stockCardAccent {
+  border-color: var(--accent-border);
+}
+.stockCardAccent .stockCardValue {
+  color: var(--accent);
+}
+
+.stockCardRed {
+  border-color: var(--red-border);
+  background: rgba(239, 68, 68, 0.04);
+}
+.stockCardRed .stockCardBigNum {
+  color: var(--red);
+}
+
+.stockCardAmber {
+  border-color: var(--amber-border);
+  background: rgba(245, 158, 11, 0.04);
+}
+.stockCardAmber .stockCardBigNum {
+  color: var(--amber);
+}
+
+.stockCardOk .stockCardBigNum {
+  color: var(--green);
+}
+
+.stockList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: var(--s-2);
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--border);
+}
+
+.stockItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.stockDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.stockDot[data-variant="red"] {
+  background: var(--red);
+}
+.stockDot[data-variant="amber"] {
+  background: var(--amber);
+}
+
+.stockName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stockQty {
+  font-size: 11px;
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+
+.stockMore {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.allGood {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: 13px;
+  color: var(--green);
+  background: var(--green-subtle);
+  border: 1px solid var(--green-border);
+  border-radius: var(--r-lg);
+  padding: 10px var(--s-4);
+}
+
+.allGoodIcon {
+  display: flex;
+  align-items: center;
+}
+
+/* ── Credit ── */
+.creditGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-4);
+}
+
+.creditSummaryCard {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.creditCardAmber {
+  border-color: var(--amber-border);
+  background: rgba(245, 158, 11, 0.04);
+}
+.creditCardOk {
+  border-color: var(--green-border);
+}
+
+.creditSummaryTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+
+.creditLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-3);
+}
+
+.creditValue {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  font-variant-numeric: tabular-nums;
+  color: var(--amber);
+  margin-top: 4px;
+}
+
+.creditCardOk .creditValue {
+  color: var(--green);
+}
+
+.creditBadge {
+  min-width: 32px;
+  height: 32px;
+  border-radius: var(--r-full);
+  background: var(--amber-subtle);
+  border: 1px solid var(--amber-border);
+  color: var(--amber);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.creditCardOk .creditBadge {
+  background: var(--green-subtle);
+  border-color: var(--green-border);
+  color: var(--green);
+}
+
+.creditMeta {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.debtorsCard {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: var(--s-5);
+}
+
+.debtorsTitle {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-3);
+  margin-bottom: var(--s-4);
+}
+
+.debtorsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.debtorRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.debtorRank {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-3);
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.debtorAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.debtorName {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.debtorAmount {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--amber);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.creditEmpty {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: 13px;
+  color: var(--green);
+  background: var(--green-subtle);
+  border: 1px solid var(--green-border);
+  border-radius: var(--r-lg);
+  padding: 10px var(--s-4);
+  align-self: flex-start;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .kpiGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stockGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .kpiGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stockGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .creditGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .periodTabs {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .periodBtn {
+    flex: 1;
+    text-align: center;
+  }
+}

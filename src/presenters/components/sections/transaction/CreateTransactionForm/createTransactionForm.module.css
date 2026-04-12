@@ -327,3 +327,63 @@
 
 .btnSubmit:hover    { background: var(--accent-hover); }
 .btnSubmit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Seção de atualização de preços (compra) ── */
+.priceUpdateSection {
+  background: var(--surface-2);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.priceUpdateTitle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.priceUpdateHint {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: -8px;
+}
+
+.priceUpdateRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.priceUpdateName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+.priceUpdateFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.priceUpdateField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.priceUpdateLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
