@@ -14,6 +14,10 @@ import { TransactionItemsList } from "../TransactionItemsList";
 import { ActiveViewProps } from "../../../../pages/Dashboard";
 import styles from "./createTransactionForm.module.css";
 
+import { CustomerSearchInput } from "../../customer/CustomerSearchInput";
+import { CreateCustomerForm } from "../../customer/CreateCustomerForm";
+import { useCustomer } from "../../../../contexts/CustomerContext";
+import { Customer } from "../../../../../domain/entities/Customer";
 import { GrTransaction } from "react-icons/gr";
 import { IoClose } from "react-icons/io5";
 import { TbMoneybag, TbReportMoney } from "react-icons/tb";
@@ -104,6 +108,7 @@ export const CreateTransactionForm: React.FC<Props> = ({
 }) => {
   const { createTransaction, updateTransaction } = useTransaction();
   const { products, fetchProducts, updateProduct } = useProduct();
+  const { customers } = useCustomer();
 
   const [type, setType] = useState<TransactionType>("sale");
   const [description, setDescription] = useState("");
@@ -111,7 +116,8 @@ export const CreateTransactionForm: React.FC<Props> = ({
   const [discount, setDiscount] = useState("");
   const [items, setItems] = useState<TransactionItem[]>([]);
   const [quantity, setQuantity] = useState(1);
-  const [customerName, setCustomerName] = useState("");
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [showCreateCustomer, setShowCreateCustomer] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   // Preços a atualizar no cadastro ao salvar uma compra
@@ -136,9 +142,17 @@ export const CreateTransactionForm: React.FC<Props> = ({
       setValue(transaction.value.toString());
       setDiscount(transaction.discount ? transaction.discount.toString() : "");
       setItems(transaction.items || []);
-      setCustomerName(transaction.customerName || "");
+      // Restore selected customer from transaction
+      if (transaction.customerId) {
+        const found = customers.find((c) => c.id === transaction.customerId);
+        setSelectedCustomer(found || null);
+      } else if (transaction.customerName) {
+        // Legacy: create a temporary display object without id
+        const found = customers.find((c) => c.name === transaction.customerName);
+        setSelectedCustomer(found || null);
+      }
     }
-  }, [transaction]);
+  }, [transaction, customers]);
 
   const subtotal = items.reduce((s, i) => s + i.quantity * i.unitPrice, 0);
   const parsedDiscount = parseMoneyInput(discount);
@@ -152,7 +166,7 @@ export const CreateTransactionForm: React.FC<Props> = ({
     setItems([]);
     setDiscount("");
     setValue("");
-    setCustomerName("");
+    setSelectedCustomer(null);
     setError("");
     setPriceUpdates({});
   };
@@ -239,11 +253,9 @@ export const CreateTransactionForm: React.FC<Props> = ({
         }
       }
 
-      if (
-        (type === "credit_sale" && customerName.trim().length < 2) ||
-        (type === "credit_sale" && customerName.trim().length < 2)
-      ) {
-        throw new Error("Nome do cliente é obrigatório (mínimo 2 caracteres).");
+      const isCreditType = type === "credit_sale" || type === "credit_service";
+      if (isCreditType && !selectedCustomer) {
+        throw new Error("Selecione ou cadastre um cliente para venda fiado.");
       }
 
       const finalValue = needsValue
@@ -261,12 +273,9 @@ export const CreateTransactionForm: React.FC<Props> = ({
         value: finalValue,
         items: hasProducts ? items : [],
         discount: parsedDiscount || 0,
-        customerName:
-          type === "credit_sale" || type === "credit_service"
-            ? customerName.trim()
-            : undefined,
-        isPaid:
-          type === "credit_sale" || type === "credit_service" ? false : true,
+        customerName: isCreditType ? selectedCustomer!.name : undefined,
+        customerId: isCreditType && selectedCustomer?.id ? selectedCustomer.id : undefined,
+        isPaid: isCreditType ? false : true,
       });
 
       if (isEditing) {
@@ -356,22 +365,34 @@ export const CreateTransactionForm: React.FC<Props> = ({
           </div>
         )}
 
-        {/* Customer name (credit_sale) */}
-        {(type === "credit_sale" || type === "credit_service") && (
+        {/* Customer search (credit types) */}
+        {(type === "credit_sale" || type === "credit_service") && !showCreateCustomer && (
           <div className={styles.section}>
             <div className={styles.sectionTitle}>Cliente</div>
             <div className={styles.formGroup}>
-              <label className={styles.label}>Nome do cliente *</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="Nome de quem vai pagar depois..."
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                required
-                autoFocus
+              <label className={styles.label}>Cliente *</label>
+              <CustomerSearchInput
+                customers={customers}
+                selectedCustomer={selectedCustomer}
+                onCustomerSelect={(c) => setSelectedCustomer(c)}
+                onCreateNew={() => setShowCreateCustomer(true)}
+                placeholder="Buscar cliente cadastrado..."
               />
             </div>
+          </div>
+        )}
+
+        {/* Inline create customer form */}
+        {(type === "credit_sale" || type === "credit_service") && showCreateCustomer && (
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>Novo cliente</div>
+            <CreateCustomerForm
+              onClose={() => setShowCreateCustomer(false)}
+              onCreated={(customer, id) => {
+                setSelectedCustomer(new Customer({ ...customer.toDTO(), id }));
+                setShowCreateCustomer(false);
+              }}
+            />
           </div>
         )}
 

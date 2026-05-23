@@ -153,6 +153,7 @@ export class TransactionRepository implements ITransactionRepository {
       date,
       updatedAt,
       paidAt,
+      customerId: data.customerId ?? undefined,
     } as TransactionProps);
   }
 }

@@ -26,6 +26,7 @@ export interface TransactionProps {
   updatedAt?: Date;
   // Campos para venda fiado
   customerName?: string;
+  customerId?: string;
   isPaid?: boolean;
   paidAt?: Date;
 }
@@ -122,6 +123,9 @@ export class Transaction {
   }
   get customerName() {
     return this.props.customerName;
+  }
+  get customerId() {
+    return this.props.customerId;
   }
   get isPaid() {
     return this.props.isPaid;

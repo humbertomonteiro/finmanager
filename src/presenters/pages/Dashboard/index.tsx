@@ -11,12 +11,14 @@ import { CreateProductForm } from "../../components/sections/product/CreateProdu
 import { StockAdjustmentForm } from "../../components/sections/product/StockAdjustmentForm";
 import { CreditSalesList } from "../../components/sections/transaction/CreditSalesList";
 import { SystemResetSettings } from "../../components/sections/product/SystemResetSettings";
+import { CustomersList } from "../../components/sections/customer/CustomersList";
+import { CustomerMigration } from "../../components/sections/customer/CustomerMigration";
 import styles from "./dashboard.module.css";
 
 import { MdDashboard, MdSettings } from "react-icons/md";
 import { FaBox, FaBoxes, FaUsers } from "react-icons/fa";
 import { GrTransaction } from "react-icons/gr";
-import { FaPlus } from "react-icons/fa6";
+import { FaPlus, FaUserGroup } from "react-icons/fa6";
 
 export type ActiveViewProps =
   | "dashboard"
@@ -26,6 +28,8 @@ export type ActiveViewProps =
   | "new-product"
   | "adjust-stock"
   | "credit-sales"
+  | "credit-customers"
+  | "customer-migration"
   | "system-settings";
 
 const Dashboard: React.FC = () => {
@@ -121,6 +125,26 @@ const Dashboard: React.FC = () => {
       showBadge: true,
     },
     {
+      id: "credit-customers",
+      label: "Clientes Fiado",
+      icon: <FaUserGroup />,
+      group: "Finanças",
+      onClick: () => {
+        setActiveView("credit-customers");
+        setIsSidebarOpen(false);
+      },
+    },
+    {
+      id: "customer-migration",
+      label: "Migrar Fiados",
+      icon: <MdSettings />,
+      group: "Sistema",
+      onClick: () => {
+        setActiveView("customer-migration");
+        setIsSidebarOpen(false);
+      },
+    },
+    {
       id: "system-settings",
       label: "Configurações",
       icon: <MdSettings />,
@@ -148,6 +172,10 @@ const Dashboard: React.FC = () => {
         );
       case "credit-sales":
         return <CreditSalesList />;
+      case "credit-customers":
+        return <CustomersList />;
+      case "customer-migration":
+        return <CustomerMigration />;
       case "system-settings":
         return <SystemResetSettings />;
       default:

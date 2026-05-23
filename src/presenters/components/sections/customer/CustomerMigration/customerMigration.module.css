@@ -1,0 +1,236 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px;
+}
+
+.headerTitle {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.headerSub {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+.progressBadge {
+  display: inline-flex;
+  align-self: flex-start;
+  margin-top: 4px;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* All done */
+.allDone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 20px;
+  text-align: center;
+}
+
+.allDoneIcon { font-size: 40px; }
+
+.allDoneTitle {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.allDoneSub {
+  font-size: 13px;
+  color: var(--text-3);
+  max-width: 300px;
+}
+
+/* Group list */
+.groupList { display: flex; flex-direction: column; gap: 10px; }
+
+.group {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color var(--t-base);
+}
+
+.groupDone {
+  border-color: var(--green-border);
+  background: var(--green-subtle);
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.groupAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.groupInfo { flex: 1; min-width: 0; }
+
+.groupName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.groupMeta {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.metaPending { color: var(--red); font-weight: 500; }
+.metaPaid    { color: var(--green); font-weight: 500; }
+.metaTotal   { color: var(--text-2); font-weight: 600; }
+
+/* Done message */
+.doneMsg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--green);
+}
+
+/* Actions */
+.groupActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btnCreate {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--r-md);
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--t-fast);
+  text-align: left;
+}
+
+.btnCreate:hover:not(:disabled) { opacity: 0.88; }
+.btnCreate:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.linkRow {
+  display: flex;
+  gap: 8px;
+}
+
+.select {
+  flex: 1;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 8px 10px;
+  color: var(--text-1);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+
+.select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
+}
+
+.btnLink {
+  background: var(--surface-1);
+  border: 1px solid var(--border-2);
+  color: var(--text-1);
+  border-radius: var(--r-md);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--t-fast);
+}
+
+.btnLink:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.btnLink:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.errorMsg {
+  font-size: 12px;
+  color: var(--red);
+  background: var(--red-subtle);
+  border: 1px solid var(--red-border);
+  border-radius: var(--r-md);
+  padding: 8px 10px;
+}
+
+/* TX Preview */
+.txPreview {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.txPreviewSummary {
+  font-size: 12px;
+  color: var(--text-3);
+  cursor: pointer;
+  user-select: none;
+}
+
+.txPreviewSummary:hover { color: var(--text-2); }
+
+.txPreviewList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.txPreviewItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.paidDot    { color: var(--green); }
+.pendingDot { color: var(--amber); }
+
+.txPreviewDate { color: var(--text-3); flex: 1; }
+.txPreviewValue { color: var(--text-1); font-weight: 600; font-variant-numeric: tabular-nums; }
