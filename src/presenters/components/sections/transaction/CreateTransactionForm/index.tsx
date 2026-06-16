@@ -7,7 +7,6 @@ import {
   TransactionItem,
   TransactionType,
 } from "../../../../../domain/entities/Transaction";
-import { Product } from "../../../../../domain/entities/Product";
 import { formatCurrency } from "../../../../../utils/formatCurrency";
 import { ProductSearchInput } from "../../product/ProductSearchInput";
 import { TransactionItemsList } from "../TransactionItemsList";
@@ -107,7 +106,7 @@ export const CreateTransactionForm: React.FC<Props> = ({
   onClose,
 }) => {
   const { createTransaction, updateTransaction } = useTransaction();
-  const { products, fetchProducts, updateProduct } = useProduct();
+  const { products, fetchProducts, updateProductPricesOnly } = useProduct();
   const { customers } = useCustomer();
 
   const [type, setType] = useState<TransactionType>("sale");
@@ -285,6 +284,7 @@ export const CreateTransactionForm: React.FC<Props> = ({
       }
 
       // Atualiza preços dos produtos comprados se houve alteração
+      // Usa updateProductPricesOnly para não sobrescrever o estoque recém atualizado pelo usecase
       if (type === "purchase" && Object.keys(priceUpdates).length > 0) {
         for (const [productId, prices] of Object.entries(priceUpdates)) {
           const product = products.find((p) => p.id === productId);
@@ -294,12 +294,11 @@ export const CreateTransactionForm: React.FC<Props> = ({
           const costChanged = newCost > 0 && newCost !== product.costPrice;
           const saleChanged = newSale > 0 && newSale !== product.salePrice;
           if (costChanged || saleChanged) {
-            const updated = new Product({
-              ...product.toDTO(),
-              costPrice: newCost > 0 ? newCost : product.costPrice,
-              salePrice: newSale > 0 ? newSale : product.salePrice,
-            });
-            await updateProduct(updated);
+            await updateProductPricesOnly(
+              productId,
+              newCost > 0 ? newCost : product.costPrice,
+              newSale > 0 ? newSale : product.salePrice,
+            );
           }
         }
       }

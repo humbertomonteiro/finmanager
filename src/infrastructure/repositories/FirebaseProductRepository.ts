@@ -84,6 +84,19 @@ export class ProductRepository implements IProductRepository {
     }
   }
 
+  async updatePricesOnly(id: string, costPrice: number, salePrice: number): Promise<void> {
+    try {
+      const docRef = doc(db, this.collectionName, id);
+      await updateDoc(docRef, {
+        costPrice,
+        salePrice,
+        updatedAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      throw new Error(`Error updating product prices: ${error}`);
+    }
+  }
+
   async delete(id: string): Promise<void> {
     try {
       const docRef = doc(db, this.collectionName, id);

@@ -54,6 +54,14 @@ export class ProductService {
     }
   }
 
+  async updatePricesOnly(id: string, costPrice: number, salePrice: number): Promise<void> {
+    try {
+      await this.productRepository.updatePricesOnly(id, costPrice, salePrice);
+    } catch (error) {
+      throw new Error(`${error}`);
+    }
+  }
+
   async delete(id: string) {
     try {
       await this.productRepository.delete(id);

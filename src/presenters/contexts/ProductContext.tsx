@@ -17,6 +17,7 @@ type ProductContextType = {
   fetchProducts: () => Promise<void>;
   createProduct: (product: Product) => Promise<string>;
   updateProduct: (product: Product) => Promise<void>;
+  updateProductPricesOnly: (id: string, costPrice: number, salePrice: number) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
   adjustStock: (adjustment: StockAdjustment) => Promise<void>;
   adjustStockBatch: (adjustments: StockAdjustment[]) => Promise<void>;
@@ -56,6 +57,14 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
       const productId = await productService.update(product);
       fetchProducts();
       return productId;
+    } catch (error) {
+      throw new Error(`${error}`);
+    }
+  };
+
+  const updateProductPricesOnly = async (id: string, costPrice: number, salePrice: number) => {
+    try {
+      await productService.updatePricesOnly(id, costPrice, salePrice);
     } catch (error) {
       throw new Error(`${error}`);
     }
@@ -108,6 +117,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
         fetchProducts,
         createProduct,
         updateProduct,
+        updateProductPricesOnly,
         deleteProduct,
         adjustStock,
         adjustStockBatch,
