@@ -29,6 +29,7 @@ export interface TransactionProps {
   customerId?: string;
   isPaid?: boolean;
   paidAt?: Date;
+  markupApplied?: boolean;
 }
 
 export class Transaction {
@@ -133,6 +134,9 @@ export class Transaction {
   get paidAt() {
     return this.props.paidAt;
   }
+  get markupApplied() {
+    return this.props.markupApplied ?? false;
+  }
 
   public markAsPaid() {
     if (
@@ -143,6 +147,23 @@ export class Transaction {
     }
     this.props.isPaid = true;
     this.props.paidAt = new Date();
+    this.props.updatedAt = new Date();
+  }
+
+  public applyCreditMarkup(percentage: number) {
+    if (this.props.type !== "credit_sale") {
+      throw new Error(
+        "Acréscimo de fiado só se aplica a venda fiado (credit_sale)."
+      );
+    }
+
+    if (this.props.markupApplied) {
+      return; // já aplicado, evita duplicar
+    }
+
+    this.props.value = Number(
+      (this.props.value * (1 + percentage / 100)).toFixed(2)
+    );
     this.props.updatedAt = new Date();
   }
 

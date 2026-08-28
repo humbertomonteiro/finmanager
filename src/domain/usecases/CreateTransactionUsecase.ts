@@ -28,6 +28,11 @@ export class CreateTransactionUsecase {
         );
       }
 
+      // Aplica acréscimo de 10% em venda fiado antes de qualquer outra coisa
+      if (type === "credit_sale") {
+        transaction.applyCreditMarkup(10);
+      }
+
       // Ajustes de estoque não processam itens (já foram processados no AdjustStockUsecase)
       if (type === "adjustment") {
         return this.transactionRepository.save(transaction);
