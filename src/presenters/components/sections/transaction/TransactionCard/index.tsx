@@ -160,6 +160,9 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
                 -{formatCurrency(transaction.discount)} desc.
               </div>
             ) : null}
+            {transaction.type === "credit_sale" && transaction.markupApplied ? (
+              <div className={styles.markupNote}>+10% fiado</div>
+            ) : null}
           </div>
         </div>
       </div>

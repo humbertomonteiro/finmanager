@@ -115,7 +115,9 @@ export const CreateTransactionForm: React.FC<Props> = ({
   const [discount, setDiscount] = useState("");
   const [items, setItems] = useState<TransactionItem[]>([]);
   const [quantity, setQuantity] = useState(1);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null
+  );
   const [showCreateCustomer, setShowCreateCustomer] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -147,7 +149,9 @@ export const CreateTransactionForm: React.FC<Props> = ({
         setSelectedCustomer(found || null);
       } else if (transaction.customerName) {
         // Legacy: create a temporary display object without id
-        const found = customers.find((c) => c.name === transaction.customerName);
+        const found = customers.find(
+          (c) => c.name === transaction.customerName
+        );
         setSelectedCustomer(found || null);
       }
     }
@@ -156,9 +160,14 @@ export const CreateTransactionForm: React.FC<Props> = ({
   const subtotal = items.reduce((s, i) => s + i.quantity * i.unitPrice, 0);
   const parsedDiscount = parseMoneyInput(discount);
   const parsedValue = parseMoneyInput(value);
-  const totalValue = needsValue
+  const baseValue = needsValue // 👈 renomeado (era totalValue)
     ? parsedValue - parsedDiscount
     : subtotal - parsedDiscount;
+
+  const creditMarkup = // 👈 novo
+    type === "credit_sale" ? Number((baseValue * 0.1).toFixed(2)) : 0;
+
+  const totalValue = baseValue + creditMarkup; // 👈 valor final exibido, já com acréscimo
 
   const handleTypeChange = (t: TransactionType) => {
     setType(t);
@@ -273,7 +282,10 @@ export const CreateTransactionForm: React.FC<Props> = ({
         items: hasProducts ? items : [],
         discount: parsedDiscount || 0,
         customerName: isCreditType ? selectedCustomer!.name : undefined,
-        customerId: isCreditType && selectedCustomer?.id ? selectedCustomer.id : undefined,
+        customerId:
+          isCreditType && selectedCustomer?.id
+            ? selectedCustomer.id
+            : undefined,
         isPaid: isCreditType ? false : true,
       });
 
@@ -297,7 +309,7 @@ export const CreateTransactionForm: React.FC<Props> = ({
             await updateProductPricesOnly(
               productId,
               newCost > 0 ? newCost : product.costPrice,
-              newSale > 0 ? newSale : product.salePrice,
+              newSale > 0 ? newSale : product.salePrice
             );
           }
         }
@@ -365,35 +377,39 @@ export const CreateTransactionForm: React.FC<Props> = ({
         )}
 
         {/* Customer search (credit types) */}
-        {(type === "credit_sale" || type === "credit_service") && !showCreateCustomer && (
-          <div className={styles.section}>
-            <div className={styles.sectionTitle}>Cliente</div>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Cliente *</label>
-              <CustomerSearchInput
-                customers={customers}
-                selectedCustomer={selectedCustomer}
-                onCustomerSelect={(c) => setSelectedCustomer(c)}
-                onCreateNew={() => setShowCreateCustomer(true)}
-                placeholder="Buscar cliente cadastrado..."
-              />
+        {(type === "credit_sale" || type === "credit_service") &&
+          !showCreateCustomer && (
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>Cliente</div>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Cliente *</label>
+                <CustomerSearchInput
+                  customers={customers}
+                  selectedCustomer={selectedCustomer}
+                  onCustomerSelect={(c) => setSelectedCustomer(c)}
+                  onCreateNew={() => setShowCreateCustomer(true)}
+                  placeholder="Buscar cliente cadastrado..."
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* Inline create customer form */}
-        {(type === "credit_sale" || type === "credit_service") && showCreateCustomer && (
-          <div className={styles.section}>
-            <div className={styles.sectionTitle}>Novo cliente</div>
-            <CreateCustomerForm
-              onClose={() => setShowCreateCustomer(false)}
-              onCreated={(customer, id) => {
-                setSelectedCustomer(new Customer({ ...customer.toDTO(), id }));
-                setShowCreateCustomer(false);
-              }}
-            />
-          </div>
-        )}
+        {(type === "credit_sale" || type === "credit_service") &&
+          showCreateCustomer && (
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>Novo cliente</div>
+              <CreateCustomerForm
+                onClose={() => setShowCreateCustomer(false)}
+                onCreated={(customer, id) => {
+                  setSelectedCustomer(
+                    new Customer({ ...customer.toDTO(), id })
+                  );
+                  setShowCreateCustomer(false);
+                }}
+              />
+            </div>
+          )}
 
         {/* Value (aporte / service / payment) */}
         {needsValue && (
@@ -460,6 +476,7 @@ export const CreateTransactionForm: React.FC<Props> = ({
                   )
                 }
                 onRemoveItem={handleRemoveItem}
+                applyCreditMarkup={type === "credit_sale"}
               />
             )}
 
@@ -467,13 +484,21 @@ export const CreateTransactionForm: React.FC<Props> = ({
             {type === "purchase" && items.length > 0 && (
               <div className={styles.priceUpdateSection}>
                 <div className={styles.priceUpdateTitle}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
                   </svg>
                   Atualizar preços dos produtos
                 </div>
                 <p className={styles.priceUpdateHint}>
-                  Os valores serão salvos no cadastro de cada produto ao confirmar a compra.
+                  Os valores serão salvos no cadastro de cada produto ao
+                  confirmar a compra.
                 </p>
                 {items.map((item) => {
                   const update = priceUpdates[item.productId];
@@ -483,25 +508,37 @@ export const CreateTransactionForm: React.FC<Props> = ({
                       <div className={styles.priceUpdateName}>{item.name}</div>
                       <div className={styles.priceUpdateFields}>
                         <div className={styles.priceUpdateField}>
-                          <label className={styles.priceUpdateLabel}>Preço de custo (R$)</label>
+                          <label className={styles.priceUpdateLabel}>
+                            Preço de custo (R$)
+                          </label>
                           <input
                             type="text"
                             className={styles.input}
                             value={update.costPrice}
                             onChange={(e) =>
-                              handlePriceChange(item.productId, "costPrice", e.target.value)
+                              handlePriceChange(
+                                item.productId,
+                                "costPrice",
+                                e.target.value
+                              )
                             }
                             placeholder="0,00"
                           />
                         </div>
                         <div className={styles.priceUpdateField}>
-                          <label className={styles.priceUpdateLabel}>Preço de venda (R$)</label>
+                          <label className={styles.priceUpdateLabel}>
+                            Preço de venda (R$)
+                          </label>
                           <input
                             type="text"
                             className={styles.input}
                             value={update.salePrice}
                             onChange={(e) =>
-                              handlePriceChange(item.productId, "salePrice", e.target.value)
+                              handlePriceChange(
+                                item.productId,
+                                "salePrice",
+                                e.target.value
+                              )
                             }
                             placeholder="0,00"
                           />
@@ -557,6 +594,16 @@ export const CreateTransactionForm: React.FC<Props> = ({
                 <span className={styles.summaryLabel}>Desconto</span>
                 <span className={`${styles.summaryValue} ${styles.discount}`}>
                   − {formatCurrency(parsedDiscount)}
+                </span>
+              </div>
+            )}
+            {creditMarkup > 0 && (
+              <div className={styles.summaryRow}>
+                <span className={styles.summaryLabel}>
+                  Acréscimo fiado (10%)
+                </span>
+                <span className={styles.summaryValue}>
+                  + {formatCurrency(creditMarkup)}
                 </span>
               </div>
             )}

@@ -35,12 +35,27 @@
 }
 
 .sale,
-.service    { background: var(--green-subtle); color: var(--green); }
-.credit     { background: var(--purple-subtle); color: var(--purple); }
+.service {
+  background: var(--green-subtle);
+  color: var(--green);
+}
+.credit {
+  background: var(--purple-subtle);
+  color: var(--purple);
+}
 .purchase,
-.payment    { background: var(--amber-subtle); color: var(--amber); }
-.aporte     { background: var(--accent-subtle); color: var(--accent); }
-.default    { background: var(--surface-2); color: var(--text-2); }
+.payment {
+  background: var(--amber-subtle);
+  color: var(--amber);
+}
+.aporte {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+.default {
+  background: var(--surface-2);
+  color: var(--text-2);
+}
 
 /* ── Info ── */
 .info {
@@ -89,14 +104,32 @@
 }
 
 .tag_sale,
-.tag_service { background: var(--green-subtle); color: var(--green); }
-.tag_credit  { background: var(--purple-subtle); color: var(--purple); }
+.tag_service {
+  background: var(--green-subtle);
+  color: var(--green);
+}
+.tag_credit {
+  background: var(--purple-subtle);
+  color: var(--purple);
+}
 .tag_purchase,
-.tag_payment { background: var(--amber-subtle); color: var(--amber); }
-.tag_aporte  { background: var(--accent-subtle); color: var(--accent); }
-.tag_default { background: var(--surface-2); color: var(--text-2); }
+.tag_payment {
+  background: var(--amber-subtle);
+  color: var(--amber);
+}
+.tag_aporte {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+.tag_default {
+  background: var(--surface-2);
+  color: var(--text-2);
+}
 
-.tagPending  { background: var(--amber-subtle); color: var(--amber); }
+.tagPending {
+  background: var(--amber-subtle);
+  color: var(--amber);
+}
 
 /* ── Amount ── */
 .amount {
@@ -107,9 +140,15 @@
   white-space: nowrap;
 }
 
-.amountPositive { color: var(--green); }
-.amountNegative { color: var(--red); }
-.amountPending  { color: var(--amber); }
+.amountPositive {
+  color: var(--green);
+}
+.amountNegative {
+  color: var(--red);
+}
+.amountPending {
+  color: var(--amber);
+}
 
 .discount {
   font-size: 10px;
@@ -127,4 +166,10 @@
   .right {
     gap: 6px;
   }
+}
+
+.markupNote {
+  font-size: 11px;
+  color: var(--text-3);
+  text-align: right;
 }
